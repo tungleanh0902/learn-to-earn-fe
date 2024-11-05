@@ -93,3 +93,13 @@
   padding-top: 1rem;
   padding-bottom: 1rem;
 }
+
+.scroll-component {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.scroll-content{ 
+  /* doesn't need anything */
+}

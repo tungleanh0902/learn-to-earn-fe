@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import home from './assets/home.svg';
-import earn from './assets/earn.svg';
-import learn from './assets/learn.svg';
-import leaderboard from './assets/leaderboard.svg';
-import wallet from './assets/wallet.png';
+import home from '../assets/home.svg';
+import earn from '../assets/earn.svg';
+import learn from '../assets/learn.svg';
+import leaderboard from '../assets/leaderboard.svg';
+import wallet from '../assets/wallet.png';
 
 const Navigation = () => {
     const navigate = useNavigate();

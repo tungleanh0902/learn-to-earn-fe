@@ -8,7 +8,7 @@ import Learn from "./Learn";
 import Leaderboard from "./Leaderboard";
 import Wallet from "./Wallet";
 import Layout from "./Components/Layout";
-import Navigation from "./Navigation";
+// import Navigation from "./Navigation";
 
 function App() {
   return (

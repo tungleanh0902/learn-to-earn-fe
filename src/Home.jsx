@@ -6,7 +6,7 @@ import checkIcon from './assets/check-icon.svg';
 import shoppingCart from './assets/shopping-cart.svg';
 import rectangle1071 from './assets/rectangle-1071.png';
 import { Link } from 'react-router-dom';
-import Navigation from './Navigation';
+import Navigation from './Components/Navigation';
 
 const user = {
     name: 'top1server',
