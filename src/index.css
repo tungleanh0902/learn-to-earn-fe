@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+    font-family: "Baloo";
+    src: url('./assets/fonts/BalooDa2-VariableFont_wght.ttf') format("truetype");
+}
+
+@font-face {
+    font-family: "Nunito-Bold";
+    src: url('./assets/fonts/Nunito-Bold.ttf') format("truetype");
+}
+
+@font-face {
+    font-family: "Adlam";
+    src: url('./assets/fonts/ADLaMDisplay-Regular.ttf') format("truetype");
+}
+
+@font-face {
+    font-family: "Lato-Regular";
+    src: url('./assets/fonts/Lato-Regular.ttf') format("truetype");
+}
