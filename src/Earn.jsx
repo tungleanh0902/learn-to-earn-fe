@@ -3,6 +3,7 @@ import task from './assets/task.png';
 import shoppingCart from './assets/shopping-cart.svg';
 import WeeklyCampaign from './Components/WeeklyCampaign';
 import Task from './Components/Task';
+import Navigation from './Components/Navigation';
 
 const Earn = () => {
     return (
@@ -35,6 +36,9 @@ const Earn = () => {
                     <Task />
                 </div>
 
+                <footer className="fixed bottom-4 left-[-25px] bg-variable-collection-n-n justify-centery">
+                    <Navigation />
+                </footer>
             </div>
         </div>
     );

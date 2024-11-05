@@ -11,6 +11,7 @@ export default {
         'nunito-bold':['Nunito-Bold'],
         'adlam-display':['Adlam'],
         'lato-regular':['Lato-Regular'],
+        'abeezee':['ABeeZee-Regular'],
       },
     },
   },

@@ -33,14 +33,14 @@ const Navigation = () => {
                             className="flex flex-col text-center pt-6 cursor-pointer"
                             onClick={() => handleClick(i, menu.path)}
                         >
-                            <span className={`text-xl cursor-pointer duration-500 ${i === active && "-mt-6 text-white"}`}>
+                            <span className={`text-xl cursor-pointer duration-500 ${i === active && "text-white"}`}>
                                 <img
                                     src={menu.img}
                                     alt={menu.name}
-                                    className={`${i === active ? "w-6 h-6" : "w-5 h-5"} mx-auto`}
+                                    className={`${i === active ? "w-5 h-5" : "w-5 h-5"} mx-auto`}
                                 />
                             </span>
-                            <span className={`${active === i ? "translate-y-4 duration-700 opacity-100" : "opacity-0 translate-y-10"}`}>
+                            <span className={`${active === i ? "translate-y-2 duration-700 opacity-100" : "opacity-0 translate-y-10"}`}>
                                 <div className="text-white">{menu.name}</div>
                             </span>
                         </a>

@@ -21,3 +21,8 @@
     font-family: "Lato-Regular";
     src: url('./assets/fonts/Lato-Regular.ttf') format("truetype");
 }
+
+@font-face {
+    font-family: "ABeeZee-Regular";
+    src: url('./assets/fonts/ABeeZee-Regular.ttf') format("truetype");
+}
