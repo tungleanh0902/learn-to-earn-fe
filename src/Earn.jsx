@@ -23,7 +23,7 @@ const Earn = () => {
                         Shop
                     </div>
                 </div>
-                
+
                 <div className="absolute left-[30px] top-[80px] font-adlam-display text-white text-[20px]" >
                     Weekly
                 </div>
