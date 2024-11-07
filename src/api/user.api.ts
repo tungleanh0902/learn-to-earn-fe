@@ -8,6 +8,10 @@ export const createUserStore = create((set: any, get: any, next: any) => (
         checkedToday: Boolean,
         checkedYesterday: Boolean,
         leaderboard: {},
+        updateUserInfo: async (user: any) => {
+            set({ userInfo: user })
+        },
+
         login: async (telegramUserId: String) => {
             await callApi('user/login', "POST", {
                 telegramUserId
@@ -20,7 +24,9 @@ export const createUserStore = create((set: any, get: any, next: any) => (
         },
 
         checkIn: async () => {
-            await callApi('user/daily', "POST", null, (res) => { }, get().token)
+            await callApi('user/daily', "POST", null, (res) => {
+                set({ checkedToday: true })
+            }, get().token)
         },
 
         addRef: async (refCode: String) => {

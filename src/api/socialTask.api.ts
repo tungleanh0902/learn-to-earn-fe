@@ -6,11 +6,13 @@ export const createSocialTaskStore = create((set: any, get: any, next: any) => (
         activeTasks: {},
 
         claimSocialTask: async (taskId: String, token: String) => {
+            let user
             await callApi('social_task/claim', "POST", {
                 taskId,
             }, (res) => {
-                console.log(res);
+                user = res.data.user
             }, token)
+            return user
         },
 
         getActiveTasks: async (token: String) => {
