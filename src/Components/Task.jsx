@@ -28,6 +28,7 @@ function getImage(platform) {
 const Task = () => {
     const activeTask = createSocialTaskStore(state => state.activeTasks)
     const token = createUserStore(state => state.token)
+    const updateUserInfo = createUserStore(state => state.updateUserInfo)
     const claim = createSocialTaskStore(state => state.claimSocialTask)
     const connectWallet = createUserStore(state => state.connectWallet)
     const getActiveTask = createSocialTaskStore(state => state.getActiveTasks)
@@ -63,17 +64,17 @@ const Task = () => {
         if (platform == "wallet") {
             tonConnectUI.openModal()
             tonConnectUI.onStatusChange(async w => {
-                console.log(w.connectItems?.tonProof);
-                console.log(w.account);
-                
+                if (w.account?.address) {
+                    await connectWallet({
+                        address: w.account.address
+                    }, token) 
+                } 
             })
-            tonConnectUI.disconnect();
-            // await connectWallet({
-
-            // }, token)
         }
-        // await claim(taskId, token)
-        // await getActiveTask(token) 
+        let newUser = await claim(taskId, token)
+        console.log(newUser);
+        updateUserInfo(newUser)
+        await getActiveTask(token)
     }
 
     return (
