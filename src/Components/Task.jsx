@@ -4,6 +4,7 @@ import social from '../assets/social.png';// Adjust the import path as needed
 import academy from '../assets/academy.png'; // Adjust the import path as needed
 import { createSocialTaskStore } from "../api/socialTask.api";
 import { createUserStore } from "../api/user.api";
+import {useTonConnectUI, useTonWallet, CHAIN} from "@tonconnect/ui-react";
 
 function capitalizeFirstLetter(val) {
     return String(val).charAt(0).toUpperCase() + String(val).slice(1);
@@ -28,6 +29,10 @@ const Task = () => {
     const activeTask = createSocialTaskStore(state => state.activeTasks)
     const token = createUserStore(state => state.token)
     const claim = createSocialTaskStore(state => state.claimSocialTask)
+    const connectWallet = createUserStore(state => state.connectWallet)
+    const getActiveTask = createSocialTaskStore(state => state.getActiveTasks)
+
+    const [tonConnectUI] = useTonConnectUI();
 
     let taskTag = []
     activeTask.map((task, x) => {
@@ -54,7 +59,23 @@ const Task = () => {
         ? activeTask
         : activeTask.filter(task => task.tag === categoryState);
     
-    console.log(filteredTaskItems);
+    async function onClaimTask(taskId, platform) {
+        if (platform == "wallet") {
+            tonConnectUI.openModal()
+            tonConnectUI.onStatusChange(async w => {
+                console.log(w.connectItems?.tonProof);
+                console.log(w.account);
+                
+            })
+            tonConnectUI.disconnect();
+            // await connectWallet({
+
+            // }, token)
+        }
+        // await claim(taskId, token)
+        // await getActiveTask(token) 
+    }
+
     return (
         <div className="overflow-hidden">
             <ul className="flex space-x-1">
@@ -73,9 +94,10 @@ const Task = () => {
                         <span className="relative text-white font-abeezee left-[10px] top-[-10px]">{task.title}</span>
                         <span className="absolute w-[80px] h-[23px] top-[-10px] right-[70px] bg-[#d9d9d9] rounded-[20px]">
                             <button 
-                                onClick={() => claim(task._id, token)}
+                                disabled={task.isDone}
+                                onClick={() => onClaimTask(task._id, task.platform)}
                                 className="relative text-black font-adlam-display top-[-1.5px]">
-                                Go
+                                {task.isDone ? "Claimed" : "Go"}
                             </button>
                         </span>
                     </li>
