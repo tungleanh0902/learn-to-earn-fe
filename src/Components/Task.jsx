@@ -88,7 +88,7 @@ const Task = () => {
                     </li>
                 ))}
             </ul>
-            <ul className="flex flex-col space-y-1 max-h-60 overflow-y-auto overflow-x-hidden">
+            <ul className="flex flex-col space-y-1 overflow-y-auto overflow-x-hidden bottom-[100px]">
                 {filteredTaskItems.map((task, i) => (
                     <li key={i} className="relative flex items-center space-y-5 left-[15px]">
                         <img src={getImage(task.platform)} alt={task.title} className="w-6 h-6" />
