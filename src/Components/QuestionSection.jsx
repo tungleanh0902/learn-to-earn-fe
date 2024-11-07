@@ -1,98 +1,130 @@
 import React, { useState, useEffect } from 'react';
+import { createQuizzStore } from "../api/quizz.api";
+import { createUserStore } from "../api/user.api";
 
-const QuestionSection = () => {
-    const Questions = [
-        // { context: "What is \"Hello\"?", a: "こんにちは", b: "你好", c: "Bonjour", d: "Hola", answer: "a" },
-        // { context: "What is \"Goodbye\"?", a: "さようなら", b: "再见", c: "Au revoir", d: "Adiós", answer: "a" },
-        // { context: "What is \"Thank you\"?", a: "ありがとう", b: "谢谢", c: "Merci", d: "Gracias", answer: "a" },
-        { context: "What does \"いくらですか?\" mean?", a: "How are you?", b: "How much is it?", c: "What is this?", d: "Where is it?", answer: "b" },
-        { context: "What does \"お会計お願いします\" mean?", a: "Check, please", b: "Help, please", c: "Can I have a menu?", d: "Where is the restroom?", answer: "a" },
-        { context: "How would you ask for a discount?", a: "いくらですか?", b: "安くなりませんか?", c: "おいしいですか?", d: "ありがとう", answer: "b" },
-    ];
+const QuestionSection = ({isCampaign}) => {
+    const lesson = createQuizzStore(state => state.lesson)
+    const lessonForCampaign = createQuizzStore(state => state.lessonForCampaign)
 
+    const token = createUserStore(state => state.token)
+    const updateUserInfo = createUserStore(state => state.updateUserInfo)
+    const answerQuizz = createQuizzStore(state => state.answerQuizz)
+    const answerQuizzCampaign = createQuizzStore(state => state.answerQuizzCampaign)
+
+    const [questionIdx, setquestionIdx] = useState(0);
     const [currentQuestion, setCurrentQuestion] = useState(null);
     const [selectedAnswer, setSelectedAnswer] = useState(null);
     const [highlightedAnswer, setHighlightedAnswer] = useState(null);
     const [isCorrect, setIsCorrect] = useState(null);
-
+    const [outOfQuestion, setOutOfQuestion] = useState(false);
+   
     useEffect(() => {
-        const getRandomQuestion = () => {
-            const randomIndex = Math.floor(Math.random() * Questions.length);
-            return Questions[randomIndex];
-        };
-
-        setCurrentQuestion(getRandomQuestion());
+        if (isCampaign) {
+            if (lessonForCampaign.length == 0 || !lessonForCampaign || lessonForCampaign?.questions?.length == 0) {
+                setOutOfQuestion(true)
+            } else {
+                setCurrentQuestion(lessonForCampaign?.questions[0])
+            }
+        } else {
+            if (lesson.length == 0 || !lesson || lesson?.questions?.length == 0) {
+                setOutOfQuestion(true)
+            } else {
+                setCurrentQuestion(lesson?.questions[0])
+            }
+        }
     }, []);
 
-    const handleAnswerClick = (answer) => {
-        setHighlightedAnswer(answer);
+    const handleAnswerClick = (answerId) => {
+        setHighlightedAnswer(answerId);
     };
 
-    const handleConfirmClick = () => {
+    const handleConfirmClick = async () => {
         setSelectedAnswer(highlightedAnswer);
-        setIsCorrect(highlightedAnswer === currentQuestion.answer);
+        for (let index = 0; index < currentQuestion.options.length; index++) {
+            const option = currentQuestion.options[index];
+            if (option._id == highlightedAnswer && option?.isCorrect == true) {
+                setIsCorrect(true);
+            }
+        }
+        let newUser
+        if (isCampaign) {
+            newUser = await answerQuizzCampaign(highlightedAnswer, token)
+        } else {
+            newUser = await answerQuizz(highlightedAnswer, token)
+        }
+        updateUserInfo(newUser)
 
         setTimeout(() => {
-            const getRandomQuestion = () => {
-                const randomIndex = Math.floor(Math.random() * Questions.length);
-                return Questions[randomIndex];
-            };
-
-            setCurrentQuestion(getRandomQuestion());
+            if (isCampaign) {
+                if (questionIdx == lessonForCampaign.questions.length - 1) {
+                    setOutOfQuestion(true)
+                } else {
+                    setquestionIdx(questionIdx + 1)
+                    setCurrentQuestion(lessonForCampaign.questions[questionIdx]);
+                }
+            } else {
+                if (questionIdx == lesson.questions.length - 1) {
+                    setOutOfQuestion(true)
+                } else {
+                    setquestionIdx(questionIdx + 1)
+                    setCurrentQuestion(lesson.questions[questionIdx]);
+                }
+            }
             setSelectedAnswer(null);
             setHighlightedAnswer(null);
             setIsCorrect(null);
-        }, 2000); // 2 seconds delay
+        }, 1500); // 1.5 seconds delay
     };
-
-    if (!currentQuestion) {
-        return <div>Loading...</div>;
-    }
 
     return (
         <div className="overflow-hidden">
             <div className="items-center flex-col">
-                <p className="mb-[8%] font-nunito-bold text-bold text-white text-[120%]">{currentQuestion.context}</p>
+                {
+                    outOfQuestion == true ?
+                        <p className="mb-[8%] font-nunito-bold text-bold text-white text-[120%]">Out of daily quizz</p>
+                        :
+                        <>
+                            <p className="mb-[8%] font-nunito-bold text-bold text-white text-[120%]">{currentQuestion?.content ?? "Question"}</p>
 
-                <div className="relative grid grid-cols-2 gap-2 px-[12%] font-bold font-nunito-bold">
-                    <div
-                        className={`answer-box bg-[#c3e2c2] ${highlightedAnswer === 'a' ? 'border-4 border-blue-500' : ''} ${selectedAnswer === 'a' && !isCorrect ? 'bg-red-500 text-white' : ''} ${selectedAnswer === 'a' && isCorrect ? 'bg-green-500 text-white' : ''}`}
-                        onClick={() => handleAnswerClick('a')}
-                    >
-                        {currentQuestion.a}
-                    </div>
-                    <div
-                        className={`answer-box bg-[#e4efc4] ${highlightedAnswer === 'b' ? 'border-4 border-blue-500' : ''} ${selectedAnswer === 'b' && !isCorrect ? 'bg-red-500 text-white' : ''} ${selectedAnswer === 'b' && isCorrect ? 'bg-green-500 text-white' : ''}`}
-                        onClick={() => handleAnswerClick('b')}
-                    >
-                        {currentQuestion.b}
-                    </div>
-                    <div
-                        className={`answer-box bg-[#FEEE91] ${highlightedAnswer === 'c' ? 'border-4 border-blue-500' : ''} ${selectedAnswer === 'c' && !isCorrect ? 'bg-red-500 text-white' : ''} ${selectedAnswer === 'c' && isCorrect ? 'bg-green-500 text-white' : ''}`}
-                        onClick={() => handleAnswerClick('c')}
-                    >
-                        {currentQuestion.c}
-                    </div>
-                    <div
-                        className={`answer-box bg-[#CD8D7A] ${highlightedAnswer === 'd' ? 'border-4 border-blue-500' : ''} ${selectedAnswer === 'd' && !isCorrect ? 'bg-red-500 text-white' : ''} ${selectedAnswer === 'd' && isCorrect ? 'bg-green-500 text-white' : ''}`}
-                        onClick={() => handleAnswerClick('d')}
-                    >
-                        {currentQuestion.d}
-                    </div>
-                </div>
+                            <div className="relative grid grid-cols-2 gap-2 px-[12%] font-bold font-nunito-bold">
+                                <div
+                                    className={`answer-box bg-[#c3e2c2] ${highlightedAnswer == currentQuestion?.options[0]._id ? 'border-4 border-blue-500' : ''} ${selectedAnswer == currentQuestion?.options[0]._id && !isCorrect ? 'bg-red-500 text-white' : ''} ${selectedAnswer == currentQuestion?.options[0]._id && isCorrect ? 'bg-green-500 text-white' : ''}`}
+                                    onClick={() => handleAnswerClick(currentQuestion?.options[0]._id)}
+                                >
+                                    {currentQuestion?.options[0].content}
+                                </div>
+                                <div
+                                    className={`answer-box bg-[#e4efc4] ${highlightedAnswer == currentQuestion?.options[1]._id ? 'border-4 border-blue-500' : ''} ${selectedAnswer == currentQuestion?.options[1]._id && !isCorrect ? 'bg-red-500 text-white' : ''} ${selectedAnswer == currentQuestion?.options[1]._id && isCorrect ? 'bg-green-500 text-white' : ''}`}
+                                    onClick={() => handleAnswerClick(currentQuestion?.options[1]._id)}
+                                >
+                                    {currentQuestion?.options[1].content}
+                                </div>
+                                <div
+                                    className={`answer-box bg-[#FEEE91] ${highlightedAnswer == currentQuestion?.options[2]._id ? 'border-4 border-blue-500' : ''} ${selectedAnswer == currentQuestion?.options[2]._id && !isCorrect ? 'bg-red-500 text-white' : ''} ${selectedAnswer == currentQuestion?.options[2]._id && isCorrect ? 'bg-green-500 text-white' : ''}`}
+                                    onClick={() => handleAnswerClick(currentQuestion?.options[2]._id)}
+                                >
+                                    {currentQuestion?.options[2].content}
+                                </div>
+                                <div
+                                    className={`answer-box bg-[#CD8D7A] ${highlightedAnswer == currentQuestion?.options[3]._id ? 'border-4 border-blue-500' : ''} ${selectedAnswer == currentQuestion?.options[3]._id && !isCorrect ? 'bg-red-500 text-white' : ''} ${selectedAnswer == currentQuestion?.options[3]._id && isCorrect ? 'bg-green-500 text-white' : ''}`}
+                                    onClick={() => handleAnswerClick(currentQuestion?.options[3]._id)}
+                                >
+                                    {currentQuestion?.options[3].content}
+                                </div>
+                            </div>
 
-                {/* {highlightedAnswer && !selectedAnswer && ( */}
-                    <div className={`absolute flex-none rounded-[15px] w-[75%] mx-[12.5%] mt-[5%] ${selectedAnswer ? (isCorrect ? 'bg-green-500' : 'bg-red-500') : 'bg-white'}`}>
-                        <div
-                            className={`relative font-adlam-display font-bold text-[150%] my-[2%] cursor-pointer ${selectedAnswer ? 'text-white' : 'text-black'}`}
-                            onClick={selectedAnswer ? null : handleConfirmClick}
-                        >
-                            {selectedAnswer ? (isCorrect ? 'Correct!' : 'Incorrect!') : 'Confirm'}
-                        </div>
-                    </div>
-                {/* )}} */}
-
-            
+                            {/* {highlightedAnswer && !selectedAnswer && ( */}
+                            <div className={`absolute flex-none rounded-[15px] w-[75%] mx-[12.5%] mt-[5%] ${selectedAnswer ? (isCorrect ? 'bg-green-500' : 'bg-red-500') : 'bg-white'}`}>
+                                <div
+                                    className={`relative font-adlam-display font-bold text-[150%] my-[2%] cursor-pointer ${selectedAnswer ? 'text-white' : 'text-black'}`}
+                                    onClick={selectedAnswer ? null : handleConfirmClick}
+                                >
+                                    {selectedAnswer ? (isCorrect ? 'Correct!' : 'Incorrect!') : 'Confirm'}
+                                </div>
+                            </div>
+                            {/* )}} */}
+                        </>
+                }
             </div>
         </div>
     );

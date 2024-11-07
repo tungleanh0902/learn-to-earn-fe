@@ -1,6 +1,4 @@
-import { success, error } from '@pnotify/core';
-import '@pnotify/core/dist/PNotify.css';
-import '@pnotify/core/dist/BrightTheme.css';
+import addNotification from 'react-push-notification';
 
 import axios from "axios";
 
@@ -13,8 +11,12 @@ export const callApi = async (url, method, data, callback, token) => {
     })
         .then(function (res) {
             callback(res.data)
-            if (typeof res.data == "number") {
-                success(`${res.data} points`)
+            if (typeof res.data?.points == "number") {
+                addNotification({
+                    title: 'Success',
+                    message: res.data?.points,
+                    theme: 'light',
+                })
             } else {
                 // success("Success")
             }
@@ -27,19 +29,17 @@ export const callApi = async (url, method, data, callback, token) => {
                     err.response.data &&
                     err.response.data.message
                 ) {
-                    error({
-                        title: "Error",
-                        text: err.response.data.message,
-                        destroy: true,
-                        delay: 3000
-                    });
+                    addNotification({
+                        title: 'Error',
+                        message: err.response.data.message,
+                        theme: 'red',
+                    })
                 } else if (err.response) {
-                    error({
-                        title: "Error",
-                        text: err.response.statusText,
-                        destroy: true,
-                        delay: 3000
-                    });
+                    addNotification({
+                        title: 'Error',
+                        message: err.response.statusText,
+                        theme: 'red',
+                    })
                 }
             }
         });

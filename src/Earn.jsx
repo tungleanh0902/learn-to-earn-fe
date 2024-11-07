@@ -1,11 +1,19 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import task from './assets/task.png';
 import shoppingCart from './assets/shopping-cart.svg';
 import WeeklyCampaign from './Components/WeeklyCampaign';
 import Task from './Components/Task';
 import Navigation from './Components/Navigation';
+import { useNavigate } from 'react-router-dom';
 
-const Earn = () => {
+const Earn = ({active, handleClickActive, setIsCampaign}) => {
+    const navigate = useNavigate();
+
+    const handleClick = (index, path) => {
+        handleClickActive(index)
+        navigate(path);
+        setIsCampaign(true)
+    };
     return (
         <div className="bg-[#1e1e1e] flex flex-row w-screen">
             <div className="bg-[#1e1e1e] overflow-hidden w-screen h-screen relative">
@@ -29,7 +37,7 @@ const Earn = () => {
                 </div>
 
                 <div className="relative top-[120px]">
-                    <WeeklyCampaign />
+                    <WeeklyCampaign handleClick={handleClick} />
                 </div>
 
                 <div className="relative top-[130px] left-[25px]">
