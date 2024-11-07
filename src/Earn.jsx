@@ -35,10 +35,6 @@ const Earn = () => {
                 <div className="relative top-[130px] left-[25px]">
                     <Task />
                 </div>
-
-                <footer className="fixed bottom-4 left-[-25px] bg-variable-collection-n-n justify-centery">
-                    <Navigation />
-                </footer>
             </div>
         </div>
     );

@@ -92,10 +92,6 @@ const Home = () => {
                     </div>
                 </div>
 
-                <footer className="relative w-[453px] h-28 top-[745px] bg-variable-collection-n-n justify-centery">
-                    <Navigation />
-                </footer>
-
                 <div className="absolute w-[329px] h-[145px] top-[410px] left-[51px]">
                     <div className="w-[329px] h-[145px]">
                         <img
