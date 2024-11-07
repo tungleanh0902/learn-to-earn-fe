@@ -24,7 +24,7 @@ const Home = () => {
 
     return (
         <div className="bg-[#1e1e1e] flex flex-row justify-center w-full h-full">
-            <div className="bg-[#1e1e1e] overflow-hidden w-[430px] h-[858px] relative">
+            <div className="bg-[#1e1e1e] overflow-hidden w-screen h-screen relative">
                 <div className="absolute w-[329px] h-14 top-[660px] left-[50px] bg-white rounded-[20px] overflow-hidden">
                     <button 
                         disabled={checkedToday}
