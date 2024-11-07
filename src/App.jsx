@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './index.css'
 import "./App.css";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, useNavigate } from "react-router-dom";
 import Home from "./Home";
 import Earn from "./Earn";
 import Learn from "./Learn";
@@ -9,6 +9,8 @@ import Leaderboard from "./Leaderboard";
 import Wallet from "./Wallet";
 import { createUserStore } from "./api/user.api";
 import { createSocialTaskStore } from "./api/socialTask.api";
+import { createQuizzStore } from "./api/quizz.api";
+import { createSeasonBadgeStore } from "./api/seasonBadge.api";
 import WebApp from '@twa-dev/sdk'
 import { THEME, TonConnectUIProvider } from "@tonconnect/ui-react";
 import Layout from "./Components/Layout";
@@ -18,11 +20,27 @@ import Navigation from './Components/Navigation';
 function App() {
   const doLogin = createUserStore(state => state.login)
   const getActiveTask = createSocialTaskStore(state => state.getActiveTasks)
+  const getRandomLesson = createQuizzStore(state => state.getRandomLesson)
+  const getRandomLessonForCampaign = createQuizzStore(state => state.getRandomLessonForCampaign)
+  const checkThisSeasonBadge = createSeasonBadgeStore(state => state.checkThisSeasonBadge)
+
+  const [active, setActive] = useState(0);
+  const [isCampaign, setIsCampaign] = useState(false)
+
+  const handleClickActive = (index) => {
+      setActive(index);
+  };
 
   useEffect(() => {
     async function fetch() {
+      console.log(WebApp.initDataUnsafe.user.id.toString());
       let token = await doLogin(WebApp.initDataUnsafe.user.id.toString())
-      await getActiveTask(token)
+      getActiveTask(token)
+      getRandomLesson(token)
+      let gotIt = await checkThisSeasonBadge(token)
+      if (gotIt.tokenId != null) {
+        getRandomLessonForCampaign(token)
+      }
     }
 
     fetch()
@@ -41,15 +59,33 @@ function App() {
         <div className="App flex flex-col min-h-screen">
           <div className="flex-grow">
             <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/earn" element={<Earn />} />
-              <Route path="/learn" element={<Learn />} />
+              <Route path="/" element={
+                <Home 
+                  active={active}
+                  handleClickActive={handleClickActive}
+                />
+              } />
+              <Route path="/earn" element={
+                <Earn
+                  active={active}
+                  handleClickActive={handleClickActive}
+                  setIsCampaign={setIsCampaign}
+                />
+              } />
+              <Route path="/learn" element={<Learn
+                  isCampaign={isCampaign}
+                />
+              } />
               <Route path="/leaderboard" element={<Leaderboard />} />
               <Route path="/wallet" element={<Wallet />} />
             </Routes>
           </div>
           <div className="footer">
-            <Navigation />
+            <Navigation
+              active={active}
+              handleClickActive={handleClickActive}
+              setIsCampaign={setIsCampaign}
+            />
           </div>
         </div>
       </Router>

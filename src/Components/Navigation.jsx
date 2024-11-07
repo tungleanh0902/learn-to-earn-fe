@@ -9,8 +9,7 @@ import learn from '../assets/learn.svg';
 import leaderboard from '../assets/leaderboard.svg';
 import wallet from '../assets/wallet.png';
 
-const Navigation = () => {
-    const navigate = useNavigate();
+const Navigation = ({active, handleClickActive}) => {
     const Menus = [
         { name: "Home", img: home, lightimg: lighthome, path: "/" },
         { name: "Earn", img: earn, lightimg: lightearn, path: "/earn" },
@@ -18,11 +17,12 @@ const Navigation = () => {
         { name: "Leaderboard", img: leaderboard, path: "/leaderboard" },
         { name: "Wallet", img: wallet, path: "/wallet" },
     ];
-    const [active, setActive] = useState(0);
+    const navigate = useNavigate();
 
     const handleClick = (index, path) => {
-        setActive(index);
+        handleClickActive(index)
         navigate(path);
+        setIsCampaign(false)
     };
 
     return (

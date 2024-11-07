@@ -5,9 +5,11 @@ export const createSeasonBadgeStore = create((set: any, get: any, next: any) => 
     {
         seasonBadge: {},
         checkBoughtSeasonBadge: Boolean,
+        itemAddress: String,
+        tokenId: String,
 
         buyNft: async (badgeId: String, tokenId: String, tx: String, itemAddress: String, explorerUrl: String, token: String) => {
-            await callApi('quizz/buy_nft', "POST", {
+            await callApi('badge/buy_nft', "POST", {
                 badgeId,
                 tokenId,
                 tx,
@@ -20,14 +22,19 @@ export const createSeasonBadgeStore = create((set: any, get: any, next: any) => 
         },
 
         checkThisSeasonBadge: async (token: String) => {
-            await callApi('quizz/check_badge', "GET", null, (res) => {
-                console.log(res);
-                set({ checkBoughtSeasonBadge: res.data })
+            let result
+            await callApi('badge/check_badge', "POST", null, (res) => {
+                console.log(res.data.itemAddress != null);
+                set({ checkBoughtSeasonBadge: res.data.itemAddress != null ? true : false})
+                set({ itemAddress: res.data.itemAddress})
+                set({ tokenId: res.data.tokenId})
+                result = res.data
             }, token)
+            return result
         },
 
         currentSeasonBadge: async () => {
-            await callApi('quizz/current_badge', "GET", null, (res) => {
+            await callApi('badge/current_badge', "POST", null, (res) => {
                 console.log(res);
                 set({ seasonBadge: res.data })
             }, null)

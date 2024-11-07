@@ -1,8 +1,8 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import shoppingCart from './assets/shopping-cart.svg';
 import QuestionSection from './Components/QuestionSection';
 
-const Learn = () => {
+const Learn = ({isCampaign}) => {
     return (
         <div className="bg-[#1e1e1e] flex flex-row w-screen">
             <div className="bg-[#1e1e1e] overflow-hidden w-screen h-screen relative">
@@ -22,7 +22,7 @@ const Learn = () => {
                 </div>
 
                 <div className="relative top-[15%]">
-                    <QuestionSection />
+                    <QuestionSection isCampaign={isCampaign} />
                 </div>
 
             </div>

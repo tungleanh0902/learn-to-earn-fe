@@ -6,6 +6,7 @@ import checkIcon from './assets/check-icon.svg';
 import shoppingCart from './assets/shopping-cart.svg';
 import rectangle1071 from './assets/rectangle-1071.png';
 import Navigation from './Components/Navigation';
+import { useNavigate } from 'react-router-dom';
 import WebApp from '@twa-dev/sdk'
 import {createUserStore} from "./api/user.api";
 
@@ -17,11 +18,16 @@ const user = {
     checkin: true,
 };
 
-const Home = () => {
+const Home = ({active, handleClickActive}) => {
     const userInfo = createUserStore(state => state.userInfo)
     const checkedToday = createUserStore(state => state.checkedToday)
     const doLogin = createUserStore(state => state.checkIn)
+    const navigate = useNavigate();
 
+    const handleClick = (index, path) => {
+        handleClickActive(index)
+        navigate(path);
+    };
     return (
         <div className="bg-[#1e1e1e] flex flex-row justify-center w-full h-full">
             <div className="bg-[#1e1e1e] overflow-hidden w-screen h-screen relative">
@@ -35,9 +41,11 @@ const Home = () => {
                 </div>
 
                 <div className="absolute w-[329px] h-14 top-[60%] left-[8%] bg-white rounded-[20px] overflow-hidden">
-                    <div className="absolute w-[251px] top-[7px] left-[39px] font-adlam-display folt-normal text-black text-[32px] text-center tracking-[0] leading-[normal] whitespace-nowrap">
+                    <button 
+                        onClick={() => handleClick(1, "/learn")}
+                        className="absolute w-[251px] top-[7px] left-[39px] font-adlam-display folt-normal text-black text-[32px] text-center tracking-[0] leading-[normal] whitespace-nowrap">
                         Daily quizz
-                    </div>
+                    </button>
                 </div>
 
                 <div className="absolute w-[206px] h-[261px] top-[124px] left-[115px]">
@@ -93,17 +101,17 @@ const Home = () => {
                 </div>
 
                 <div className="absolute w-[329px] h-[145px] top-[410px] left-[51px]">
-                    <div className="w-[329px] h-[145px]">
-                        {/* <img */}
-                            {/* // className="relative w-[329px] h-[145px] object-cover center top-[-50%]" */}
-                            {/* // alt="Rectangle" */}
-                            {/* // src={rectangle1071} */}
-                        {/* // /> */}
-                        {/* <div className="relative w-[77px] h-[34px] top-[-45px] left-[242px] bg-white rounded-[20px]" /> */}
-                    </div>
-                    <div className="relative w-[57px] top-[-45px] left-[252px] font-adlam-display font-normal text-black text-xl text-center tracking-[0] leading-[normal]">
-                        {/* Play */}
-                    </div>
+                    {/* <div className="w-[329px] h-[145px]">
+                        <img
+                            className="relative w-[329px] h-[145px] object-cover center top-[-50%]"
+                            alt="Rectangle"
+                            src={rectangle1071}
+                        />
+                        <div className="relative w-[77px] h-[34px] top-[-45px] left-[242px] bg-white rounded-[20px]" />
+                    </div> */}
+                    {/* <button className="relative w-[57px] top-[-45px] left-[252px] font-adlam-display font-normal text-black text-xl text-center tracking-[0] leading-[normal]">
+                        Play
+                    </button> */}
                 </div>
             </div>
         </div>

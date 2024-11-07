@@ -38,21 +38,21 @@ export const createUserStore = create((set: any, get: any, next: any) => (
         },
 
         checkCheckinDaily: async () => {
-            await callApi('user/check_daily', "GET", null, (res) => {
+            await callApi('user/check_daily', "POST", null, (res) => {
                 console.log(res);
                 set({ checkedToday: res.data })
             }, get().token)
         },
 
         checkCheckInYesterday: async () => {
-            await callApi('user/check_yesterday', "GET", null, (res) => {
+            await callApi('user/check_yesterday', "POST", null, (res) => {
                 console.log(res);
                 set({ checkedToday: res.data })
             }, get().token)
         },
 
         getLeaderBoard: async () => {
-            await callApi('user/leaderboard', "GET", null, (res) => {
+            await callApi('user/leaderboard', "POST", null, (res) => {
                 console.log(res);
                 set({ Leaderboard: res.data })
             }, get().token)
