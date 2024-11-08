@@ -9,7 +9,7 @@ import learn from '../assets/learn.svg';
 import leaderboard from '../assets/leaderboard.svg';
 import wallet from '../assets/wallet.png';
 
-const Navigation = ({active, handleClickActive}) => {
+const Navigation = ({active, handleClickActive, setIsCampaign}) => {
     const Menus = [
         { name: "Home", img: home, lightimg: lighthome, path: "/" },
         { name: "Earn", img: earn, lightimg: lightearn, path: "/earn" },

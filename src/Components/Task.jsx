@@ -24,7 +24,6 @@ function getImage(platform) {
     }
 }
 
-
 const Task = () => {
     const activeTask = createSocialTaskStore(state => state.activeTasks)
     const token = createUserStore(state => state.token)

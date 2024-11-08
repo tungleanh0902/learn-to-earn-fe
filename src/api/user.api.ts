@@ -33,8 +33,8 @@ export const createUserStore = create((set: any, get: any, next: any) => (
             await callApi('user/doRef', "POST", { ref: refCode }, (res) => { }, get().token)
         },
 
-        saveStreak: async (tx: String) => {
-            await callApi('user/save_streak', "POST", { tx }, (res) => { }, get().token)
+        saveStreak: async (data) => {
+            await callApi('user/save_streak', "POST", data, (res) => { }, get().token)
         },
 
         checkCheckinDaily: async () => {
@@ -47,7 +47,7 @@ export const createUserStore = create((set: any, get: any, next: any) => (
         checkCheckInYesterday: async () => {
             await callApi('user/check_yesterday', "POST", null, (res) => {
                 console.log(res);
-                set({ checkedToday: res.data })
+                set({ checkedYesterday: res.data })
             }, get().token)
         },
 
@@ -58,10 +58,16 @@ export const createUserStore = create((set: any, get: any, next: any) => (
             }, get().token)
         },
 
-        connectWallet: async (data, token) => {
+        connectWallet: async (data) => {
             await callApi('user/connect_wallet', "POST", data, (res) => {
                 console.log(res);
-            }, token)
+            }, get().token)
+        },
+
+        buyMoreQuizz: async (data) => {
+            await callApi('user/buy_more_quizz', "POST", data, (res) => {
+                console.log(res);
+            }, get().token)
         },
     }
 ))

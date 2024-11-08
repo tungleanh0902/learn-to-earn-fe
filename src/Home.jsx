@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState } from 'react';
 import './App.css'
 import './index.css'
 import ava from './assets/avatar.svg';
@@ -8,7 +8,12 @@ import rectangle1071 from './assets/rectangle-1071.png';
 import Navigation from './Components/Navigation';
 import { useNavigate } from 'react-router-dom';
 import WebApp from '@twa-dev/sdk'
-import {createUserStore} from "./api/user.api";
+import { createUserStore } from "./api/user.api";
+import { createTransaction } from './api/helper';
+import {
+    useTonConnectUI,
+    useTonWallet
+} from "@tonconnect/ui-react";
 
 const user = {
     name: 'top1server',
@@ -18,30 +23,77 @@ const user = {
     checkin: true,
 };
 
-const Home = ({active, handleClickActive}) => {
+const Home = ({ active, handleClickActive }) => {
     const userInfo = createUserStore(state => state.userInfo)
     const checkedToday = createUserStore(state => state.checkedToday)
     const doLogin = createUserStore(state => state.checkIn)
+    const checkedYesterday = createUserStore(state => state.checkedYesterday)
+    const saveStreak = createUserStore(state => state.saveStreak)
+
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
+    const wallet = useTonWallet();
+    const [tonConnectUI] = useTonConnectUI();
 
     const handleClick = (index, path) => {
         handleClickActive(index)
         navigate(path);
     };
+
+    const handleSaveStreak = async () => {
+        console.log("handleSaveStreak");
+        try {
+            setLoading(true);
+            console.log(wallet);
+            let tx = createTransaction(import.meta.env.VITE_ADMIN_WALLET.toString(), import.meta.env.VITE_STREAK_FEE.toString(), null)
+            const result = await tonConnectUI.sendTransaction(tx);
+            await saveStreak(
+                {
+                    boc: result.boc,
+                    network: wallet.account.chain == "-3" ? "testnet" : "mainnet",
+                    sender: wallet.account.address
+                }
+            )
+        } catch (e) {
+            console.error(e);
+        } finally {
+            addNotification({
+                message: 'Buy nft success!',
+                theme: 'light',
+            })
+            setLoading(false);
+        }
+    }
+
     return (
         <div className="bg-[#1e1e1e] flex flex-row justify-center w-full h-full">
             <div className="bg-[#1e1e1e] overflow-hidden w-screen h-screen relative">
-                <div className="absolute w-[329px] h-14 top-[72%] left-[8%] bg-white rounded-[20px] overflow-hidden">
-                    <button 
+                <div className="absolute w-[160px] h-14 top-[72%] left-[8%] bg-white rounded-[20px] overflow-hidden">
+                    {wallet ? (
+                        <button
+                            disabled={checkedYesterday ? true : loading ? true : false}
+                            onClick={handleSaveStreak}
+                            className="absolute w-[251px] top-[7px] left-[-44px] font-adlam font-normal text-black text-[26px] text-center tracking-[0] leading-[normal] whitespace-nowrap">
+                            {checkedYesterday ? "On streak" : loading ? "Loading..." : "Buy streak"}
+                        </button>
+                    ) : (
+                        <button onClick={() => tonConnectUI.openModal()}>
+                            Connect wallet to send the transaction
+                        </button>
+                    )}
+                </div>
+
+                <div className="absolute w-[160px] h-14 top-[72%] left-[50%] bg-white rounded-[20px] overflow-hidden">
+                    <button
                         disabled={checkedToday}
                         onClick={doLogin}
-                        className="absolute w-[251px] top-[7px] left-[39px] font-adlam font-normal text-black text-[32px] text-center tracking-[0] leading-[normal] whitespace-nowrap">
+                        className="absolute w-[251px] top-[7px] left-[-44px] font-adlam font-normal text-black text-[26px] text-center tracking-[0] leading-[normal] whitespace-nowrap">
                         {checkedToday ? "Checked in" : "Check in"}
                     </button>
                 </div>
 
                 <div className="absolute w-[329px] h-14 top-[60%] left-[8%] bg-white rounded-[20px] overflow-hidden">
-                    <button 
+                    <button
                         onClick={() => handleClick(1, "/learn")}
                         className="absolute w-[251px] top-[7px] left-[39px] font-adlam-display folt-normal text-black text-[32px] text-center tracking-[0] leading-[normal] whitespace-nowrap">
                         Daily quizz
@@ -100,8 +152,8 @@ const Home = ({active, handleClickActive}) => {
                     </div>
                 </div>
 
-                <div className="absolute w-[329px] h-[145px] top-[410px] left-[51px]">
-                    {/* <div className="w-[329px] h-[145px]">
+                {/* <div className="absolute w-[329px] h-[145px] top-[410px] left-[51px]"> */}
+                {/* <div className="w-[329px] h-[145px]">
                         <img
                             className="relative w-[329px] h-[145px] object-cover center top-[-50%]"
                             alt="Rectangle"
@@ -109,10 +161,10 @@ const Home = ({active, handleClickActive}) => {
                         />
                         <div className="relative w-[77px] h-[34px] top-[-45px] left-[242px] bg-white rounded-[20px]" />
                     </div> */}
-                    {/* <button className="relative w-[57px] top-[-45px] left-[252px] font-adlam-display font-normal text-black text-xl text-center tracking-[0] leading-[normal]">
+                {/* <button className="relative w-[57px] top-[-45px] left-[252px] font-adlam-display font-normal text-black text-xl text-center tracking-[0] leading-[normal]">
                         Play
                     </button> */}
-                </div>
+                {/* </div> */}
             </div>
         </div>
     );
