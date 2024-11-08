@@ -1,12 +1,11 @@
-import { CHAIN, useTonConnectUI, useTonWallet } from "@tonconnect/ui-react";
+import { CHAIN, useTonConnectUI, useTonWallet, TonConnectUI } from "@tonconnect/ui-react";
 import {
   Address,
   beginCell,
   Sender,
   SenderArguments,
   storeStateInit,
-} from "@ton/core";
-import { TonConnectUI } from "@tonconnect/ui";
+} from "@ton/ton";
 
 export const useTonConnect = (): {
   sender: Sender;

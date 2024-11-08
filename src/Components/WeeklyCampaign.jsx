@@ -1,17 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { createSeasonBadgeStore } from "../api/seasonBadge.api";
+import { createUserStore } from "../api/user.api";
 import addNotification from 'react-push-notification';
 import {
-	useTonConnectUI,
+    useTonConnectUI,
+    useTonWallet
 } from "@tonconnect/ui-react";
-// import {
-// 	Cell,
-// 	loadMessage,
-// } from "@ton/core";
+import { createTransaction } from '../api/helper';
 
-const WeeklyCampaign = ({handleClick}) => {
-    const [tonConnectUi] = useTonConnectUI();
+const WeeklyCampaign = ({ handleClick }) => {
+    const wallet = useTonWallet();
+    const [tonConnectUI] = useTonConnectUI();
     const checkBoughtSeasonBadge = createSeasonBadgeStore(state => state.checkBoughtSeasonBadge)
+    const buyNft = createSeasonBadgeStore(state => state.buyNft)
+    const seasonBadge = createSeasonBadgeStore(state => state.seasonBadge)
+    const [loading, setLoading] = useState(false);
+    const token = createUserStore(state => state.token)
+    const buyMoreQuizz = createUserStore(state => state.buyMoreQuizz)
 
     const handleJoinCampaign = async () => {
         if (checkBoughtSeasonBadge == false) {
@@ -24,38 +29,57 @@ const WeeklyCampaign = ({handleClick}) => {
         }
     }
 
-    // const sendTon = async () => {
-	// 	try {
-	// 		const result = await tonConnectUi.sendTransaction(tx);
-	// 		setLoading(true);
-	// 		const hash = Cell.fromBase64(result.boc)
-	// 			.hash()
-	// 			.toString("base64");
+    const handleBuyMoreQuizz = async () => {
+        console.log("handleBuyMoreQuizz");
+        try {
+            setLoading(true);
+            console.log(wallet);
+            let tx = createTransaction(import.meta.env.VITE_ADMIN_WALLET.toString(), import.meta.env.VITE_MORE_QUIZZ_FEE.toString(), null)
+            const result = await tonConnectUI.sendTransaction(tx);
+            await buyMoreQuizz(
+                {
+                    boc: result.boc,
+                    network: wallet.account.chain == "-3" ? "testnet" : "mainnet",
+                    sender: wallet.account.address
+                }
+            )
+        } catch (e) {
+            console.log(e);
+        } finally {
+            addNotification({
+                message: 'Buy nft success!',
+                theme: 'light',
+            })
+            setLoading(false);
+        }
+    }
 
-	// 		const message = loadMessage(
-	// 			Cell.fromBase64(result.boc).asSlice()
-	// 		);
-	// 		console.log("Message:", message.body.hash().toString("hex"));
-
-	// 		if (client) {
-	// 			const txFinalized = await waitForTransaction(
-	// 				{
-	// 					address: tonConnectUi.account?.address ?? "",
-	// 					hash: hash,
-	// 				},
-	// 				client
-	// 			);
-	// 			console.log("txFinalized: ", txFinalized);
-	// 		}
-	// 	} catch (e) {
-	// 		console.error(e);
-	// 	} finally {
-	// 		setLoading(false);
-	// 	}
-	// }
-
-    const handleBuy = async () => {
-
+    const handleBuyNft = async () => {
+        console.log("handleBuyNft");
+        try {
+            setLoading(true);
+            console.log(wallet);
+            let tx = createTransaction(seasonBadge.address, import.meta.env.VITE_MINT_FEE.toString(), null)
+            const result = await tonConnectUI.sendTransaction(tx);
+            await buyNft(
+                {
+                    badgeId: seasonBadge._id,
+                    tokenId: seasonBadge.nextItemIndex,
+                    boc: result.boc,
+                    network: wallet.account.chain == "-3" ? "testnet" : "mainnet",
+                    sender: wallet.account.address
+                },
+                token
+            )
+        } catch (e) {
+            console.error(e);
+        } finally {
+            addNotification({
+                message: 'Buy nft success!',
+                theme: 'light',
+            })
+            setLoading(false);
+        }
     }
 
     return (
@@ -65,16 +89,39 @@ const WeeklyCampaign = ({handleClick}) => {
             </p>
 
             <div className="relative w-[76px] h-[26px] top-[70px] left-[240px] bg-[#d9d9d9] rounded-[18px]">
-                <button 
+                <button
                     onClick={handleJoinCampaign}
                     className="text-black text-xl font-nunito-bold font-bold text-center">
                     Join
                 </button>
-                <button 
-                    onClick={handleJoinCampaign}
-                    className="text-black text-xl font-nunito-bold font-bold text-center">
-                    Buy
-                </button>
+            </div>
+            <div className="relative w-[76px] h-[26px] top-[70px] left-[240px] bg-[#d9d9d9] rounded-[18px]">
+                {wallet ? (
+                    <button
+                        disabled={loading}
+                        onClick={handleBuyMoreQuizz}
+                        className="text-black text-xl font-nunito-bold font-bold text-center">
+                        {loading ? "Loading..." : "Badge"}
+                    </button>
+                ) : (
+                    <button onClick={() => tonConnectUI.openModal()}>
+                        Connect wallet to send the transaction
+                    </button>
+                )}
+            </div>
+            <div className="relative w-[76px] h-[26px] top-[70px] left-[240px] bg-[#d9d9d9] rounded-[18px]">
+                {wallet ? (
+                    <button
+                        disabled={loading}
+                        onClick={handleBuyNft}
+                        className="text-black text-xl font-nunito-bold font-bold text-center">
+                        {loading ? "Loading..." : "MQuizz"}
+                    </button>
+                ) : (
+                    <button onClick={() => tonConnectUI.openModal()}>
+                        Connect wallet to send the transaction
+                    </button>
+                )}
             </div>
         </div>
     );

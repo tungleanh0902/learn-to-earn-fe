@@ -23,10 +23,12 @@ function App() {
   const getRandomLesson = createQuizzStore(state => state.getRandomLesson)
   const getRandomLessonForCampaign = createQuizzStore(state => state.getRandomLessonForCampaign)
   const checkThisSeasonBadge = createSeasonBadgeStore(state => state.checkThisSeasonBadge)
+  const currentSeasonBadge = createSeasonBadgeStore(state => state.currentSeasonBadge)
+  const checkCheckInYesterday = createUserStore(state => state.checkCheckInYesterday)
 
   const [active, setActive] = useState(0);
   const [isCampaign, setIsCampaign] = useState(false)
-
+  
   const handleClickActive = (index) => {
       setActive(index);
   };
@@ -41,6 +43,8 @@ function App() {
       if (gotIt.tokenId != null) {
         getRandomLessonForCampaign(token)
       }
+      currentSeasonBadge()
+      checkCheckInYesterday()
     }
 
     fetch()

@@ -1,5 +1,4 @@
 import addNotification from 'react-push-notification';
-
 import axios from "axios";
 
 export const callApi = async (url, method, data, callback, token) => {
@@ -44,3 +43,23 @@ export const callApi = async (url, method, data, callback, token) => {
             }
         });
 };
+
+export const createTransaction = (receiver: string, amount: string, payload: string) => {
+    return {
+        // The transaction is valid for 10 minutes from now, in unix epoch seconds.
+        validUntil: Math.floor(Date.now() / 1000) + 600,
+        messages: [
+            {
+                // The receiver's address.
+                address: receiver,
+                // Amount to send in nanoTON. For example, 0.005 TON is 5000000 nanoTON.
+                amount: amount,
+                // (optional) State initialization in boc base64 format.
+                //   stateInit:
+                //   "te6cckEBBAEAOgACATQCAQAAART/APSkE/S88sgLAwBI0wHQ0wMBcbCRW+D6QDBwgBDIywVYzxYh+gLLagHPFsmAQPsAlxCarA==",
+                // (optional) Payload in boc base64 format.
+                payload,
+            },
+        ],
+    };
+}

@@ -73,7 +73,7 @@ const QuestionSection = ({isCampaign}) => {
             setSelectedAnswer(null);
             setHighlightedAnswer(null);
             setIsCorrect(null);
-        }, 1500); // 1.5 seconds delay
+        }, 500); // 0.5 seconds delay
     };
 
     return (
