@@ -6,7 +6,7 @@ import Home from "./Home";
 import Earn from "./Earn";
 import Learn from "./Learn";
 import Leaderboard from "./Leaderboard";
-import Wallet from "./Wallet";
+import Shop from './Shop';
 import { createUserStore } from "./api/user.api";
 import { createSocialTaskStore } from "./api/socialTask.api";
 import { createQuizzStore } from "./api/quizz.api";
@@ -88,10 +88,10 @@ function App() {
                 />
               } />
               <Route path="/leaderboard" element={<Leaderboard />} />
-              <Route path="/wallet" element={<Wallet />} />
+              <Route path="/shop" element={<Shop />} />
             </Routes>
           </div>
-          <div className="footer">
+          <div className="footer max-h-[10vh]">
             <Navigation
               active={active}
               handleClickActive={handleClickActive}

@@ -1,5 +1,5 @@
 /** @type {import('tailwindcss').Config} */
-export default {
+module.exports = {
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
@@ -12,6 +12,10 @@ export default {
         'adlam-display':['Adlam'],
         'lato-regular':['Lato-Regular'],
         'abeezee':['ABeeZee-Regular'],
+        'afacad-variable':['Afacad-Variable'],
+      },
+      backgroundImage: {
+        'custom-gradient': 'linear-gradient(180deg, rgb(20, 50, 90) 0%, rgb(30, 30, 30) 100%)',
       },
     },
   },
