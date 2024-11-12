@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import lighthome from '../assets/lighthome.svg';
 import lightearn from '../assets/lightearn.svg';
 import lightlearn from '../assets/lightlearn.svg';
-import home from '../assets/home.svg';
+import home from '../assets/home.png';
 import earn from '../assets/earn.svg';
 import learn from '../assets/learn.svg';
 import leaderboard from '../assets/leaderboard.svg';
@@ -18,7 +18,7 @@ const Navigation = ({active, handleClickActive, setIsCampaign}) => {
         { name: "Earn", img: earn, lightimg: lightearn, path: "/earn" },
         { name: "Learn", img: learn, lightimg: lightlearn, path: "/learn" },
         { name: "Leaderboard", img: leaderboard, path: "/leaderboard" },
-        { name: "Wallet", img: wallet, lightimg: wallet, path: "/shop" },
+        { name: "Shop", img: wallet, lightimg: wallet, path: "/shop" },
     ];
     const navigate = useNavigate();
 
