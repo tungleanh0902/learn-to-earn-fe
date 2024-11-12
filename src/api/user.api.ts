@@ -8,6 +8,10 @@ export const createUserStore = create((set: any, get: any, next: any) => (
         checkedToday: Boolean,
         checkedYesterday: Boolean,
         leaderboard: {},
+        isApiLoading: Boolean,
+        setApiLoading: async (isLoading: Boolean) => {
+            set({ isApiLoading: isLoading })
+        },
         updateUserInfo: async (user: any) => {
             set({ userInfo: user })
         },
@@ -34,7 +38,9 @@ export const createUserStore = create((set: any, get: any, next: any) => (
         },
 
         saveStreak: async (data) => {
-            await callApi('user/save_streak', "POST", data, (res) => { }, get().token)
+            await callApi('user/save_streak', "POST", data, (res) => { 
+                set({ userInfo: res.data.user }) 
+            }, get().token)
         },
 
         checkCheckinDaily: async () => {
@@ -64,9 +70,18 @@ export const createUserStore = create((set: any, get: any, next: any) => (
             }, get().token)
         },
 
+        getMintBodyData: async (data) => {
+            let bodyData
+            await callApi('user/mint_body_data', "POST", data, (res) => {
+                bodyData: res.data.body_data
+            }, get().token)
+            return bodyData
+        },
+
         buyMoreQuizz: async (data) => {
             await callApi('user/buy_more_quizz', "POST", data, (res) => {
                 console.log(res);
+                set({ userInfo: res.data.user })
             }, get().token)
         },
     }

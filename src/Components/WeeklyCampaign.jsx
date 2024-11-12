@@ -17,6 +17,9 @@ const WeeklyCampaign = ({ handleClick }) => {
     const [loading, setLoading] = useState(false);
     const token = createUserStore(state => state.token)
     const buyMoreQuizz = createUserStore(state => state.buyMoreQuizz)
+    const userInfo = createUserStore(state => state.userInfo)
+    const connectWallet = createUserStore(state => state.connectWallet)
+    const getMintBodyData = createUserStore(state => state.getMintBodyData)
 
     const handleJoinCampaign = async () => {
         if (checkBoughtSeasonBadge == false) {
@@ -32,6 +35,16 @@ const WeeklyCampaign = ({ handleClick }) => {
     const handleBuyMoreQuizz = async () => {
         console.log("handleBuyMoreQuizz");
         try {
+            if (userInfo.address != wallet.account.address) {
+                tonConnectUI.openModal()
+                tonConnectUI.onStatusChange(async w => {
+                    if (w.account?.address) {
+                        await connectWallet({
+                            address: w.account.address
+                        }, token)
+                    }
+                })
+            }
             setLoading(true);
             console.log(wallet);
             let tx = createTransaction(import.meta.env.VITE_ADMIN_WALLET.toString(), import.meta.env.VITE_MORE_QUIZZ_FEE.toString(), null)
@@ -57,9 +70,24 @@ const WeeklyCampaign = ({ handleClick }) => {
     const handleBuyNft = async () => {
         console.log("handleBuyNft");
         try {
+            if (userInfo.address != wallet.account.address) {
+                tonConnectUI.openModal()
+                tonConnectUI.onStatusChange(async w => {
+                    if (w.account?.address) {
+                        await connectWallet({
+                            address: w.account.address
+                        }, token)
+                    }
+                })
+            }
             setLoading(true);
+
+            let bodyData = await getMintBodyData({
+                refUserId: userInfo?.refUser
+            }, token)
+            
             console.log(wallet);
-            let tx = createTransaction(seasonBadge.address, import.meta.env.VITE_MINT_FEE.toString(), null)
+            let tx = createTransaction(seasonBadge.address, import.meta.env.VITE_MINT_FEE.toString(), bodyData)
             const result = await tonConnectUI.sendTransaction(tx);
             await buyNft(
                 {
@@ -95,27 +123,27 @@ const WeeklyCampaign = ({ handleClick }) => {
                     Join
                 </button>
             </div>
-            <div className="relative w-[76px] h-[26px] top-[70px] left-[240px] bg-[#d9d9d9] rounded-[18px]">
+            {/* <div className="relative w-[76px] h-[26px] top-[70px] left-[240px] bg-[#d9d9d9] rounded-[18px]">
                 {wallet ? (
                     <button
                         disabled={loading}
                         onClick={handleBuyMoreQuizz}
                         className="text-black text-xl font-nunito-bold font-bold text-center">
-                        {loading ? "Loading..." : "Badge"}
+                        {loading ? "Loading..." : "MQuizz"}
                     </button>
                 ) : (
                     <button onClick={() => tonConnectUI.openModal()}>
                         Connect wallet to send the transaction
                     </button>
                 )}
-            </div>
+            </div> */}
             <div className="relative w-[76px] h-[26px] top-[70px] left-[240px] bg-[#d9d9d9] rounded-[18px]">
                 {wallet ? (
                     <button
                         disabled={loading}
                         onClick={handleBuyNft}
                         className="text-black text-xl font-nunito-bold font-bold text-center">
-                        {loading ? "Loading..." : "MQuizz"}
+                        {loading ? "Loading..." : "Badge"}
                     </button>
                 ) : (
                     <button onClick={() => tonConnectUI.openModal()}>
