@@ -9,22 +9,13 @@ export const createSeasonBadgeStore = create((set: any, get: any, next: any) => 
         tokenId: String,
 
         buyNft: async (
-            badgeId: String, 
-            tokenId: String, 
-            boc: String, 
-            network: String,
-            sender: String,
+            data,
             token: String,
         ) => {
-            await callApi('badge/buy_nft', "POST", {
-                badgeId,
-                tokenId,
-                boc,
-                network,
-                sender
-            }, (res) => {
+            await callApi('badge/buy_nft', "POST", data, (res) => {
                 console.log(res);
                 set({ checkBoughtSeasonBadge: true })
+                set({ userInfo: res.data.user })
             }, token)
         },
 

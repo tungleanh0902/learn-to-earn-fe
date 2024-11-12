@@ -4,7 +4,7 @@ import social from '../assets/social.png';// Adjust the import path as needed
 import academy from '../assets/academy.png'; // Adjust the import path as needed
 import { createSocialTaskStore } from "../api/socialTask.api";
 import { createUserStore } from "../api/user.api";
-import {useTonConnectUI, useTonWallet, CHAIN} from "@tonconnect/ui-react";
+import { useTonConnectUI, useTonWallet, CHAIN } from "@tonconnect/ui-react";
 
 function capitalizeFirstLetter(val) {
     return String(val).charAt(0).toUpperCase() + String(val).slice(1);
@@ -58,22 +58,36 @@ const Task = () => {
     const filteredTaskItems = categoryState === "all"
         ? activeTask
         : activeTask.filter(task => task.tag === categoryState);
-    
+
     async function onClaimTask(taskId, platform) {
-        if (platform == "wallet") {
-            tonConnectUI.openModal()
-            tonConnectUI.onStatusChange(async w => {
-                if (w.account?.address) {
-                    await connectWallet({
-                        address: w.account.address
-                    }, token) 
-                } 
-            })
-        }
+        onConnectWallet(platform)
         let newUser = await claim(taskId, token)
         console.log(newUser);
-        updateUserInfo(newUser)
+        await updateUserInfo(newUser)
         await getActiveTask(token)
+    }
+
+    async function onHandleChangeWallet(platform) {
+        await tonConnectUI.disconnect()
+        onConnectWallet(platform)
+    }
+
+    async function onConnectWallet(platform) {
+        try {
+            if (platform == "wallet") {
+                tonConnectUI.openModal()
+                tonConnectUI.onStatusChange(async w => {
+                    if (w.account?.address) {
+                        await connectWallet({
+                            address: w.account.address
+                        }, token)
+                    }
+                })
+            }
+            await connectWallet({ address: w.account.address })
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     return (
@@ -92,8 +106,19 @@ const Task = () => {
                     <li key={i} className="relative flex items-center space-y-5 left-[15px]">
                         <img src={getImage(task.platform)} alt={task.title} className="w-6 h-6" />
                         <span className="relative text-white font-abeezee left-[10px] top-[-10px]">{task.title}</span>
+                        {
+                            task.isDone && task.platform == "wallet" ?
+                                <span className="absolute w-[80px] h-[23px] top-[-10px] right-[160px] bg-[#d9d9d9] rounded-[20px]">
+                                    <button
+                                        onClick={() => onHandleChangeWallet(task.platform)}
+                                        className="relative text-black font-adlam-display top-[-1.5px]">
+                                        Connect
+                                    </button>
+                                </span> :
+                                <></>
+                        }
                         <span className="absolute w-[80px] h-[23px] top-[-10px] right-[70px] bg-[#d9d9d9] rounded-[20px]">
-                            <button 
+                            <button
                                 disabled={task.isDone}
                                 onClick={() => onClaimTask(task._id, task.platform)}
                                 className="relative text-black font-adlam-display top-[-1.5px]">

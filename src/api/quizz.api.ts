@@ -22,6 +22,16 @@ export const createQuizzStore = create((set: any, get: any, next: any) => (
             return user
         },
 
+        answerSpecialQuizz: async (optionId: String, token: String) => {
+            let user
+            await callApi('quizz/answer_special_quizz', "POST", {
+                optionId
+            }, (res) => {
+                user = res.data.user
+            }, token)
+            return user
+        },
+
         getRandomLessonForCampaign: async (token: String) => {
             await callApi('quizz/random_lesson_for_campaign', "POST", null, (res) => {
                 console.log(res);

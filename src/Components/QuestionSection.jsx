@@ -7,8 +7,10 @@ const QuestionSection = ({isCampaign}) => {
     const lessonForCampaign = createQuizzStore(state => state.lessonForCampaign)
 
     const token = createUserStore(state => state.token)
+    const userInfo = createUserStore(state => state.userInfo)
     const updateUserInfo = createUserStore(state => state.updateUserInfo)
     const answerQuizz = createQuizzStore(state => state.answerQuizz)
+    const answerSpecialQuizz = createQuizzStore(state => state.answerSpecialQuizz)
     const answerQuizzCampaign = createQuizzStore(state => state.answerQuizzCampaign)
 
     const [questionIdx, setquestionIdx] = useState(0);
@@ -50,9 +52,13 @@ const QuestionSection = ({isCampaign}) => {
         if (isCampaign) {
             newUser = await answerQuizzCampaign(highlightedAnswer, token)
         } else {
-            newUser = await answerQuizz(highlightedAnswer, token)
+            if (userInfo.moreQuizz > 0) {
+                newUser = await answerSpecialQuizz(highlightedAnswer, token)
+            } else {
+                newUser = await answerQuizz(highlightedAnswer, token)
+            }
         }
-        updateUserInfo(newUser)
+        await updateUserInfo(newUser)
 
         setTimeout(() => {
             if (isCampaign) {

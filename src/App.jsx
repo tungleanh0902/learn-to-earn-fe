@@ -18,6 +18,7 @@ import { wallets } from './constants';
 import Navigation from './Components/Navigation';
 
 function App() {
+  const setApiLoading = createUserStore(state => state.setApiLoading)
   const doLogin = createUserStore(state => state.login)
   const getActiveTask = createSocialTaskStore(state => state.getActiveTasks)
   const getRandomLesson = createQuizzStore(state => state.getRandomLesson)
@@ -25,6 +26,7 @@ function App() {
   const checkThisSeasonBadge = createSeasonBadgeStore(state => state.checkThisSeasonBadge)
   const currentSeasonBadge = createSeasonBadgeStore(state => state.currentSeasonBadge)
   const checkCheckInYesterday = createUserStore(state => state.checkCheckInYesterday)
+  const checkCheckinDaily = createUserStore(state => state.checkCheckinDaily)
 
   const [active, setActive] = useState(0);
   const [isCampaign, setIsCampaign] = useState(false)
@@ -35,16 +37,20 @@ function App() {
 
   useEffect(() => {
     async function fetch() {
+      await setApiLoading(true)
       console.log(WebApp.initDataUnsafe.user.id.toString());
       let token = await doLogin(WebApp.initDataUnsafe.user.id.toString())
-      getActiveTask(token)
-      getRandomLesson(token)
+      await getActiveTask(token)
+      await getRandomLesson(token)
+      await checkCheckinDaily()
+      await checkCheckInYesterday()
       let gotIt = await checkThisSeasonBadge(token)
       if (gotIt.tokenId != null) {
-        getRandomLessonForCampaign(token)
+        await getRandomLessonForCampaign(token)
       }
-      currentSeasonBadge()
-      checkCheckInYesterday()
+      await currentSeasonBadge()
+
+      await setApiLoading(false)
     }
 
     fetch()
@@ -67,6 +73,7 @@ function App() {
                 <Home 
                   active={active}
                   handleClickActive={handleClickActive}
+                  setIsCampaign={setIsCampaign}
                 />
               } />
               <Route path="/earn" element={
