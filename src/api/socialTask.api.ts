@@ -3,7 +3,7 @@ import { callApi } from "./helper"
 
 export const createSocialTaskStore = create((set: any, get: any, next: any) => (
     {
-        activeTasks: {},
+        activeTasks: [],
 
         claimSocialTask: async (taskId: String, token: String) => {
             let user

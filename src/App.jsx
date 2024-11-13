@@ -84,6 +84,7 @@ function App() {
               } />
               <Route path="/learn" element={<Learn
                   isCampaign={isCampaign}
+                  handleClickActive={handleClickActive}
                 />
               } />
               <Route path="/leaderboard" element={<Leaderboard />} />

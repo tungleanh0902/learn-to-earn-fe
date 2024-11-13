@@ -3,8 +3,8 @@ import { callApi } from "./helper"
 
 export const createQuizzStore = create((set: any, get: any, next: any) => (
     {
-        lesson: {},
-        lessonForCampaign: {},
+        lesson: [],
+        lessonForCampaign: [],
         getRandomLesson: async (token: String) => {
             await callApi('quizz/random_lesson', "POST", null, (res) => {
                 console.log(res);
