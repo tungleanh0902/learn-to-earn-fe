@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import './App.css'
 import './index.css'
 import ava from './assets/avatar.svg';
-import checkIcon from './assets/check-icon.svg';
+import checkbox from './assets/check-box.png';
 import rectangle1071 from './assets/rectangle-1071.png';
 import Navigation from './Components/Navigation';
 import { useNavigate } from 'react-router-dom';
@@ -45,68 +45,44 @@ const Home = ({ active, handleClickActive, setIsCampaign }) => {
     return (
         <div className="bg-[#1e1e1e] flex flex-row justify-center w-full h-full">
             <div className="bg-[#1e1e1e] overflow-hidden w-screen h-screen relative">
-                <div className="absolute w-[329px] h-14 top-[72%] left-[8%] bg-white rounded-[20px] overflow-hidden">
-                    <button
+                <div className="relative pt-[5vh] font-baloo text-2xl font-bold text-white">Streaks: {userInfo.streak}x</div>
+
+                <img
+                    className="relative pt-[3vh] mx-auto justify-center"
+                    alt="avatar"
+                    src={ava}
+                ></img>
+
+                <div className="relative text-white font-baloo font-bold text-2xl">
+                    <span>{WebApp.initDataUnsafe.user.username ?? WebApp.initDataUnsafe.user.first_name + WebApp.initDataUnsafe.user.last_name}
+                        {checkBoughtSeasonBadge ?
+                        <img
+                            className="inline-block ml-[10px]"
+                            src={checkbox}
+                            alt="check box"
+                        ></img>
+                    : null}
+                    </span>
+                </div>
+                
+                <div className="relative text-white font-baloo font-bold text-3xl">{userInfo.points ?? 0} pts</div>
+
+                <div className="relative text-white text-base font-nunito-bold font-bold pb-[10vh]">{userInfo.refCount ?? 0} referral</div>
+
+                <button 
+                    className="relative bg-white w-[75vw] justify-center mx-auto rounded-[13px]"
+                    onClick={() => handleClick(1, "/learn")}>
+                    <div className="py-[1vh] font-adlam font-bold text-2xl">Daily quizzzz</div>
+                </button>
+
+                <div className="pt-[3vh]"></div>
+
+                <button className="relative bg-white w-[75vw] justify-center mx-auto rounded-[13px]"
                         disabled={checkedToday}
-                        onClick={doLogin}
-                        className="absolute w-[251px] top-[7px] left-[39px] font-adlam-display folt-normal text-black text-[32px] text-center tracking-[0] leading-[normal] whitespace-nowrap">
-                        {isApiLoading ? "Loading..." : checkedToday ? "Checked in" : "Check in"}
-                    </button>
-                </div>
+                        onClick={doLogin}>
+                        <div className="py-[1vh] font-adlam text-2xl font-bold">{isApiLoading ? "Loading..." : checkedToday ? "Checked in" : "Check in"}</div>
+                </button>
 
-                <div className="absolute w-[329px] h-14 top-[60%] left-[8%] bg-white rounded-[20px] overflow-hidden">
-                    <button
-                        onClick={() => handleClick(1, "/learn")}
-                        className="absolute w-[251px] top-[7px] left-[39px] font-adlam-display folt-normal text-black text-[32px] text-center tracking-[0] leading-[normal] whitespace-nowrap">
-                        Daily quizz
-                    </button>
-                </div>
-
-                <div className="absolute w-[206px] h-[261px] top-[124px] left-[115px]">
-                    <div className="absolute w-[165px] h-[181px] -top-2 left-[26px]">
-                        <div className="absolute w-[156px] h-[181px] top-0 left-0">
-                            <img
-                                className="absolute scale-[100%] left-[-15%] top-[-20%]"
-                                alt="Avatar"
-                                src={user.avatar}
-                            />
-
-                            <div className="absolute w-[140px] h-7 top-[60%] left-[-14%] font-baloo font-bold text-white text-2xl text-center tracking-[0] leading-[normal]">
-                                {WebApp.initDataUnsafe.user.username ?? WebApp.initDataUnsafe.user.first_name + WebApp.initDataUnsafe.user.last_name}
-                            </div>
-                        </div>
-
-                        {
-                            checkBoughtSeasonBadge ? 
-                            <div className="absolute w-[17px] h-[17px] top-[65%] left-[72%] bg-[url(/check-box.svg)] bg-[100%_100%]">
-                                <div className="w-[11px] h-[13px]">
-                                    <div className="relative w-[17px] h-[17px] bg-white rounded-[8.5px]">
-                                        <div className="absolute w-[13px] h-[13px] top-0.5 left-0.5 bg-[#4ecc5e] rounded-[6.5px]" />
-
-                                        <img
-                                            className="absolute w-[13px] h-[13px] top-0.5 left-0.5"
-                                            alt="Check icon"
-                                            src={checkIcon}
-                                        />
-                                    </div>
-                                </div>
-                            </div> : <></>
-                        }
-
-                    </div>
-
-                    <div className="absolute w-[200px] h-9 top-[-40%] left-[-12%] font-baloo font-normal text-white text-2xl text-center tracking-[0] leading-[normal] whitespace-nowrap">
-                        Streak: {userInfo.streak}x
-                    </div>
-
-                    <div className="absolute w-[200px] h-9 top-[50%] left-[-12%] font-baloo font-bold text-white text-3xl text-center tracking-[0] leading-[normal] whitespace-nowrap">
-                        {userInfo.points ?? 0} pts
-                    </div>
-
-                    <div className="absolute w-[180px] top-[75%] left-[-6%] font-nunito-bold font-bold text-white text-base text-center tracking-[0] leading-[normal]">
-                        {userInfo.refCount ?? 0} referral
-                    </div>
-                </div>
 
             </div>
         </div>
