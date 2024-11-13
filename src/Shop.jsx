@@ -40,8 +40,10 @@ const Shop = () => {
             <div className="col-start-1 col-span-4 h-px bg-[#d9d9d936] relative left-[7vw] max-w-[66vw]"></div>
           </div>
 
-          <div className="relative text-white top-[5vh]">
-            Only 2 TON ko biet font gi :) 
+          <div className="relative text-[#6f7478] top-[5vh] font-afacad-italic">
+            <span>Only </span>
+            <span className="line-through">5 TON</span>
+            <span className> 2 TON</span>
           </div>
 
           <div className="bg-white rounded-[20px] text-xl font-bold font-adlam-display absolute bottom-[2vh] w-[70vw] left-[5vw] py-[1vh]">

@@ -31,3 +31,8 @@
     font-family: "Afacad-Variable";
     src: url('./assets/fonts/Afacad-VariableFont_wght.ttf') format("truetype");
 }
+
+@font-face {
+    font-family: "Afacad-Italic";
+    src: url('./assets/fonts/Afacad-Italic-VariableFont_wght.ttf') format("truetype");
+}
