@@ -5,6 +5,11 @@ export const createQuizzStore = create((set: any, get: any, next: any) => (
     {
         lesson: [],
         lessonForCampaign: [],
+        questionIdx: 0,
+        doIncreaseIndex: async (idx: number) => {
+            set({ questionIdx: idx })
+        },
+
         getRandomLesson: async (token: String) => {
             await callApi('quizz/random_lesson', "POST", null, (res) => {
                 console.log(res);

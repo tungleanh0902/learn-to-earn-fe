@@ -14,17 +14,20 @@ const QuestionSection = ({isCampaign, handleClickActive}) => {
     const userInfo = createUserStore(state => state.userInfo)
     const updateUserInfo = createUserStore(state => state.updateUserInfo)
     const answerQuizz = createQuizzStore(state => state.answerQuizz)
+    const doIncreaseIndex = createQuizzStore(state => state.doIncreaseIndex)
+    const questionIdx = createQuizzStore(state => state.questionIdx)
     const answerSpecialQuizz = createQuizzStore(state => state.answerSpecialQuizz)
     const answerQuizzCampaign = createQuizzStore(state => state.answerQuizzCampaign)
     const activeTask = createSocialTaskStore(state => state.activeTasks)
 
-    const [questionIdx, setquestionIdx] = useState(0);
+    // const [questionIdx, setquestionIdx] = useState(0);
     const [currentQuestion, setCurrentQuestion] = useState(null);
     const [selectedAnswer, setSelectedAnswer] = useState(null);
     const [highlightedAnswer, setHighlightedAnswer] = useState(null);
     const [isCorrect, setIsCorrect] = useState(null);
     const [outOfQuestion, setOutOfQuestion] = useState(false);
-
+    console.log(questionIdx);
+    
     if (activeTask.length == 0) {
         handleClickActive(0)
         navigate("/");
@@ -35,13 +38,13 @@ const QuestionSection = ({isCampaign, handleClickActive}) => {
             if (lessonForCampaign.length == 0 || !lessonForCampaign || lessonForCampaign?.questions?.length == 0) {
                 setOutOfQuestion(true)
             } else {
-                setCurrentQuestion(lessonForCampaign?.questions[0])
+                setCurrentQuestion(lessonForCampaign?.questions[questionIdx])
             }
         } else {
             if (lesson.length == 0 || !lesson || lesson?.questions?.length == 0) {
                 setOutOfQuestion(true)
             } else {
-                setCurrentQuestion(lesson?.questions[0])
+                setCurrentQuestion(lesson?.questions[questionIdx])
             }
         }
     }, []);
@@ -76,7 +79,7 @@ const QuestionSection = ({isCampaign, handleClickActive}) => {
                 if (questionIdx == lessonForCampaign.questions.length - 1) {
                     setOutOfQuestion(true)
                 } else {
-                    setquestionIdx(nextIdx)
+                    doIncreaseIndex(nextIdx)
                     setCurrentQuestion(lessonForCampaign.questions[nextIdx]);
                 }
             } else {
@@ -84,8 +87,7 @@ const QuestionSection = ({isCampaign, handleClickActive}) => {
                 if (questionIdx == lesson.questions.length - 1) {
                     setOutOfQuestion(true)
                 } else {
-                    setquestionIdx(nextIdx)
-                    console.log(questionIdx);
+                    doIncreaseIndex(nextIdx)
                     setCurrentQuestion(lesson.questions[nextIdx]);
                 }
             }
