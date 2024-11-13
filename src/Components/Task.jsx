@@ -70,35 +70,22 @@ const Task = ({handleClickActive}) => {
         : activeTask.filter(task => task.tag === categoryState);
 
     async function onClaimTask(taskId, platform, link) {
-        window.open(link, '_blank').focus();
-        onConnectWallet(platform)
+        if (platform != "wallet") {
+            window.open(link, '_blank');
+        }
+        if (platform == "wallet") {
+            tonConnectUI.openModal()
+            tonConnectUI.onStatusChange(async w => {
+                if (w.account?.address) {
+                    await connectWallet({
+                        address: w.account.address
+                    })
+                }
+            })
+        }
         let newUser = await claim(taskId, token)
-        console.log(newUser);
         await updateUserInfo(newUser)
         await getActiveTask(token)
-    }
-
-    async function onHandleChangeWallet(platform) {
-        await tonConnectUI.disconnect()
-        onConnectWallet(platform)
-    }
-
-    async function onConnectWallet(platform) {
-        try {
-            if (platform == "wallet") {
-                tonConnectUI.openModal()
-                tonConnectUI.onStatusChange(async w => {
-                    if (w.account?.address) {
-                        await connectWallet({
-                            address: w.account.address
-                        }, token)
-                    }
-                })
-            }
-            await connectWallet({ address: w.account.address })
-        } catch (error) {
-            console.log(error);
-        }
     }
 
     return (
@@ -116,18 +103,7 @@ const Task = ({handleClickActive}) => {
                 {filteredTaskItems.map((task, i) => (
                     <li key={i} className="relative pl-[10vw] items-center grid grid-cols-4">
                         <img src={getImage(task.platform)} alt={task.title} className="w-6 h-6" />
-                        <div className="relative text-white pl-[2vw] font-abeezee col-start-2 col-span-2 text-left left-[-15vw] py-[3vh]">{task.title}</div>
-                        {
-                            task.isDone && task.platform == "wallet" ?
-                                <span className="relative w-[80px] h-[23px] bg-[#d9d9d9] rounded-[20px] col-start-2 col-span-2">
-                                    <button
-                                        onClick={() => onHandleChangeWallet(task.platform)}
-                                        className="relative text-black font-adlam-display pt-[-1.5px]">
-                                        Connect
-                                    </button>
-                                </span> :
-                                <></>
-                        }
+                        <span className="relative text-white pl-[2vw] font-abeezee col-start-2 col-span-2 text-left left-[-15vw] py-[3vh">{task.title}</span>
                         <span className="relative w-[80px] h-[23px] bg-[#d9d9d9] rounded-[20px] col-start-4 col-span-1 right-[4vw]">
                             <button
                                 disabled={task.isDone}

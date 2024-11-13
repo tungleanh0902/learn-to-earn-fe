@@ -20,7 +20,6 @@ const Shop = () => {
   const token = createUserStore(state => state.token)
   const buyMoreQuizz = createUserStore(state => state.buyMoreQuizz)
   const userInfo = createUserStore(state => state.userInfo)
-  const connectWallet = createUserStore(state => state.connectWallet)
   const getMintBodyData = createUserStore(state => state.getMintBodyData)
   const saveStreak = createUserStore(state => state.saveStreak)
   const checkedYesterday = createUserStore(state => state.checkedYesterday)
@@ -29,15 +28,11 @@ const Shop = () => {
   const handleBuyMoreQuizz = async () => {
     console.log("handleBuyMoreQuizz");
     try {
-      if (userInfo.address != wallet.account.address) {
-        tonConnectUI.openModal()
-        tonConnectUI.onStatusChange(async w => {
-          if (w.account?.address) {
-            await connectWallet({
-              address: w.account.address
-            }, token)
-          }
-        })
+      if (userInfo.address == null) {
+        return addNotification({
+              message: 'Connect your wallet first',
+              theme: 'red',
+          })
       }
       setLoading(true);
       console.log(wallet);
@@ -63,15 +58,11 @@ const Shop = () => {
   const handleBuyNft = async () => {
     console.log("handleBuyNft");
     try {
-      if (userInfo.address != wallet.account.address) {
-        tonConnectUI.openModal()
-        tonConnectUI.onStatusChange(async w => {
-          if (w.account?.address) {
-            await connectWallet({
-              address: w.account.address
-            }, token)
-          }
-        })
+      if (userInfo.address == null) {
+        return addNotification({
+              message: 'Connect your wallet first',
+              theme: 'red',
+          })
       }
       setLoading(true);
 
@@ -107,15 +98,11 @@ const Shop = () => {
   const handleSaveStreak = async () => {
     console.log("handleSaveStreak");
     try {
-      if (userInfo.address != wallet.account.address) {
-        tonConnectUI.openModal()
-        tonConnectUI.onStatusChange(async w => {
-          if (w.account?.address) {
-            await connectWallet({
-              address: w.account.address
-            }, token)
-          }
-        })
+      if (userInfo.address == null) {
+        return addNotification({
+              message: 'Connect your wallet first',
+              theme: 'red',
+          })
       }
       setLoading(true);
       console.log(wallet);
