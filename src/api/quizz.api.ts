@@ -22,23 +22,31 @@ export const createQuizzStore = create((set: any, get: any, next: any) => (
         },
 
         answerQuizz: async (optionId: String, token: String) => {
-            let user
-            await callApi('quizz/answer', "POST", {
-                optionId
-            }, (res) => {
-                user = res.data.user
-            }, token)
-            return user
+            try {
+                let user
+                await callApi('quizz/answer', "POST", {
+                    optionId
+                }, (res) => {
+                    user = res.data.user
+                }, token)
+                return user
+            } catch (error) {
+                set({ lesson: [] })
+            }
         },
 
         answerSpecialQuizz: async (optionId: String, token: String) => {
-            let user
-            await callApi('quizz/answer_special_quizz', "POST", {
-                optionId
-            }, (res) => {
-                user = res.data.user
-            }, token)
-            return user
+            try {
+                let user
+                await callApi('quizz/answer_special_quizz', "POST", {
+                    optionId
+                }, (res) => {
+                    user = res.data.user
+                }, token)
+                return user
+            } catch (error) {
+                set({ lesson: [] })
+            }
         },
 
         getRandomLessonForCampaign: async (token: String) => {
@@ -53,12 +61,16 @@ export const createQuizzStore = create((set: any, get: any, next: any) => (
         },
 
         answerQuizzCampaign: async (optionId: String, token: String) => {
-            let user
-            await callApi('quizz/answer_campaign', "POST", {
-                optionId
-            }, (res) => { 
-                user = res.data.user
-            }, token)
-            return user
+            try {
+                let user
+                await callApi('quizz/answer_campaign', "POST", {
+                    optionId
+                }, (res) => { 
+                    user = res.data.user
+                }, token)
+                return user
+            } catch (error) {
+                set({ lessonForCampaign: [] })
+            }
         },
     }))
