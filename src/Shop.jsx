@@ -1,7 +1,143 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Check from './assets/Check.png'
+import { createTransaction } from './api/helper';
+import {
+  useTonConnectUI,
+  useTonWallet
+} from "@tonconnect/ui-react";
+import addNotification from 'react-push-notification';
+import { createSeasonBadgeStore } from "./api/seasonBadge.api";
+import { createUserStore } from "./api/user.api";
 
 const Shop = () => {
+  const wallet = useTonWallet();
+  const [tonConnectUI] = useTonConnectUI();
+
+  const buyNft = createSeasonBadgeStore(state => state.buyNft)
+  const seasonBadge = createSeasonBadgeStore(state => state.seasonBadge)
+  const checkBoughtSeasonBadge = createSeasonBadgeStore(state => state.checkBoughtSeasonBadge)
+  const [loading, setLoading] = useState(false);
+  const token = createUserStore(state => state.token)
+  const buyMoreQuizz = createUserStore(state => state.buyMoreQuizz)
+  const userInfo = createUserStore(state => state.userInfo)
+  const connectWallet = createUserStore(state => state.connectWallet)
+  const getMintBodyData = createUserStore(state => state.getMintBodyData)
+  const saveStreak = createUserStore(state => state.saveStreak)
+  const checkedYesterday = createUserStore(state => state.checkedYesterday)
+  const isApiLoading = createUserStore(state => state.isApiLoading)
+
+  const handleBuyMoreQuizz = async () => {
+    console.log("handleBuyMoreQuizz");
+    try {
+      if (userInfo.address != wallet.account.address) {
+        tonConnectUI.openModal()
+        tonConnectUI.onStatusChange(async w => {
+          if (w.account?.address) {
+            await connectWallet({
+              address: w.account.address
+            }, token)
+          }
+        })
+      }
+      setLoading(true);
+      console.log(wallet);
+      let tx = createTransaction(import.meta.env.VITE_ADMIN_WALLET.toString(), import.meta.env.VITE_MORE_QUIZZ_FEE.toString(), null)
+      const result = await tonConnectUI.sendTransaction(tx);
+      await buyMoreQuizz(
+        {
+          boc: result.boc,
+        }
+      )
+    } catch (e) {
+      console.log(e);
+      return setLoading(false);
+    } finally {
+      setLoading(false);
+    }
+    // addNotification({
+    //     message: 'Buy quizz success!',
+    //     theme: 'darkblue',
+    // })
+  }
+
+  const handleBuyNft = async () => {
+    console.log("handleBuyNft");
+    try {
+      if (userInfo.address != wallet.account.address) {
+        tonConnectUI.openModal()
+        tonConnectUI.onStatusChange(async w => {
+          if (w.account?.address) {
+            await connectWallet({
+              address: w.account.address
+            }, token)
+          }
+        })
+      }
+      setLoading(true);
+
+      let bodyData = await getMintBodyData({
+        refUserId: userInfo?.refUser,
+        tokenId: seasonBadge.nextItemIndex
+      }, token)
+
+      console.log(wallet);
+      let total = Number(import.meta.env.VITE_MINT_FEE) + Number(import.meta.env.VITE_STORE_COIN)
+      let tx = createTransaction(seasonBadge.address, total.toString(), bodyData)
+      const result = await tonConnectUI.sendTransaction(tx);
+      await buyNft(
+        {
+          badgeId: seasonBadge._id,
+          tokenId: seasonBadge.nextItemIndex,
+          boc: result.boc,
+        },
+        token
+      )
+    } catch (e) {
+      console.error(e);
+      return setLoading(false);
+    } finally {
+      setLoading(false);
+    }
+    // addNotification({
+    //     message: 'Buy nft success!',
+    //     theme: 'darkblue',
+    // })
+  }
+
+  const handleSaveStreak = async () => {
+    console.log("handleSaveStreak");
+    try {
+      if (userInfo.address != wallet.account.address) {
+        tonConnectUI.openModal()
+        tonConnectUI.onStatusChange(async w => {
+          if (w.account?.address) {
+            await connectWallet({
+              address: w.account.address
+            }, token)
+          }
+        })
+      }
+      setLoading(true);
+      console.log(wallet);
+      let tx = createTransaction(import.meta.env.VITE_ADMIN_WALLET.toString(), import.meta.env.VITE_STREAK_FEE.toString(), null)
+      const result = await tonConnectUI.sendTransaction(tx);
+      await saveStreak(
+        {
+          boc: result.boc,
+        }
+      )
+    } catch (e) {
+      console.error(e);
+      return setLoading(false);
+    } finally {
+      setLoading(false);
+    }
+    addNotification({
+      message: 'Buy streak success!',
+      theme: 'darkblue',
+    })
+  }
+
   return (
     <div className="bg-[#1e1e1e] justify-center w-full h-full flex items-center">
       <div className="bg-[#1e1e1e] w-screen h-[90vh] relative overflow-x-hidden overflow-y-auto">
@@ -26,17 +162,17 @@ const Shop = () => {
 
             <div className="col-start-1 col-span-2 pt-[1.5vh] font-medium text-white text-left relative left-[7vw]">Streak Saver</div>
             {/* <div className="col-start-3 col-span-1 pt-[1vh] text-[#6e7478]">8/day</div> */}
-            <img src={Check} alt="Check" className="col-start-4 col-span-1 pt-[1vh] relative left-[5vw]"/>
+            <img src={Check} alt="Check" className="col-start-4 col-span-1 pt-[1vh] relative left-[5vw]" />
             <div className="col-start-1 col-span-4 h-px bg-[#d9d9d936] relative left-[7vw] max-w-[66vw]"></div>
 
             <div className="col-start-1 col-span-2 pt-[1vh] font-medium text-white text-left relative left-[7vw]">NFT Badge</div>
             {/* <div className="col-start-3 col-span-1 pt-[1vh] text-[#6e7478]">8/day</div> */}
-            <img src={Check} alt="Check" className="col-start-4 col-span-1 pt-[1.5vh] relative left-[5vw]"/>
+            <img src={Check} alt="Check" className="col-start-4 col-span-1 pt-[1.5vh] relative left-[5vw]" />
             <div className="col-start-1 col-span-4 h-px bg-[#d9d9d936] relative left-[7vw] max-w-[66vw]"></div>
 
             <div className="col-start-1 col-span-2 pt-[1.5vh] font-medium text-white text-left relative left-[7vw]">Special Campaign</div>
             {/* <div className="col-start-3 col-span-1 pt-[1vh] text-[#6e7478]">8/day</div> */}
-            <img src={Check} alt="Check" className="col-start-4 col-span-1 pt-[1.5vh] relative left-[5vw]"/>
+            <img src={Check} alt="Check" className="col-start-4 col-span-1 pt-[1.5vh] relative left-[5vw]" />
             <div className="col-start-1 col-span-4 h-px bg-[#d9d9d936] relative left-[7vw] max-w-[66vw]"></div>
           </div>
 
@@ -46,9 +182,21 @@ const Shop = () => {
             <span className> 2 TON</span>
           </div>
 
-          <div className="bg-white rounded-[20px] text-xl font-bold font-adlam-display absolute bottom-[2vh] w-[70vw] left-[5vw] py-[1vh]">
-            BUY PREMIUM NOW
-          </div>
+          {
+            wallet ?
+              <button
+                disabled={checkBoughtSeasonBadge || loading}
+                onClick={handleBuyNft}
+                className="bg-white rounded-[20px] text-xl font-bold font-adlam-display absolute bottom-[2vh] w-[70vw] left-[5vw] py-[1vh]">
+                {checkBoughtSeasonBadge ? "Already have this season badge" : loading ? "Loading..." : "BUY PREMIUM NOW"}
+              </button>
+              :
+              <button
+                onClick={() => tonConnectUI.openModal()}
+                className="bg-white rounded-[20px] text-xl font-bold font-adlam-display absolute bottom-[2vh] w-[70vw] left-[5vw] py-[1vh]">
+                Connect wallet
+              </button>
+          }
         </div>
 
         <div className="relative top-[7vh] bg-[#1e3e62] w-[80vw] h-[30vh] left-[10vw] rounded-[15px]">
@@ -63,13 +211,28 @@ const Shop = () => {
 
             <div className="col-start-1 col-span-2 pt-[1.5vh] font-medium text-white text-left relative left-[7vw]">Special Campaign</div>
             {/* <div className="col-start-3 col-span-1 pt-[1vh] text-[#6e7478]">8/day</div> */}
-            <img src={Check} alt="Check" className="col-start-4 col-span-1 pt-[1.5vh] relative left-[5vw]"/>
+            <img src={Check} alt="Check" className="col-start-4 col-span-1 pt-[1.5vh] relative left-[5vw]" />
             <div className="col-start-1 col-span-4 h-px bg-[#d9d9d936] relative left-[7vw] max-w-[66vw]"></div>
           </div>
 
-          <div className="absolute bg-white rounded-[15px] bottom-[3vh] right-[4vw]">
-            <div className="relative px-[2vw] py-[1vh] font-adlam-display [text-shadow:0px_4px_11px_#00000040]">BUY Special Quizz Now!</div>
-          </div>
+          {wallet ? (
+            <div className="absolute bg-white rounded-[15px] bottom-[3vh] right-[4vw]">
+              <button
+                disabled={loading}
+                onClick={handleBuyMoreQuizz}
+                className="relative px-[2vw] py-[1vh] font-adlam-display [text-shadow:0px_4px_11px_#00000040]">
+                {loading ? "Loading..." : "BUY Special Quizz Now!"}
+              </button>
+            </div>
+          ) : (
+            <div className="absolute bg-white rounded-[15px] bottom-[3vh] right-[4vw]">
+              <button
+                onClick={() => tonConnectUI.openModal()}
+                className="relative px-[2vw] py-[1vh] font-adlam-display [text-shadow:0px_4px_11px_#00000040]">
+                Connect wallet
+              </button>
+            </div>
+          )}
         </div>
 
         <div className="relative top-[9vh] bg-[#1e6252] w-[80vw] h-[50vh] left-[10vw] rounded-[15px]">
@@ -84,9 +247,24 @@ const Shop = () => {
           </div>
           <div className="relative h-px w-[66vw] left-[7vw] bg-[#d9d9d936]"></div>
 
-          <div className="absolute bottom-[5vh] bg-white rounded-[20px] w-[60vw] left-[10vw] [text-shadow:0px_4px_11px_#00000040] font-adlam-display text-2xl">
-            <div className="py-[1vh]">BUY NOW</div>
-          </div>
+          {wallet ? (
+            <button
+              disabled={checkedYesterday || userInfo?.hasStreakSaver ? true : loading ? true : false}
+              onClick={handleSaveStreak}
+              className="absolute bottom-[5vh] bg-white rounded-[20px] w-[60vw] left-[10vw] [text-shadow:0px_4px_11px_#00000040] font-adlam-display text-2xl">
+              <div className="py-[1vh]">
+                {isApiLoading ? "Loading..." : checkedYesterday || userInfo?.hasStreakSaver == true ? "On streak" : loading ? "Loading..." : "Buy streak"}
+              </div>
+            </button>
+          ) : (
+            <button
+              onClick={() => tonConnectUI.openModal()}
+              className="absolute bottom-[5vh] bg-white rounded-[20px] w-[60vw] left-[10vw] [text-shadow:0px_4px_11px_#00000040] font-adlam-display text-2xl">
+              <div className="py-[1vh]">
+                Connect wallet
+              </div>
+            </button>
+          )}
         </div>
       </div>
     </div>
