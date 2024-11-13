@@ -71,19 +71,22 @@ const QuestionSection = ({isCampaign, handleClickActive}) => {
         await updateUserInfo(newUser)
 
         setTimeout(() => {
+            let nextIdx = questionIdx + 1
             if (isCampaign) {
                 if (questionIdx == lessonForCampaign.questions.length - 1) {
                     setOutOfQuestion(true)
                 } else {
-                    setquestionIdx(questionIdx + 1)
-                    setCurrentQuestion(lessonForCampaign.questions[questionIdx]);
+                    setquestionIdx(nextIdx)
+                    setCurrentQuestion(lessonForCampaign.questions[nextIdx]);
                 }
             } else {
+                console.log(questionIdx);
                 if (questionIdx == lesson.questions.length - 1) {
                     setOutOfQuestion(true)
                 } else {
-                    setquestionIdx(questionIdx + 1)
-                    setCurrentQuestion(lesson.questions[questionIdx]);
+                    setquestionIdx(nextIdx)
+                    console.log(questionIdx);
+                    setCurrentQuestion(lesson.questions[nextIdx]);
                 }
             }
             setSelectedAnswer(null);

@@ -30,6 +30,7 @@ export const createUserStore = create((set: any, get: any, next: any) => (
         checkIn: async () => {
             await callApi('user/daily', "POST", null, (res) => {
                 set({ checkedToday: true })
+                set({ userInfo: res.user })
             }, get().token)
         },
 
