@@ -105,12 +105,12 @@ const QuestionSection = ({isCampaign, handleClickActive}) => {
             <div className="items-center flex-col">
                 {
                     outOfQuestion == true ?
-                        <p className="mb-[8%] font-nunito-bold text-bold text-white text-[120%]">Out of daily quizz</p>
+                        <p className="font-nunito-bold text-bold text-white text-[120%]">Out of daily quizz</p>
                         :
                         <>
-                            <p className="mb-[8%] font-nunito-bold text-bold text-white text-[120%]">{currentQuestion?.content ?? "Question"}</p>
+                            <p className="font-nunito-bold text-bold text-white text-[120%]">{currentQuestion?.content ?? "Question"}</p>
 
-                            <div className="relative grid grid-cols-2 gap-2 px-[12%] font-bold font-nunito-bold">
+                            <div className="relative pt-[3vh] grid grid-cols-2 gap-2 px-[12%] font-bold font-nunito-bold">
                                 <div
                                     className={`answer-box bg-[#c3e2c2] ${highlightedAnswer == currentQuestion?.options[0]._id ? 'border-4 border-blue-500' : ''} ${selectedAnswer == currentQuestion?.options[0]._id && !isCorrect ? 'bg-red-500 text-white' : ''} ${selectedAnswer == currentQuestion?.options[0]._id && isCorrect ? 'bg-green-500 text-white' : ''}`}
                                     onClick={() => handleAnswerClick(currentQuestion?.options[0]._id)}
@@ -138,7 +138,7 @@ const QuestionSection = ({isCampaign, handleClickActive}) => {
                             </div>
 
                             {/* {highlightedAnswer && !selectedAnswer && ( */}
-                            <div className={`absolute flex-none rounded-[15px] w-[75%] mx-[12.5%] mt-[5%] ${selectedAnswer ? (isCorrect ? 'bg-green-500' : 'bg-red-500') : 'bg-white'}`}>
+                            <div className={`relative py-[0.5vh] flex-none rounded-[15px] w-[75%] mx-[12.5%] mt-[5%] ${selectedAnswer ? (isCorrect ? 'bg-green-500' : 'bg-red-500') : 'bg-white'}`}>
                                 <div
                                     className={`relative font-adlam-display font-bold text-[150%] my-[2%] cursor-pointer ${selectedAnswer ? 'text-white' : 'text-black'}`}
                                     onClick={selectedAnswer ? null : handleConfirmClick}
