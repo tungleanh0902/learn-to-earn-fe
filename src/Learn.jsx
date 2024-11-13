@@ -2,7 +2,7 @@ import React, {useEffect} from 'react';
 import shoppingCart from './assets/shopping-cart.svg';
 import QuestionSection from './Components/QuestionSection';
 
-const Learn = ({isCampaign}) => {
+const Learn = ({isCampaign, handleClickActive}) => {
     return (
         <div className="bg-[#1e1e1e] flex flex-row w-screen">
             <div className="bg-[#1e1e1e] overflow-hidden w-screen h-screen relative">
@@ -11,7 +11,10 @@ const Learn = ({isCampaign}) => {
                 </div>
 
                 <div className="relative top-[15%]">
-                    <QuestionSection isCampaign={isCampaign} />
+                    <QuestionSection 
+                        isCampaign={isCampaign}
+                        handleClickActive={handleClickActive}
+                    />
                 </div>
 
             </div>

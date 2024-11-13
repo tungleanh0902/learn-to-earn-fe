@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { createQuizzStore } from "../api/quizz.api";
 import { createUserStore } from "../api/user.api";
+import { createSocialTaskStore } from "../api/socialTask.api";
+import { useNavigate } from 'react-router-dom';
 
-const QuestionSection = ({isCampaign}) => {
+const QuestionSection = ({isCampaign, handleClickActive}) => {
+    const navigate = useNavigate();
+
     const lesson = createQuizzStore(state => state.lesson)
     const lessonForCampaign = createQuizzStore(state => state.lessonForCampaign)
 
@@ -12,6 +16,7 @@ const QuestionSection = ({isCampaign}) => {
     const answerQuizz = createQuizzStore(state => state.answerQuizz)
     const answerSpecialQuizz = createQuizzStore(state => state.answerSpecialQuizz)
     const answerQuizzCampaign = createQuizzStore(state => state.answerQuizzCampaign)
+    const activeTask = createSocialTaskStore(state => state.activeTasks)
 
     const [questionIdx, setquestionIdx] = useState(0);
     const [currentQuestion, setCurrentQuestion] = useState(null);
@@ -19,7 +24,12 @@ const QuestionSection = ({isCampaign}) => {
     const [highlightedAnswer, setHighlightedAnswer] = useState(null);
     const [isCorrect, setIsCorrect] = useState(null);
     const [outOfQuestion, setOutOfQuestion] = useState(false);
-   
+
+    if (activeTask.length == 0) {
+        handleClickActive(0)
+        navigate("/");
+    }
+    
     useEffect(() => {
         if (isCampaign) {
             if (lessonForCampaign.length == 0 || !lessonForCampaign || lessonForCampaign?.questions?.length == 0) {

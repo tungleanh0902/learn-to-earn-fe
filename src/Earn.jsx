@@ -27,7 +27,7 @@ const Earn = ({active, handleClickActive, setIsCampaign}) => {
                 </div>
 
                 <div className="relative top-[130px] left-[25px]">
-                    <Task />
+                    <Task handleClickActive={handleClickActive} />
                 </div>
             </div>
         </div>

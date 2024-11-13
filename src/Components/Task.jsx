@@ -6,6 +6,7 @@ import x from '../assets/x.png'; // Adjust the import path as needed
 import { createSocialTaskStore } from "../api/socialTask.api";
 import { createUserStore } from "../api/user.api";
 import { useTonConnectUI, useTonWallet, CHAIN } from "@tonconnect/ui-react";
+import { useNavigate } from 'react-router-dom';
 
 function capitalizeFirstLetter(val) {
     return String(val).charAt(0).toUpperCase() + String(val).slice(1);
@@ -27,15 +28,21 @@ function getImage(platform) {
     }
 }
 
-const Task = () => {
+const Task = ({handleClickActive}) => {
     const activeTask = createSocialTaskStore(state => state.activeTasks)
     const token = createUserStore(state => state.token)
     const updateUserInfo = createUserStore(state => state.updateUserInfo)
     const claim = createSocialTaskStore(state => state.claimSocialTask)
     const connectWallet = createUserStore(state => state.connectWallet)
     const getActiveTask = createSocialTaskStore(state => state.getActiveTasks)
+    const navigate = useNavigate();
 
     const [tonConnectUI] = useTonConnectUI();
+
+    if (activeTask.length == 0) {
+        handleClickActive(0)
+        navigate("/");
+    }
 
     let taskTag = []
     activeTask.map((task, x) => {
