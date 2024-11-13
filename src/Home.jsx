@@ -3,7 +3,6 @@ import './App.css'
 import './index.css'
 import ava from './assets/avatar.svg';
 import checkIcon from './assets/check-icon.svg';
-import shoppingCart from './assets/shopping-cart.svg';
 import rectangle1071 from './assets/rectangle-1071.png';
 import Navigation from './Components/Navigation';
 import { useNavigate } from 'react-router-dom';

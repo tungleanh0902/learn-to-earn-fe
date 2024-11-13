@@ -13,20 +13,20 @@ const Earn = ({active, handleClickActive, setIsCampaign}) => {
     };
     return (
         <div className="bg-[#1e1e1e] flex flex-row w-screen">
-            <div className="bg-[#1e1e1e] overflow-hidden w-screen h-screen relative">
-                <div className="absolute left-[14px] text-[40px] font-baloo font-bold text-white top-[10px]">
+            <div className="bg-[#1e1e1e] overflow-hidden w-screen h-[90vh] relative">
+                <div className="relative text-[40px] font-baloo font-bold text-white text-left left-[5vw] pt-[3vh]">
                     Task
                 </div>
 
-                <div className="absolute left-[30px] top-[80px] font-adlam-display text-white text-[20px]" >
+                <div className="relative font-adlam-display text-white text-[20px] text-left left-[8vw]">
                     Weekly
                 </div>
 
-                <div className="relative top-[120px]">
+                <div className="relative">
                     <WeeklyCampaign handleClick={handleClick} />
                 </div>
 
-                <div className="relative top-[130px] left-[25px]">
+                <div className="relative overflow-y-auto max-h-[65vh]">
                     <Task handleClickActive={handleClickActive} />
                 </div>
             </div>

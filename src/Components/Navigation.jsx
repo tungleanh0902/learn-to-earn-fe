@@ -3,6 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import lighthome from '../assets/lighthome.svg';
 import lightearn from '../assets/lightearn.svg';
 import lightlearn from '../assets/lightlearn.svg';
+import lightshop from '../assets/lightshop.svg';
+import lightleaderboard from '../assets/lightleaderboard.png';
+import shop from '../assets/shop.png';
 import home from '../assets/home.png';
 import earn from '../assets/earn.svg';
 import learn from '../assets/learn.svg';
@@ -14,8 +17,8 @@ const Navigation = ({active, handleClickActive, setIsCampaign}) => {
         { name: "Home", img: home, lightimg: lighthome, path: "/" },
         { name: "Earn", img: earn, lightimg: lightearn, path: "/earn" },
         { name: "Learn", img: learn, lightimg: lightlearn, path: "/learn" },
-        { name: "Leaderboard", img: leaderboard, path: "/leaderboard" },
-        { name: "Shop", img: wallet, lightimg: wallet, path: "/shop" },
+        { name: "Leaderboard", img: leaderboard, lightimg: lightleaderboard, path: "/leaderboard" },
+        { name: "Shop", img: shop, lightimg: lightshop, path: "/shop" },
     ];
     const navigate = useNavigate();
 

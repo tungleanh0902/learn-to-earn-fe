@@ -36,3 +36,8 @@
     font-family: "Afacad-Italic";
     src: url('./assets/fonts/Afacad-Italic-VariableFont_wght.ttf') format("truetype");
 }
+
+@font-face {
+    font-family: "Auvicwant";
+    src: url('./assets/fonts/EduAUVICWANTPre-VariableFont_wght.ttf') format("truetype");
+}
