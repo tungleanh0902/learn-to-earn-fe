@@ -54,6 +54,9 @@ const QuestionSection = ({isCampaign, handleClickActive}) => {
     };
 
     const handleConfirmClick = async () => {
+        if (highlightedAnswer == null) {
+            return
+        }
         setSelectedAnswer(highlightedAnswer);
         for (let index = 0; index < currentQuestion.options.length; index++) {
             const option = currentQuestion.options[index];
