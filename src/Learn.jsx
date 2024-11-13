@@ -4,12 +4,12 @@ import QuestionSection from './Components/QuestionSection';
 const Learn = ({isCampaign, handleClickActive}) => {
     return (
         <div className="bg-[#1e1e1e] flex flex-row w-screen">
-            <div className="bg-[#1e1e1e] overflow-hidden w-screen h-screen relative">
-                <div className="absolute left-[5%] text-[40px] font-baloo font-bold text-white top-[2%]">
+            <div className="bg-[#1e1e1e] overflow-hidden w-screen h-[90vh] relative">
+                <div className="relative text-left pt-[5vh] pl-[5vw] text-4xl font-baloo font-bold text-white">
                     Learn
                 </div>
 
-                <div className="relative top-[15%]">
+                <div className="relative pt-[3vh] overflow-y-auto h-[78vh]">
                     <QuestionSection 
                         isCampaign={isCampaign}
                         handleClickActive={handleClickActive}
