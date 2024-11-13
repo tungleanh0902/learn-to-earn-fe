@@ -102,37 +102,37 @@ const Task = ({handleClickActive}) => {
     }
 
     return (
-        <div className="overflow-hidden">
-            <ul className="flex space-x-1">
+        <div className="relative">
+            <ul className="relative flex items-center px-[5vw]">
                 {category.map((category, i) => (
                     <li key={i} className={`cursor-pointer ${active === i ? 'text-white' : 'text-gray-500'}`} onClick={() => handleClick(i, category.name)}>
-                        <a className="block px-4 py-2 font-adlam-display">
+                        <a className="block px-[5vw] py-2 font-adlam-display">
                             {capitalizeFirstLetter(category.name)}
                         </a>
                     </li>
                 ))}
             </ul>
-            <ul className="flex flex-col space-y-1 overflow-y-auto overflow-x-hidden bottom-[100px]">
+            <ul className="relative max-h-[49vh] overflow-y-auto">
                 {filteredTaskItems.map((task, i) => (
-                    <li key={i} className="relative flex items-center space-y-5 left-[15px]">
+                    <li key={i} className="relative pl-[10vw] items-center grid grid-cols-4">
                         <img src={getImage(task.platform)} alt={task.title} className="w-6 h-6" />
-                        <span className="relative text-white font-abeezee left-[10px] top-[-10px]">{task.title}</span>
+                        <div className="relative text-white pl-[2vw] font-abeezee col-start-2 col-span-2 text-left left-[-15vw] py-[3vh]">{task.title}</div>
                         {
                             task.isDone && task.platform == "wallet" ?
-                                <span className="absolute w-[80px] h-[23px] top-[-10px] right-[160px] bg-[#d9d9d9] rounded-[20px]">
+                                <span className="relative w-[80px] h-[23px] bg-[#d9d9d9] rounded-[20px] col-start-2 col-span-2">
                                     <button
                                         onClick={() => onHandleChangeWallet(task.platform)}
-                                        className="relative text-black font-adlam-display top-[-1.5px]">
+                                        className="relative text-black font-adlam-display pt-[-1.5px]">
                                         Connect
                                     </button>
                                 </span> :
                                 <></>
                         }
-                        <span className="absolute w-[80px] h-[23px] top-[-10px] right-[70px] bg-[#d9d9d9] rounded-[20px]">
+                        <span className="relative w-[80px] h-[23px] bg-[#d9d9d9] rounded-[20px] col-start-4 col-span-1 right-[4vw]">
                             <button
                                 disabled={task.isDone}
                                 onClick={() => onClaimTask(task._id, task.platform, task.link)}
-                                className="relative text-black font-adlam-display top-[-1.5px]">
+                                className="relative text-black font-adlam-display pt-[-1.5px]">
                                 {task.isDone ? "Claimed" : "Go"}
                             </button>
                         </span>
