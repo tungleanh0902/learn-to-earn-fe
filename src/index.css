@@ -26,3 +26,8 @@
     font-family: "ABeeZee-Regular";
     src: url('./assets/fonts/ABeeZee-Regular.ttf') format("truetype");
 }
+
+@font-face {
+    font-family: "Afacad-Variable";
+    src: url('./assets/fonts/Afacad-VariableFont_wght.ttf') format("truetype");
+}

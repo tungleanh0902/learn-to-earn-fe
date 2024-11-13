@@ -157,33 +157,6 @@ const Home = ({ active, handleClickActive, setIsCampaign }) => {
                     </div>
                 </div>
 
-                <div className="absolute w-[338px] h-[82px] top-[13px] left-[39px]">
-                    <div className="flex flex-col w-16 items-center justify-center pl-1 pr-0 py-1 absolute top-[3%] left-[77%]">
-                        <img
-                            className="relative w-6 h-6"
-                            alt="Shopping cart"
-                            src={shoppingCart}
-                        />
-
-                        <div className="relative w-fit font-lato-regular font- text-variable-collection-ch text-white text-base tracking-[0.20px] leading-[22.4px] whitespace-nowrap">
-                            Shop
-                        </div>
-                    </div>
-                </div>
-
-                {/* <div className="absolute w-[329px] h-[145px] top-[410px] left-[51px]"> */}
-                {/* <div className="w-[329px] h-[145px]">
-                        <img
-                            className="relative w-[329px] h-[145px] object-cover center top-[-50%]"
-                            alt="Rectangle"
-                            src={rectangle1071}
-                        />
-                        <div className="relative w-[77px] h-[34px] top-[-45px] left-[242px] bg-white rounded-[20px]" />
-                    </div> */}
-                {/* <button className="relative w-[57px] top-[-45px] left-[252px] font-adlam-display font-normal text-black text-xl text-center tracking-[0] leading-[normal]">
-                        Play
-                    </button> */}
-                {/* </div> */}
             </div>
         </div>
     );
