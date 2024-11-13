@@ -11,10 +11,14 @@ export const createQuizzStore = create((set: any, get: any, next: any) => (
         },
 
         getRandomLesson: async (token: String) => {
-            await callApi('quizz/random_lesson', "POST", null, (res) => {
-                console.log(res);
-                set({ lesson: res.data[0] })
-            }, token)
+            try {
+                await callApi('quizz/random_lesson', "POST", null, (res) => {
+                    console.log(res);
+                    set({ lesson: res.data[0] })
+                }, token)
+            } catch (error) {
+                set({ lesson: [] })
+            }
         },
 
         answerQuizz: async (optionId: String, token: String) => {
@@ -38,10 +42,14 @@ export const createQuizzStore = create((set: any, get: any, next: any) => (
         },
 
         getRandomLessonForCampaign: async (token: String) => {
-            await callApi('quizz/random_lesson_for_campaign', "POST", null, (res) => {
-                console.log(res);
-                set({ lessonForCampaign: res.data[0] })
-            }, token)
+            try {
+                await callApi('quizz/random_lesson_for_campaign', "POST", null, (res) => {
+                    console.log(res);
+                    set({ lessonForCampaign: res.data[0] })
+                }, token)
+            } catch (error) {
+                set({ lessonForCampaign: [] })
+            }
         },
 
         answerQuizzCampaign: async (optionId: String, token: String) => {
