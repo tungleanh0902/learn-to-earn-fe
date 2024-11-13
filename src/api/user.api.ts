@@ -73,7 +73,7 @@ export const createUserStore = create((set: any, get: any, next: any) => (
         getMintBodyData: async (data) => {
             let bodyData
             await callApi('user/mint_body_data', "POST", data, (res) => {
-                bodyData: res.data.body_data
+                bodyData = res.data.body_data
             }, get().token)
             return bodyData
         },

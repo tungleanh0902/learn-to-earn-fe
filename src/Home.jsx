@@ -9,6 +9,7 @@ import Navigation from './Components/Navigation';
 import { useNavigate } from 'react-router-dom';
 import WebApp from '@twa-dev/sdk'
 import { createUserStore } from "./api/user.api";
+import { createSeasonBadgeStore } from "./api/seasonBadge.api";
 import { createTransaction } from './api/helper';
 import {
     useTonConnectUI,
@@ -32,13 +33,14 @@ const Home = ({ active, handleClickActive, setIsCampaign }) => {
     const saveStreak = createUserStore(state => state.saveStreak)
     const isApiLoading = createUserStore(state => state.isApiLoading)
     const connectWallet = createUserStore(state => state.connectWallet)
+    const checkBoughtSeasonBadge = createSeasonBadgeStore(state => state.checkBoughtSeasonBadge)
 
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const wallet = useTonWallet();
     const [tonConnectUI] = useTonConnectUI();
     console.log("checkedYesterday", userInfo);
-    
+
     const handleClick = (index, path) => {
         if (isApiLoading == true) {
             return
@@ -68,20 +70,18 @@ const Home = ({ active, handleClickActive, setIsCampaign }) => {
             await saveStreak(
                 {
                     boc: result.boc,
-                    network: wallet.account.chain == "-3" ? "testnet" : "mainnet",
-                    sender: wallet.account.address
                 }
             )
         } catch (e) {
             console.error(e);
-            setLoading(false);
+            return setLoading(false);
         } finally {
-            addNotification({
-                message: 'Buy streak success!',
-                theme: 'light',
-            })
             setLoading(false);
         }
+        addNotification({
+            message: 'Buy streak success!',
+            theme: 'darkblue',
+        })
     }
 
     return (
@@ -133,23 +133,31 @@ const Home = ({ active, handleClickActive, setIsCampaign }) => {
                             </div>
                         </div>
 
-                        <div className="absolute w-[17px] h-[17px] top-[65%] left-[72%] bg-[url(/check-box.svg)] bg-[100%_100%]">
-                            <div className="w-[11px] h-[13px]">
-                                <div className="relative w-[17px] h-[17px] bg-white rounded-[8.5px]">
-                                    <div className="absolute w-[13px] h-[13px] top-0.5 left-0.5 bg-[#4ecc5e] rounded-[6.5px]" />
+                        {
+                            checkBoughtSeasonBadge ? 
+                            <div className="absolute w-[17px] h-[17px] top-[65%] left-[72%] bg-[url(/check-box.svg)] bg-[100%_100%]">
+                                <div className="w-[11px] h-[13px]">
+                                    <div className="relative w-[17px] h-[17px] bg-white rounded-[8.5px]">
+                                        <div className="absolute w-[13px] h-[13px] top-0.5 left-0.5 bg-[#4ecc5e] rounded-[6.5px]" />
 
-                                    <img
-                                        className="absolute w-[13px] h-[13px] top-0.5 left-0.5"
-                                        alt="Check icon"
-                                        src={checkIcon}
-                                    />
+                                        <img
+                                            className="absolute w-[13px] h-[13px] top-0.5 left-0.5"
+                                            alt="Check icon"
+                                            src={checkIcon}
+                                        />
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
+                            </div> : <></>
+                        }
+
                     </div>
 
-                    <div className="absolute w-[200px] h-9 top-[50%] left-[-12%] font-baloo font-bold text-white text-5xl text-center tracking-[0] leading-[normal] whitespace-nowrap">
-                        {userInfo.points ?? 0} points
+                    <div className="absolute w-[200px] h-9 top-[-40%] left-[-12%] font-baloo font-normal text-white text-2xl text-center tracking-[0] leading-[normal] whitespace-nowrap">
+                        Streak: {userInfo.streak}x
+                    </div>
+
+                    <div className="absolute w-[200px] h-9 top-[50%] left-[-12%] font-baloo font-bold text-white text-3xl text-center tracking-[0] leading-[normal] whitespace-nowrap">
+                        {userInfo.points ?? 0} pts
                     </div>
 
                     <div className="absolute w-[180px] top-[75%] left-[-6%] font-nunito-bold font-bold text-white text-base text-center tracking-[0] leading-[normal]">
