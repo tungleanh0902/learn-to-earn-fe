@@ -1,5 +1,4 @@
 import React, {useEffect} from 'react';
-import shoppingCart from './assets/shopping-cart.svg';
 import QuestionSection from './Components/QuestionSection';
 
 const Learn = ({isCampaign, handleClickActive}) => {
