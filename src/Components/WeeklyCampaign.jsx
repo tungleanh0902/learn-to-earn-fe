@@ -52,19 +52,18 @@ const WeeklyCampaign = ({ handleClick }) => {
             await buyMoreQuizz(
                 {
                     boc: result.boc,
-                    network: wallet.account.chain == "-3" ? "testnet" : "mainnet",
-                    sender: wallet.account.address
                 }
             )
         } catch (e) {
             console.log(e);
+            return setLoading(false);
         } finally {
-            addNotification({
-                message: 'Buy nft success!',
-                theme: 'light',
-            })
             setLoading(false);
         }
+        // addNotification({
+        //     message: 'Buy quizz success!',
+        //     theme: 'darkblue',
+        // })
     }
 
     const handleBuyNft = async () => {
@@ -83,31 +82,32 @@ const WeeklyCampaign = ({ handleClick }) => {
             setLoading(true);
 
             let bodyData = await getMintBodyData({
-                refUserId: userInfo?.refUser
+                refUserId: userInfo?.refUser,
+                tokenId: seasonBadge.nextItemIndex
             }, token)
             
             console.log(wallet);
-            let tx = createTransaction(seasonBadge.address, import.meta.env.VITE_MINT_FEE.toString(), bodyData)
+            let total = Number(import.meta.env.VITE_MINT_FEE) + Number(import.meta.env.VITE_STORE_COIN)
+            let tx = createTransaction(seasonBadge.address, total.toString(), bodyData)
             const result = await tonConnectUI.sendTransaction(tx);
             await buyNft(
                 {
                     badgeId: seasonBadge._id,
                     tokenId: seasonBadge.nextItemIndex,
                     boc: result.boc,
-                    network: wallet.account.chain == "-3" ? "testnet" : "mainnet",
-                    sender: wallet.account.address
                 },
                 token
             )
         } catch (e) {
             console.error(e);
+            return setLoading(false);
         } finally {
-            addNotification({
-                message: 'Buy nft success!',
-                theme: 'light',
-            })
             setLoading(false);
         }
+        // addNotification({
+        //     message: 'Buy nft success!',
+        //     theme: 'darkblue',
+        // })
     }
 
     return (
@@ -123,7 +123,7 @@ const WeeklyCampaign = ({ handleClick }) => {
                     Join
                 </button>
             </div>
-            {/* <div className="relative w-[76px] h-[26px] top-[70px] left-[240px] bg-[#d9d9d9] rounded-[18px]">
+            <div className="relative w-[76px] h-[26px] top-[45px] left-[50px] bg-[#d9d9d9] rounded-[18px]">
                 {wallet ? (
                     <button
                         disabled={loading}
@@ -136,8 +136,8 @@ const WeeklyCampaign = ({ handleClick }) => {
                         Connect wallet to send the transaction
                     </button>
                 )}
-            </div> */}
-            <div className="relative w-[76px] h-[26px] top-[70px] left-[240px] bg-[#d9d9d9] rounded-[18px]">
+            </div>
+            <div className="relative w-[76px] h-[26px] top-[20px] left-[150px] bg-[#d9d9d9] rounded-[18px]">
                 {wallet ? (
                     <button
                         disabled={loading}

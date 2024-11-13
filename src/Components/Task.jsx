@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import tonwallet from '../assets/Tonwallet.png'; // Adjust the import path as needed
 import social from '../assets/social.png';// Adjust the import path as needed
 import academy from '../assets/academy.png'; // Adjust the import path as needed
+import x from '../assets/x.png'; // Adjust the import path as needed
 import { createSocialTaskStore } from "../api/socialTask.api";
 import { createUserStore } from "../api/user.api";
 import { useTonConnectUI, useTonWallet, CHAIN } from "@tonconnect/ui-react";
@@ -19,6 +20,8 @@ function getImage(platform) {
             return academy
         case "telegram":
             return social
+        case "x":
+            return x
         default:
             break;
     }
@@ -59,7 +62,8 @@ const Task = () => {
         ? activeTask
         : activeTask.filter(task => task.tag === categoryState);
 
-    async function onClaimTask(taskId, platform) {
+    async function onClaimTask(taskId, platform, link) {
+        window.open(link, '_blank').focus();
         onConnectWallet(platform)
         let newUser = await claim(taskId, token)
         console.log(newUser);
@@ -120,7 +124,7 @@ const Task = () => {
                         <span className="absolute w-[80px] h-[23px] top-[-10px] right-[70px] bg-[#d9d9d9] rounded-[20px]">
                             <button
                                 disabled={task.isDone}
-                                onClick={() => onClaimTask(task._id, task.platform)}
+                                onClick={() => onClaimTask(task._id, task.platform, task.link)}
                                 className="relative text-black font-adlam-display top-[-1.5px]">
                                 {task.isDone ? "Claimed" : "Go"}
                             </button>

@@ -10,15 +10,15 @@ export const callApi = async (url, method, data, callback, token) => {
     })
         .then(function (res) {
             callback(res.data)
-            if (typeof res.data?.points == "number") {
-                addNotification({
-                    title: 'Success',
-                    message: res.data?.points,
-                    theme: 'light',
-                })
-            } else {
-                // success("Success")
-            }
+            // if (typeof res.data?.points == "number") {
+            //     addNotification({
+            //         title: 'Success',
+            //         message: res.data?.points,
+            //         theme: 'light',
+            //     })
+            // } else {
+            //     // success("Success")
+            // }
         })
         .catch(function (err) {
             console.log(err);
@@ -28,13 +28,13 @@ export const callApi = async (url, method, data, callback, token) => {
                     err.response.data &&
                     err.response.data.message
                 ) {
-                    addNotification({
+                    return addNotification({
                         title: 'Error',
                         message: err.response.data.message,
                         theme: 'red',
                     })
                 } else if (err.response) {
-                    addNotification({
+                    return addNotification({
                         title: 'Error',
                         message: err.response.statusText,
                         theme: 'red',
@@ -45,6 +45,7 @@ export const callApi = async (url, method, data, callback, token) => {
 };
 
 export const createTransaction = (receiver: string, amount: string, payload: string) => {
+    console.log(payload);
     return {
         // The transaction is valid for 10 minutes from now, in unix epoch seconds.
         validUntil: Math.floor(Date.now() / 1000) + 600,
