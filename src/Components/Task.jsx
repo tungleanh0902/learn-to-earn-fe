@@ -101,7 +101,7 @@ const Task = ({handleClickActive}) => {
             </ul>
             <ul className="relative max-h-[49vh] overflow-y-auto">
                 {filteredTaskItems.map((task, i) => (
-                    <li key={i} className="relative pl-[10vw] items-center grid grid-cols-4">
+                    <li key={i} className="relative pl-[10vw] items-center grid grid-cols-4 mar margin-task">
                         <img src={getImage(task.platform)} alt={task.title} className="w-6 h-6" />
                         <span className="relative text-white pl-[2vw] font-abeezee col-start-2 col-span-2 text-left left-[-15vw] py-[3vh">{task.title}</span>
                         <span className="relative w-[80px] h-[23px] bg-[#d9d9d9] rounded-[20px] col-start-4 col-span-1 right-[4vw]">

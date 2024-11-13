@@ -122,3 +122,7 @@
 .scroll-content{ 
   /* doesn't need anything */
 }
+
+.margin-task{
+  margin: 20px 0;
+}
