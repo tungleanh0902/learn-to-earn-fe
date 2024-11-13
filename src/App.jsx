@@ -13,7 +13,6 @@ import { createQuizzStore } from "./api/quizz.api";
 import { createSeasonBadgeStore } from "./api/seasonBadge.api";
 import WebApp from '@twa-dev/sdk'
 import { THEME, TonConnectUIProvider } from "@tonconnect/ui-react";
-import Layout from "./Components/Layout";
 import { wallets } from './constants';
 import Navigation from './Components/Navigation';
 

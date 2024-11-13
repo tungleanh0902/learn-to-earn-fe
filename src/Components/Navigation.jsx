@@ -23,9 +23,8 @@ const Navigation = ({active, handleClickActive, setIsCampaign}) => {
     const navigate = useNavigate();
 
     const handleClick = (index, path) => {
-        // if (isApiLoading == true) {
-            // return
-        // }
+        
+        
         handleClickActive(index)
         navigate(path);
         setIsCampaign(false)
