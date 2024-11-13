@@ -73,19 +73,28 @@ const Task = ({handleClickActive}) => {
         if (platform != "wallet") {
             window.open(link, '_blank');
         }
-        if (platform == "wallet") {
-            tonConnectUI.openModal()
-            tonConnectUI.onStatusChange(async w => {
-                if (w.account?.address) {
-                    await connectWallet({
-                        address: w.account.address
-                    })
-                }
-            })
-        }
+        await onConnectWallet(platform)
         let newUser = await claim(taskId, token)
         await updateUserInfo(newUser)
         await getActiveTask(token)
+    }
+
+    async function onConnectWallet(platform) {
+        await tonConnectUI.disconnect()
+        try {
+            if (platform == "wallet") {
+                await tonConnectUI.openModal()
+                tonConnectUI.onStatusChange(async w => {
+                    if (w.account?.address) {
+                        await connectWallet({
+                            address: w.account.address
+                        })
+                    }
+                })
+            }
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     return (
