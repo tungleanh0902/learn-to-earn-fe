@@ -8,11 +8,8 @@ import earn from '../assets/earn.svg';
 import learn from '../assets/learn.svg';
 import leaderboard from '../assets/leaderboard.svg';
 import wallet from '../assets/wallet.png';
-import { createUserStore } from "../api/user.api";
 
 const Navigation = ({active, handleClickActive, setIsCampaign}) => {
-    const isApiLoading = createUserStore(state => state.isApiLoading)
-
     const Menus = [
         { name: "Home", img: home, lightimg: lighthome, path: "/" },
         { name: "Earn", img: earn, lightimg: lightearn, path: "/earn" },
@@ -23,8 +20,6 @@ const Navigation = ({active, handleClickActive, setIsCampaign}) => {
     const navigate = useNavigate();
 
     const handleClick = (index, path) => {
-        
-        
         handleClickActive(index)
         navigate(path);
         setIsCampaign(false)

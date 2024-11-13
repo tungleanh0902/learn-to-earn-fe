@@ -29,17 +29,10 @@ const Home = ({ active, handleClickActive, setIsCampaign }) => {
     const userInfo = createUserStore(state => state.userInfo)
     const checkedToday = createUserStore(state => state.checkedToday)
     const doLogin = createUserStore(state => state.checkIn)
-    const checkedYesterday = createUserStore(state => state.checkedYesterday)
-    const saveStreak = createUserStore(state => state.saveStreak)
     const isApiLoading = createUserStore(state => state.isApiLoading)
-    const connectWallet = createUserStore(state => state.connectWallet)
     const checkBoughtSeasonBadge = createSeasonBadgeStore(state => state.checkBoughtSeasonBadge)
 
     const navigate = useNavigate();
-    const [loading, setLoading] = useState(false);
-    const wallet = useTonWallet();
-    const [tonConnectUI] = useTonConnectUI();
-    console.log("checkedYesterday", userInfo);
 
     const handleClick = (index, path) => {
         if (isApiLoading == true) {
@@ -50,63 +43,14 @@ const Home = ({ active, handleClickActive, setIsCampaign }) => {
         setIsCampaign(false)
     };
 
-    const handleSaveStreak = async () => {
-        console.log("handleSaveStreak");
-        try {
-            if (userInfo.address != wallet.account.address) {
-                tonConnectUI.openModal()
-                tonConnectUI.onStatusChange(async w => {
-                    if (w.account?.address) {
-                        await connectWallet({
-                            address: w.account.address
-                        }, token)
-                    }
-                })
-            }
-            setLoading(true);
-            console.log(wallet);
-            let tx = createTransaction(import.meta.env.VITE_ADMIN_WALLET.toString(), import.meta.env.VITE_STREAK_FEE.toString(), null)
-            const result = await tonConnectUI.sendTransaction(tx);
-            await saveStreak(
-                {
-                    boc: result.boc,
-                }
-            )
-        } catch (e) {
-            console.error(e);
-            return setLoading(false);
-        } finally {
-            setLoading(false);
-        }
-        addNotification({
-            message: 'Buy streak success!',
-            theme: 'darkblue',
-        })
-    }
-
     return (
         <div className="bg-[#1e1e1e] flex flex-row justify-center w-full h-full">
             <div className="bg-[#1e1e1e] overflow-hidden w-screen h-screen relative">
-                <div className="absolute w-[160px] h-14 top-[72%] left-[8%] bg-white rounded-[20px] overflow-hidden">
-                    {wallet ? (
-                        <button
-                            disabled={checkedYesterday || userInfo?.hasStreakSaver ? true : loading ? true : false}
-                            onClick={handleSaveStreak}
-                            className="absolute w-[251px] top-[7px] left-[-44px] font-adlam font-normal text-black text-[26px] text-center tracking-[0] leading-[normal] whitespace-nowrap">
-                            {isApiLoading ? "Loading..." : checkedYesterday || userInfo?.hasStreakSaver == true ? "On streak" : loading ? "Loading..." : "Buy streak"}
-                        </button>
-                    ) : (
-                        <button onClick={() => tonConnectUI.openModal()}>
-                            Connect wallet to send the transaction
-                        </button>
-                    )}
-                </div>
-
-                <div className="absolute w-[160px] h-14 top-[72%] left-[50%] bg-white rounded-[20px] overflow-hidden">
+                <div className="absolute w-[329px] h-14 top-[72%] left-[8%] bg-white rounded-[20px] overflow-hidden">
                     <button
                         disabled={checkedToday}
                         onClick={doLogin}
-                        className="absolute w-[251px] top-[7px] left-[-44px] font-adlam font-normal text-black text-[26px] text-center tracking-[0] leading-[normal] whitespace-nowrap">
+                        className="absolute w-[251px] top-[7px] left-[39px] font-adlam-display folt-normal text-black text-[32px] text-center tracking-[0] leading-[normal] whitespace-nowrap">
                         {isApiLoading ? "Loading..." : checkedToday ? "Checked in" : "Check in"}
                     </button>
                 </div>
