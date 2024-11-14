@@ -24,6 +24,7 @@ const Shop = () => {
   const saveStreak = createUserStore(state => state.saveStreak)
   const checkedYesterday = createUserStore(state => state.checkedYesterday)
   const isApiLoading = createUserStore(state => state.isApiLoading)
+  const checkedToday = createUserStore(state => state.checkedToday)
 
   const handleBuyMoreQuizz = async () => {
     console.log("handleBuyMoreQuizz");
@@ -97,6 +98,18 @@ const Shop = () => {
 
   const handleSaveStreak = async () => {
     console.log("handleSaveStreak");
+    if (userInfo.address == null) {
+      return addNotification({
+            message: 'Connect your wallet first',
+            theme: 'red',
+        })
+    }
+    if (checkedToday == true) {
+      return addNotification({
+        message: 'Already checkin today',
+        theme: 'red',
+    }) 
+    }
     try {
       if (userInfo.address == null) {
         return addNotification({
