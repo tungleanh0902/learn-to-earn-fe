@@ -100,7 +100,7 @@ const Shop = () => {
     try {
       if (userInfo.address == null) {
         return addNotification({
-              message: 'Connect your wallet first',
+              message: 'Link your wallet first in Misson tab',
               theme: 'red',
           })
       }
@@ -119,10 +119,10 @@ const Shop = () => {
     } finally {
       setLoading(false);
     }
-    addNotification({
-      message: 'Buy streak success!',
-      theme: 'darkblue',
-    })
+    // addNotification({
+    //   message: 'Buy streak success!',
+    //   theme: 'darkblue',
+    // })
   }
 
   return (
@@ -200,10 +200,14 @@ const Shop = () => {
             {/* <div className="col-start-3 col-span-1 pt-[1vh] text-[#6e7478]">8/day</div> */}
             <img src={Check} alt="Check" className="col-start-4 col-span-1 pt-[1.5vh] relative left-[5vw]" />
             <div className="col-start-1 col-span-4 h-px bg-[#d9d9d936] relative left-[7vw] max-w-[66vw]"></div>
+
+            <div className="col-start-1 col-span-2 pt-[2vh] font-medium text-white text-left relative left-[7vw]">Bought quizz</div>
+            <div className="col-start-4 col-span-1 pt-[2vh] relative left-[-2vw]">{userInfo.moreQuizz ?? 0}</div>
+            <div className="col-start-1 col-span-4 h-px bg-[#d9d9d936] relative left-[7vw] max-w-[66vw]"></div>
           </div>
 
           {wallet ? (
-            <div className="absolute bg-white rounded-[15px] bottom-[3vh] right-[4vw]">
+            <div className="absolute bg-white rounded-[15px] bottom-[1vh] right-[4vw]">
               <button
                 disabled={loading}
                 onClick={handleBuyMoreQuizz}

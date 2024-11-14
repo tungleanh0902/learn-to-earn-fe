@@ -36,7 +36,7 @@ const Task = ({handleClickActive}) => {
     const connectWallet = createUserStore(state => state.connectWallet)
     const getActiveTask = createSocialTaskStore(state => state.getActiveTasks)
     const navigate = useNavigate();
-
+    const wallet = useTonWallet();
     const [tonConnectUI] = useTonConnectUI();
 
     if (activeTask.length == 0) {
@@ -80,9 +80,11 @@ const Task = ({handleClickActive}) => {
     }
 
     async function onConnectWallet(platform) {
-        await tonConnectUI.disconnect()
         try {
             if (platform == "wallet") {
+                if (wallet) {
+                    await tonConnectUI.disconnect()
+                }
                 await tonConnectUI.openModal()
                 tonConnectUI.onStatusChange(async w => {
                     if (w.account?.address) {
