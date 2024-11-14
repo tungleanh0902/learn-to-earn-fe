@@ -1,37 +1,22 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './App.css'
 import './index.css'
 import ava from './assets/avatar.svg';
 import checkbox from './assets/check-box.png';
-import rectangle1071 from './assets/rectangle-1071.png';
-import Navigation from './Components/Navigation';
 import { useNavigate } from 'react-router-dom';
 import WebApp from '@twa-dev/sdk'
 import { createUserStore } from "./api/user.api";
 import { createSeasonBadgeStore } from "./api/seasonBadge.api";
-import { createTransaction } from './api/helper';
-import {
-    useTonConnectUI,
-    useTonWallet
-} from "@tonconnect/ui-react";
-import addNotification from 'react-push-notification';
 
-const user = {
-    name: 'top1server',
-    avatar: ava,
-    balance: 666,
-    friendsCount: 23432,
-    checkin: true,
-};
 
 const Home = ({ active, handleClickActive, setIsCampaign }) => {
+    const navigate = useNavigate();
+
     const userInfo = createUserStore(state => state.userInfo)
     const checkedToday = createUserStore(state => state.checkedToday)
-    const doLogin = createUserStore(state => state.checkIn)
+    const doCheckIn = createUserStore(state => state.checkIn)
     const isApiLoading = createUserStore(state => state.isApiLoading)
     const checkBoughtSeasonBadge = createSeasonBadgeStore(state => state.checkBoughtSeasonBadge)
-
-    const navigate = useNavigate();
 
     const handleClick = (index, path) => {
         if (isApiLoading == true) {
@@ -45,7 +30,7 @@ const Home = ({ active, handleClickActive, setIsCampaign }) => {
     return (
         <div className="bg-[#1e1e1e] flex flex-row justify-center w-full h-full">
             <div className="bg-[#1e1e1e] overflow-hidden w-screen h-screen relative">
-                <div className="relative pt-[5vh] font-baloo text-2xl font-bold text-white">Streaks: {userInfo.streak}x</div>
+                <div className="relative pt-[5vh] font-baloo text-2xl font-bold text-white">Streaks: {userInfo?.streak ?? 1}x</div>
 
                 <img
                     className="relative pt-[3vh] mx-auto justify-center"
@@ -65,9 +50,9 @@ const Home = ({ active, handleClickActive, setIsCampaign }) => {
                     </span>
                 </div>
                 
-                <div className="relative text-white font-baloo font-bold text-3xl">{userInfo.points ?? 0} pts</div>
+                <div className="relative text-white font-baloo font-bold text-3xl">{userInfo?.points ?? 0} pts</div>
 
-                <div className="relative text-white text-base font-nunito-bold font-bold pb-[10vh]">{userInfo.refCount ?? 0} referral</div>
+                <div className="relative text-white text-base font-nunito-bold font-bold pb-[10vh]">{userInfo?.refCount ?? 0} referral</div>
 
                 <button 
                     className="relative bg-white w-[75vw] justify-center mx-auto rounded-[13px]"
@@ -79,7 +64,7 @@ const Home = ({ active, handleClickActive, setIsCampaign }) => {
 
                 <button className="relative bg-white w-[75vw] justify-center mx-auto rounded-[13px]"
                         disabled={checkedToday}
-                        onClick={doLogin}>
+                        onClick={doCheckIn}>
                         <div className="py-[1vh] font-adlam text-2xl font-bold">{isApiLoading ? "Loading..." : checkedToday ? "Checked in" : "Check in"}</div>
                 </button>
 
