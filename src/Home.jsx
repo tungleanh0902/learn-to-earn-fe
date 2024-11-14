@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css'
 import './index.css'
-import ava from './assets/avatar.svg';
+import ava from './assets/badge.jpg';
 import checkbox from './assets/check-box.png';
 import { useNavigate } from 'react-router-dom';
 import WebApp from '@twa-dev/sdk'
@@ -33,7 +33,7 @@ const Home = ({ active, handleClickActive, setIsCampaign }) => {
                 <div className="relative pt-[5vh] font-baloo text-2xl font-bold text-white">Streaks: {userInfo?.streak ?? 1}x</div>
 
                 <img
-                    className="relative pt-[3vh] mx-auto justify-center"
+                    className="relative pt-[3vh] mx-auto justify-center img-badge"
                     alt="avatar"
                     src={ava}
                 ></img>
