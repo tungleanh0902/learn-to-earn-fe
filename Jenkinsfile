@@ -27,7 +27,7 @@ pipeline {
                                     cd /home/builder/resource/l2e.eupsolution.net/web-client
                                     git checkout development/dev
                                     git pull origin development/dev
-                                    docker build -t registry.gitlab.com/eupsolution/learn_to_earn_fe:${GIT_COMMIT} .
+                                    docker build -t registry.gitlab.com/eupsolution/learn_to_earn_fe:${GIT_COMMIT} -f .docker/prod.dockerfile .
                                     docker push registry.gitlab.com/eupsolution/learn_to_earn_fe:${GIT_COMMIT}
                                     docker rmi registry.gitlab.com/eupsolution/learn_to_earn_fe:${GIT_COMMIT}
                                 exit
