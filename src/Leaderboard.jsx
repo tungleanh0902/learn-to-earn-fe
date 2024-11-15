@@ -12,7 +12,7 @@ import abc from './assets/chibi.png';
 const Leaderboard = () => {
     return (
         <div className="bg-[#1e1e1e] flex flex-row w-screen">
-            <div className="bg-[#1e1e1e] overflow-hidden w-screen max-h-[90vh] relative">
+            <div className="bg-[#1e1e1e] overflow-hidden w-screen h-[90vh] relative">
                 {/* <div className="text-white font-bold text-3xl relative pt-[15vh] font-auvicwant">Coming soon...</div>
 
                 <img
@@ -37,7 +37,7 @@ const Leaderboard = () => {
                         </img>
                     </div>
 
-                    <div className="relative pt-[2vh] max-h-[33.2vh] overflow-y-auto">
+                    <div className="relative pt-[2vh]">
                         <img
                             className="items-center mx-auto"
                             src={top6}
