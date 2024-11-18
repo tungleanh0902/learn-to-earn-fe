@@ -14,7 +14,7 @@ const Shop = () => {
   const [tonConnectUI] = useTonConnectUI();
 
   const buyNft = createSeasonBadgeStore(state => state.buyNft)
-  const seasonBadge = createSeasonBadgeStore(state => state.seasonBadge)
+  const currentSeasonBadge = createSeasonBadgeStore(state => state.currentSeasonBadge)
   const checkBoughtSeasonBadge = createSeasonBadgeStore(state => state.checkBoughtSeasonBadge)
   const [loading, setLoading] = useState(false);
   const token = createUserStore(state => state.token)
@@ -66,7 +66,7 @@ const Shop = () => {
           })
       }
       setLoading(true);
-
+      const seasonBadge = await currentSeasonBadge()
       let bodyData = await getMintBodyData({
         refUserId: userInfo?.refUser,
         tokenId: seasonBadge.nextItemIndex

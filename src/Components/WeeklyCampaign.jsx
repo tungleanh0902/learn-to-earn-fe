@@ -12,7 +12,7 @@ const WeeklyCampaign = ({ handleClick }) => {
                 theme: 'darkblue',
             })
         } else {
-            await handleClick(2, "/learn")
+            await handleClick(3, "/learn")
         }
     }
 

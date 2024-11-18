@@ -13,7 +13,6 @@ export const createQuizzStore = create((set: any, get: any, next: any) => (
         getRandomLesson: async (token: String) => {
             try {
                 await callApi('quizz/random_lesson', "POST", null, (res) => {
-                    console.log(res);
                     set({ lesson: res.data[0] })
                 }, token)
             } catch (error) {
@@ -52,7 +51,6 @@ export const createQuizzStore = create((set: any, get: any, next: any) => (
         getRandomLessonForCampaign: async (token: String) => {
             try {
                 await callApi('quizz/random_lesson_for_campaign', "POST", null, (res) => {
-                    console.log(res);
                     set({ lessonForCampaign: res.data[0] })
                 }, token)
             } catch (error) {
