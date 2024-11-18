@@ -10,7 +10,7 @@ import WebApp from '@twa-dev/sdk'
 import { createUserStore } from "./api/user.api";
 import { createSeasonBadgeStore } from "./api/seasonBadge.api";
 
-const Home = ({ active, handleClickActive, setIsCampaign, userId }) => {
+const Home = ({ active, handleClickActive, setIsCampaign }) => {
     const navigate = useNavigate();
 
     const userInfo = createUserStore(state => state.userInfo)
@@ -29,7 +29,7 @@ const Home = ({ active, handleClickActive, setIsCampaign, userId }) => {
     };
 
     const handleCopyLink = () => {
-        const inviteLink = `${import.meta.env.VITE_INVITE_URL}?startapp=${userId}`
+        const inviteLink = `${import.meta.env.VITE_INVITE_URL}?startapp=${WebApp.initDataUnsafe.user.id.toString()}`
         navigator.clipboard.writeText(inviteLink)
         alert('Invite link copied to clipboard!')
     }

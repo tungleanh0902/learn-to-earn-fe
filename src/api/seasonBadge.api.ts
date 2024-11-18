@@ -30,9 +30,12 @@ export const createSeasonBadgeStore = create((set: any, get: any, next: any) => 
         },
 
         currentSeasonBadge: async () => {
+            let badge
             await callApi('badge/current_badge', "POST", null, (res) => {
                 console.log(res);
+                badge = res.data
                 set({ seasonBadge: res.data })
             }, null)
+            return badge
         },
     }))

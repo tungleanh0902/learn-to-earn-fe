@@ -42,7 +42,7 @@ function App() {
       await setApiLoading(true)
       console.log(WebApp.initDataUnsafe.user.id.toString());
       let token = await doLogin(WebApp.initDataUnsafe.user.id.toString())
-      const userRefId = WebApp.initDataUnsafe.start_param.toString()
+      const userRefId = WebApp.initDataUnsafe?.start_param?.toString()
       console.log(userRefId);
       setUserId(userRefId)
       if (userRefId) {
