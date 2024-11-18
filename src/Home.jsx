@@ -1,6 +1,8 @@
 import React from 'react';
 import './App.css'
 import './index.css'
+import darkAavatar from './assets/avatar-dark.svg';
+import share from './assets/share-icon.png';
 import ava from './assets/badge.jpg';
 import checkbox from './assets/check-box.png';
 import { useNavigate } from 'react-router-dom';
@@ -27,15 +29,28 @@ const Home = ({ active, handleClickActive, setIsCampaign }) => {
         setIsCampaign(false)
     };
 
+    const handleShare = () => {}
+
     return (
         <div className="bg-[#1e1e1e] flex flex-row justify-center w-full h-full">
             <div className="bg-[#1e1e1e] overflow-hidden w-screen h-screen relative">
                 <div className="relative pt-[5vh] font-baloo text-2xl font-bold text-white">Streaks: {userInfo?.streak ?? 1}x</div>
 
+                <button 
+                    className="fixed top-[3vh] right-[5vw]"
+                    onClick={() => handleShare()}>
+                    <img
+                        className=""
+                        src={share}
+                        alt="Share icon">
+                    </img>
+                    <div className="relative text-white font-adlam-display font-thin text-xs">Share</div>
+                </button>
+
                 <img
                     className="relative pt-[3vh] mx-auto justify-center img-badge"
                     alt="avatar"
-                    src={ava}
+                    src={darkAavatar}
                 ></img>
 
                 <div className="relative text-white font-baloo font-bold text-2xl">
