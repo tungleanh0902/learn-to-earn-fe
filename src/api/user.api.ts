@@ -16,11 +16,10 @@ export const createUserStore = create((set: any, get: any, next: any) => (
             set({ userInfo: user })
         },
 
-        login: async (telegramUserId: String) => {
+        login: async (telegramUserId: string) => {
             await callApi('user/login', "POST", {
                 telegramUserId
             }, (res) => {
-                console.log(res);
                 set({ token: res.token })
                 set({ userInfo: res.user })
             }, null)
@@ -37,8 +36,10 @@ export const createUserStore = create((set: any, get: any, next: any) => (
             return user
         },
 
-        addRef: async (refCode: String) => {
-            await callApi('user/doRef', "POST", { ref: refCode }, (res) => { }, get().token)
+        addRef: async (userId: string, token) => {
+            console.log(userId);
+            await callApi('user/doRef', "POST", { ref: userId }, (res) => {
+            }, token)
         },
 
         saveStreak: async (data) => {
@@ -49,28 +50,24 @@ export const createUserStore = create((set: any, get: any, next: any) => (
 
         checkCheckinDaily: async () => {
             await callApi('user/check_daily', "POST", null, (res) => {
-                console.log(res);
                 set({ checkedToday: res.data })
             }, get().token)
         },
 
         checkCheckInYesterday: async () => {
             await callApi('user/check_yesterday', "POST", null, (res) => {
-                console.log(res);
                 set({ checkedYesterday: res.data })
             }, get().token)
         },
 
         getLeaderBoard: async () => {
             await callApi('user/leaderboard', "POST", null, (res) => {
-                console.log(res);
                 set({ Leaderboard: res.data })
             }, get().token)
         },
 
         connectWallet: async (data) => {
             await callApi('user/connect_wallet', "POST", data, (res) => {
-                console.log(res);
             }, get().token)
         },
 
@@ -84,7 +81,6 @@ export const createUserStore = create((set: any, get: any, next: any) => (
 
         buyMoreQuizz: async (data) => {
             await callApi('user/buy_more_quizz', "POST", data, (res) => {
-                console.log(res);
                 set({ userInfo: res.data.user })
             }, get().token)
         },

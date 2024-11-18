@@ -17,7 +17,6 @@ export const createSocialTaskStore = create((set: any, get: any, next: any) => (
 
         getActiveTasks: async (token: String) => {
             await callApi('social_task/all_active', "POST", null, (res) => {
-                console.log(res);
                 set({ activeTasks: res.data })
             }, token)
         },
