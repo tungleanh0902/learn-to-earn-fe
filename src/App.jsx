@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './index.css'
 import "./App.css";
-import { BrowserRouter as Router, Route, Routes, useNavigate } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Home from "./Home";
 import Earn from "./Earn";
 import Learn from "./Learn";
@@ -26,9 +26,12 @@ function App() {
   const currentSeasonBadge = createSeasonBadgeStore(state => state.currentSeasonBadge)
   const checkCheckInYesterday = createUserStore(state => state.checkCheckInYesterday)
   const checkCheckinDaily = createUserStore(state => state.checkCheckinDaily)
-
+  const addRef = createUserStore(state => state.addRef)
+  const getLeaderBoard = createUserStore(state => state.getLeaderBoard)
+  
   const [active, setActive] = useState(0);
   const [isCampaign, setIsCampaign] = useState(false)
+  const [userId, setUserId] = useState("")
   
   const handleClickActive = (index) => {
       setActive(index);
@@ -39,6 +42,12 @@ function App() {
       await setApiLoading(true)
       console.log(WebApp.initDataUnsafe.user.id.toString());
       let token = await doLogin(WebApp.initDataUnsafe.user.id.toString())
+      const userRefId = WebApp.initDataUnsafe?.start_param?.toString()
+      console.log(userRefId);
+      setUserId(userRefId)
+      if (userRefId) {
+        await addRef(userRefId, token);
+      }
       await getActiveTask(token)
       await getRandomLesson(token)
       await checkCheckinDaily()
@@ -48,6 +57,7 @@ function App() {
         await getRandomLessonForCampaign(token)
       }
       await currentSeasonBadge()
+      await getLeaderBoard()
 
       await setApiLoading(false)
     }
@@ -73,6 +83,7 @@ function App() {
                   active={active}
                   handleClickActive={handleClickActive}
                   setIsCampaign={setIsCampaign}
+                  userId={userId}
                 />
               } />
               <Route path="/earn" element={
@@ -87,7 +98,11 @@ function App() {
                   handleClickActive={handleClickActive}
                 />
               } />
-              <Route path="/leaderboard" element={<Leaderboard />} />
+              <Route path="/leaderboard" element={
+                <Leaderboard
+                  handleClickActive={handleClickActive}
+                />
+              } />
               <Route path="/shop" element={<Shop />} />
             </Routes>
           </div>
