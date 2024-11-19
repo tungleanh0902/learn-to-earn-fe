@@ -22,13 +22,13 @@ export const createQuizzStore = create((set: any, get: any, next: any) => (
 
         answerQuizz: async (optionId: String, token: String) => {
             try {
-                let user
+                let data
                 await callApi('quizz/answer', "POST", {
                     optionId
                 }, (res) => {
-                    user = res.data.user
+                    data = res.data
                 }, token)
-                return user
+                return data
             } catch (error) {
                 set({ lesson: [] })
             }
@@ -36,13 +36,13 @@ export const createQuizzStore = create((set: any, get: any, next: any) => (
 
         answerSpecialQuizz: async (optionId: String, token: String) => {
             try {
-                let user
+                let data
                 await callApi('quizz/answer_special_quizz', "POST", {
                     optionId
                 }, (res) => {
-                    user = res.data.user
+                    data = res.data
                 }, token)
-                return user
+                return data
             } catch (error) {
                 set({ lesson: [] })
             }
@@ -60,13 +60,13 @@ export const createQuizzStore = create((set: any, get: any, next: any) => (
 
         answerQuizzCampaign: async (optionId: String, token: String) => {
             try {
-                let user
+                let data
                 await callApi('quizz/answer_campaign', "POST", {
                     optionId
                 }, (res) => { 
-                    user = res.data.user
+                    data = res.data
                 }, token)
-                return user
+                return data
             } catch (error) {
                 set({ lessonForCampaign: [] })
             }

@@ -7,6 +7,7 @@ import { createSocialTaskStore } from "../api/socialTask.api";
 import { createUserStore } from "../api/user.api";
 import { useTonConnectUI, useTonWallet, CHAIN } from "@tonconnect/ui-react";
 import { useNavigate } from 'react-router-dom';
+import PointsPopUp from './PointsPopUp';
 
 function capitalizeFirstLetter(val) {
     return String(val).charAt(0).toUpperCase() + String(val).slice(1);
@@ -59,6 +60,8 @@ const Task = ({handleClickActive}) => {
 
     const [active, setActive] = useState(0);
     const [categoryState, setCategoryState] = useState("all");
+    const [isActive, setIsActive] = useState(false);
+    const [newPoint, setNewPoint] = useState(0);
 
     const handleClick = (index, category) => {
         setActive(index);
@@ -74,9 +77,15 @@ const Task = ({handleClickActive}) => {
             window.open(link, '_blank');
         }
         await onConnectWallet(platform)
-        let newUser = await claim(taskId, token)
-        await updateUserInfo(newUser)
+        let data = await claim(taskId, token)
+        setNewPoint(data.points)
+        setIsActive(true)
+        await updateUserInfo(data.user)
         await getActiveTask(token)
+        setTimeout(() => {
+            setIsActive(false)
+            setNewPoint(0)
+        }, 2000)
     }
 
     async function onConnectWallet(platform) {
@@ -101,6 +110,15 @@ const Task = ({handleClickActive}) => {
 
     return (
         <div className="relative">
+            {
+                    isActive ?
+                        <PointsPopUp className="flex-none"
+                            points={newPoint}
+                            isActive={isActive}
+                        />
+                        :
+                        <></>
+                }
             <ul className="relative flex items-center px-[5vw]">
                 {category.map((category, i) => (
                     <li key={i} className={`cursor-pointer ${active === i ? 'text-white' : 'text-gray-500'}`} onClick={() => handleClick(i, category.name)}>
