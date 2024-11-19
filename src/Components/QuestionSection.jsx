@@ -35,14 +35,6 @@ const QuestionSection = ({isCampaign, handleClickActive}) => {
     }
 
     useEffect(() => {
-        if (isCorrect === true) {
-            setOpenPointsPopup(true);
-        } else {
-            setOpenPointsPopup(false);
-        }
-    }, [isCorrect]);
-    
-    useEffect(() => {
         if (isCampaign) {
             if (lessonForCampaign.length == 0 || !lessonForCampaign || lessonForCampaign?.questions?.length == 0) {
                 setOutOfQuestion(true)
@@ -57,7 +49,6 @@ const QuestionSection = ({isCampaign, handleClickActive}) => {
             }
         }
     }, []);
-
 
     const handleAnswerClick = (answerId) => {
         setHighlightedAnswer(answerId);
@@ -125,7 +116,7 @@ const QuestionSection = ({isCampaign, handleClickActive}) => {
         <div className="overflow-hidden">
             <div className="items-center flex-col">
                 {
-                    isActive ?
+                    isActive && newPoint!=0 ?
                         <PointsPopUp className="flex-none"
                             points={newPoint}
                             isActive={isActive}
