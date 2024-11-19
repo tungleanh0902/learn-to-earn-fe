@@ -16,9 +16,10 @@ export const createUserStore = create((set: any, get: any, next: any) => (
             set({ userInfo: user })
         },
 
-        login: async (telegramUserId: string) => {
+        login: async (telegramUserId: string, username: string) => {
             await callApi('user/login', "POST", {
-                telegramUserId
+                telegramUserId,
+                username
             }, (res) => {
                 set({ token: res.token })
                 set({ userInfo: res.user })
