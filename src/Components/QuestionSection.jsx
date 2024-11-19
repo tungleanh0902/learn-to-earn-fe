@@ -28,8 +28,9 @@ const QuestionSection = ({isCampaign, handleClickActive}) => {
     const [highlightedAnswer, setHighlightedAnswer] = useState(null);
     const [isCorrect, setIsCorrect] = useState(null);
     const [outOfQuestion, setOutOfQuestion] = useState(false);
-    console.log(questionIdx);
-    
+    const [isActive, setIsActive] = useState(false);
+    const [newPoint, setNewPoint] = useState(0);
+
     if (activeTask.length == 0) {
         handleClickActive(0)
         navigate("/");
@@ -76,19 +77,24 @@ const QuestionSection = ({isCampaign, handleClickActive}) => {
             }
         }
         let newUser
-        // let newPoint
-
+        let points = 0
         if (isCampaign) {
-            newUser = await answerQuizzCampaign(highlightedAnswer, token)
+            let data = await answerQuizzCampaign(highlightedAnswer, token) 
+            newUser = data.user
+            points = data.points
         } else {
             if (userInfo.moreQuizz > 0) {
-                newUser = await answerSpecialQuizz(highlightedAnswer, token)
+                let data = await answerSpecialQuizz(highlightedAnswer, token) 
+                newUser = data.user
+                points = data.points
             } else {
-                // [newUser, newPoint] = await answerQuizz(highlightedAnswer, token)
-                newUser = await answerQuizz(highlightedAnswer, token)
-                // console.log(newUser);
+                let data = await answerQuizz(highlightedAnswer, token) 
+                newUser = data.user
+                points = data.points
             }
         }
+        setNewPoint(points)
+        setIsActive(true)
         await updateUserInfo(newUser)
 
         setTimeout(() => {
@@ -101,7 +107,6 @@ const QuestionSection = ({isCampaign, handleClickActive}) => {
                     setCurrentQuestion(lessonForCampaign.questions[nextIdx]);
                 }
             } else {
-                console.log(questionIdx);
                 if (questionIdx == lesson.questions.length - 1) {
                     setOutOfQuestion(true)
                 } else {
@@ -112,7 +117,10 @@ const QuestionSection = ({isCampaign, handleClickActive}) => {
             setSelectedAnswer(null);
             setHighlightedAnswer(null);
             setIsCorrect(null);
-        }, 200); // 0.5 seconds delay
+
+            setIsActive(false)
+            setNewPoint(0)
+        }, 2000); // 0.5 seconds delay
     };
 
     return (
