@@ -41,7 +41,10 @@ function App() {
     async function fetch() {
       await setApiLoading(true)
       console.log(WebApp.initDataUnsafe.user.id.toString());
-      let token = await doLogin(WebApp.initDataUnsafe.user.id.toString())
+      let token = await doLogin(
+        WebApp.initDataUnsafe.user.id.toString(),
+        WebApp.initDataUnsafe.user.username
+      )
       const userRefId = WebApp.initDataUnsafe?.start_param?.toString()
       console.log(userRefId);
       setUserId(userRefId)

@@ -57,7 +57,7 @@ const Home = ({ active, handleClickActive, setIsCampaign }) => {
                 ></img>
 
                 <div className="relative text-white font-baloo font-bold text-2xl">
-                    <span>{WebApp.initDataUnsafe.user.username ?? WebApp.initDataUnsafe.user.first_name + WebApp.initDataUnsafe.user.last_name}
+                    <span>{WebApp.initDataUnsafe.user.username}
                         {checkBoughtSeasonBadge ?
                             <img
                                 className="inline-block ml-[10px]"
