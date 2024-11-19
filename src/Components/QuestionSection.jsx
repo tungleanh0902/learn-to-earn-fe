@@ -21,8 +21,6 @@ const QuestionSection = ({isCampaign, handleClickActive}) => {
     const answerQuizzCampaign = createQuizzStore(state => state.answerQuizzCampaign)
     const activeTask = createSocialTaskStore(state => state.activeTasks)
 
-    // const [questionIdx, setquestionIdx] = useState(0);
-    const [openPointsPopup, setOpenPointsPopup] = useState(false);
     const [currentQuestion, setCurrentQuestion] = useState(null);
     const [selectedAnswer, setSelectedAnswer] = useState(null);
     const [highlightedAnswer, setHighlightedAnswer] = useState(null);
@@ -126,7 +124,15 @@ const QuestionSection = ({isCampaign, handleClickActive}) => {
     return (
         <div className="overflow-hidden">
             <div className="items-center flex-col">
-            <PointsPopUp className="flex-none" openPopUp={openPointsPopup} closePopUp={() => setOpenPointsPopup(false)}/>
+                {
+                    isActive ?
+                        <PointsPopUp className="flex-none"
+                            points={newPoint}
+                            isActive={isActive}
+                        />
+                        :
+                        <></>
+                }
                     {outOfQuestion == true ?
                         <p className="font-nunito-bold text-bold text-white text-[120%]">Out of daily quizz</p>
                         :
