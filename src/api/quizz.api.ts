@@ -24,11 +24,14 @@ export const createQuizzStore = create((set: any, get: any, next: any) => (
         answerQuizz: async (optionId: String, token: String) => {
             try {
                 let user
+                let point 
                 await callApi('quizz/answer', "POST", {
                     optionId
                 }, (res) => {
                     user = res.data.user
+                    point = res.data.point
                 }, token)
+                // return [user, point]
                 return user
             } catch (error) {
                 set({ lesson: [] })
