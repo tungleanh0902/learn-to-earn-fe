@@ -20,12 +20,10 @@ const Leaderboard = ({ handleClickActive }) => {
     const activeTask = createSocialTaskStore(state => state.activeTasks);
     const checkBoughtSeasonBadge = createSeasonBadgeStore(state => state.checkBoughtSeasonBadge);
 
-    useEffect(() => {
-        if (leaderboard.leaderboard == undefined) {
-            handleClickActive(0);
-            navigate("/");
-        }
-    })
+    if (activeTask.length === 0) {
+        handleClickActive(0);
+        navigate("/");
+    }
 
     const handleCopyLink = () => {
         const inviteLink = `${import.meta.env.VITE_INVITE_URL}?startapp=${WebApp.initDataUnsafe.user.id.toString()}`;
