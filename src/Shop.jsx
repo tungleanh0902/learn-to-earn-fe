@@ -35,7 +35,7 @@ const Shop = () => {
               theme: 'red',
           })
       }
-      if (userInfo.address == wallet.account.address) {
+      if (userInfo.address != wallet.account.address) {
         return addNotification({
           message: 'Wrong wallet',
           theme: 'red',
@@ -71,7 +71,7 @@ const Shop = () => {
               theme: 'red',
           })
       }
-      if (userInfo.address == wallet.account.address) {
+      if (userInfo.address != wallet.account.address) {
         return addNotification({
           message: 'Wrong wallet',
           theme: 'red',
@@ -116,7 +116,7 @@ const Shop = () => {
             theme: 'red',
         })
     }
-    if (userInfo.address == wallet.account.address) {
+    if (userInfo.address != wallet.account.address) {
       return addNotification({
         message: 'Wrong wallet',
         theme: 'red',
