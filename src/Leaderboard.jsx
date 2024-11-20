@@ -1,61 +1,157 @@
 import React from 'react';
 
-// demo stuffs
-import vatani from './assets/Vatani.png';
-import top3 from './assets/Top3.png';
-import top6 from './assets/Top6.png';
-import cute from './assets/cute.png'; 
-import abc from './assets/chibi.png';
+import share from './assets/share-icon.png';
+// import top1 from './assets/top1.svg';
+import top1 from './assets/top1.png';
+import top2 from './assets/top2.png';
+import top3 from './assets/top3.png';
+
 import { useNavigate } from 'react-router-dom';
 import { createUserStore } from "./api/user.api";
 import { createSocialTaskStore } from "./api/socialTask.api";
-// end of demo stuffs   
+import { createSeasonBadgeStore } from "./api/seasonBadge.api";
 
-const Leaderboard = ({handleClickActive}) => {
+const Leaderboard = ({ handleClickActive }) => {
     const navigate = useNavigate();
-    
-    const leaderboard = createUserStore(state => state.leaderboard)
-    const activeTask = createSocialTaskStore(state => state.activeTasks)
 
-    if (activeTask.length == 0) {
-        handleClickActive(0)
+    const leaderboard = createUserStore(state => state.leaderboard);
+    const userInfo = createUserStore(state => state.userInfo);
+    const activeTask = createSocialTaskStore(state => state.activeTasks);
+    const checkBoughtSeasonBadge = createSeasonBadgeStore(state => state.checkBoughtSeasonBadge);
+
+    if (activeTask.length === 0) {
+        handleClickActive(0);
         navigate("/");
     }
 
+    const handleCopyLink = () => {
+        const inviteLink = `${import.meta.env.VITE_INVITE_URL}?startapp=${WebApp.initDataUnsafe.user.id.toString()}`;
+        navigator.clipboard.writeText(inviteLink);
+        alert('Invite link copied to clipboard!');
+    };
+
     return (
         <div className="bg-[#1e1e1e] flex flex-row w-screen">
-            <div className="bg-[#1e1e1e] overflow-hidden w-screen h-[90vh] relative">
-                {/* <div className="text-white font-bold text-3xl relative pt-[15vh] font-auvicwant">Coming soon...</div>
+            <div className="bg-[#1e1e1e] overflow-y-hidden overflow-x-auto w-screen h-[90vh] relative">
+                <div className="relative pt-[6vh]"></div>
 
-                <img
-                    src={abc}
-                    alt="cute"
-                    className="pt-[5vh] scale-[80%]"
-                ></img> */}
+                <button
+                    className="fixed top-[6vh] right-[5vw]"
+                    onClick={() => handleCopyLink()}
+                >
+                    <img
+                        className=""
+                        src={share}
+                        alt="Share icon"
+                    />
+                    <div className="relative text-white font-adlam-display font-thin text-xs">Share</div>
+                </button>
 
-                    <div className="relative pt-[7vh]">
+                <div className="relative bg-white rounded-[25px] w-[65vw] items-center mx-auto">
+                    <div className="py-[2vh] grid grid-cols-4">
+                        <div className="col-span-1 col-start-1 font-nats font-bold">
+                            {leaderboard?.currentRank ?? -1}
+                        </div>
+                        <div className="col-span-2 col-start-2 font-nats font-bold">You</div>
+                        <div className="col-start-4 font-nats pr-[10vw] text-[#312244]">
+                            {userInfo?.points ?? 0}
+                        </div>
+                    </div>
+                </div>
+                <div className="relative grid grid-cols-3 pt-[5vh] w-[80vw] items-center mx-auto">
+                    <div className="col-start-1 col-span-1 items-center mx-auto">
                         <img
-                        className="items-center mx-auto"
-                        src={vatani}
-                        alt="vatani">
-                        </img>
+                            className=""
+                            src={top2}
+                            alt="Top 2"
+                        />
+
+                        <div className="text-white font-nats text-xl">
+                            {leaderboard?.leaderboard[1].username ?? "Vatani"}
+                        </div>
+
+                        <div className="text-[#ffffff]/[70%] font-nats">
+                            {leaderboard?.leaderboard[1].points ?? 0} pts
+                        </div>
                     </div>
 
-                    <div className="relative pt-[2vh]">
+                    <div className="col-start-2 col-span-1 items-center mx-auto">
                         <img
-                            className="items-center mx-auto"
+                            className="relative scale-70"
+                            src={top1}
+                            alt="Top 1"
+                        ></img>
+
+                        <div className="text-white font-nats text-xl">
+                            {leaderboard?.leaderboard[0].username}
+                        </div>
+
+                        <div className="text-[#ffffff]/[70%] font-nats">
+                            {leaderboard?.leaderboard[0].points ?? 0} pts
+                        </div>
+                    </div>
+
+                    <div className="col-start-3 col-span-1 items-center mx-auto">
+                        <img
+                            className=""
                             src={top3}
-                            alt="Top 3">
-                        </img>
-                    </div>
+                            alt="Top 3"
+                        />
 
-                    <div className="relative pt-[2vh]">
-                        <img
-                            className="items-center mx-auto"
-                            src={top6}
-                            alt="Top 6">
-                        </img>
+                        <div className="text-white font-nats text-xl">
+                            {leaderboard?.leaderboard[2].username ?? "Jonathan"}
+                        </div>
+
+                        <div className="text-[#ffffff]/[70%] font-nats">
+                            {leaderboard?.leaderboard[2].points ?? 0} pts
+                        </div>
                     </div>
+                </div>
+
+                <div className="pt-[3vh]"></div>
+
+                <div className="max-h-[37vh] overflow-y-auto">
+                    {leaderboard?.leaderboard
+                        .filter((item, index) => {
+                            if (checkBoughtSeasonBadge && leaderboard?.currentRank >= 11 && leaderboard?.currentRank <= 13) {
+                                return (index >= 3 && index <= leaderboard?.currentRank + 1);
+                            }
+                            return index >= 3 && index <= 10;
+                        })
+                        .map((item, index) => {
+                            let bgColor;
+                            let textColor = index >= 0 ? 'text-[#ffffff]/[70%]' : 'text-[#312244]/[70%]';
+                            let nameColor = index >= 0 ? 'text-[#ffffff]' : 'text-[#312244]';
+
+                            return (
+                                <div key={index} className="relative rounded-[25px] w-[70vw] items-center mx-auto my-2" style={{ backgroundColor: bgColor }}>
+                                    <div className={`py-[2vh] grid grid-cols-4 ${textColor}`}>
+                                        <div className="font-nats font-bold col-span-1">{item.rank}</div>
+                                        <div className={`font-nats font-medium col-span-2 ${nameColor}`}>{item.username ?? "sampleName"}</div>
+                                        <div className="font-nats right-[5px] items-baseline">{item.points}</div>
+                                    </div>
+                                </div>
+                            );
+                        })}
+
+                    {checkBoughtSeasonBadge && leaderboard?.currentRank >= 14 ? (
+                        <div className="relative">
+                            <div className="relative text-white">...</div>
+
+                            {leaderboard?.usersNearCurrentRank.map((item, index) => (
+                                <div key={index} className="relative rounded-[25px] w-[70vw] items-center mx-auto my-2">
+                                    <div className="py-[2vh] grid grid-cols-4 text-[#ffffff]/[70%]">
+                                        <div className="font-nats font-bold col-span-1">{item.rank}</div>
+                                        <div className="font-nats font-medium col-span-2 text-[#ffffff]">{item.username ?? "sampleName"}</div>
+                                        <div className="font-nats right-[5px] items-baseline">{item.points}</div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    ) : null}
+
+                </div>
+
             </div>
         </div>
     );

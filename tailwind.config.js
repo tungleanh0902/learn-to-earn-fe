@@ -17,6 +17,7 @@ export default {
         'afacad-variable':['Afacad-Variable'],
         'afacad-italic':['Afacad-Italic'],
         'auvicwant':['Auvicwant'],
+        'nats':['NATS']
       },
       backgroundImage: {
         'custom-gradient': 'linear-gradient(180deg, rgb(20, 50, 90) 0%, rgb(30, 30, 30) 100%)',
