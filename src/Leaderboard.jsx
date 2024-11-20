@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import share from './assets/share-icon.png';
 // import top1 from './assets/top1.svg';
@@ -10,7 +10,6 @@ import { useNavigate } from 'react-router-dom';
 import { createUserStore } from "./api/user.api";
 import { createSocialTaskStore } from "./api/socialTask.api";
 import { createSeasonBadgeStore } from "./api/seasonBadge.api";
-import { useEffect } from 'react';
 
 const Leaderboard = ({ handleClickActive }) => {
     const navigate = useNavigate();
@@ -20,19 +19,9 @@ const Leaderboard = ({ handleClickActive }) => {
     const activeTask = createSocialTaskStore(state => state.activeTasks);
     const checkBoughtSeasonBadge = createSeasonBadgeStore(state => state.checkBoughtSeasonBadge);
 
-    useEffect(() => {
-        if (leaderboard.leaderboard == undefined) {
-            handleClickActive(0);
-            navigate("/");
-        }
-    })
-    
-    const shortName = (username) => {
-        if (username && username.length > 7) {
-            return username.slice(0, 7)+"..."
-        } else {
-            return username
-        }
+    if (activeTask.length === 0) {
+        handleClickActive(0);
+        navigate("/");
     }
 
     const handleCopyLink = () => {
