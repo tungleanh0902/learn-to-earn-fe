@@ -35,6 +35,12 @@ const Shop = () => {
               theme: 'red',
           })
       }
+      if (userInfo.address == wallet.account.address) {
+        return addNotification({
+          message: 'Wrong wallet',
+          theme: 'red',
+        })
+      }
       setLoading(true);
       console.log(wallet);
       let tx = createTransaction(import.meta.env.VITE_ADMIN_WALLET.toString(), import.meta.env.VITE_MORE_QUIZZ_FEE.toString(), null)
@@ -64,6 +70,12 @@ const Shop = () => {
               message: 'Connect your wallet first',
               theme: 'red',
           })
+      }
+      if (userInfo.address == wallet.account.address) {
+        return addNotification({
+          message: 'Wrong wallet',
+          theme: 'red',
+        })
       }
       setLoading(true);
       const seasonBadge = await currentSeasonBadge()
@@ -103,6 +115,12 @@ const Shop = () => {
             message: 'Connect your wallet first',
             theme: 'red',
         })
+    }
+    if (userInfo.address == wallet.account.address) {
+      return addNotification({
+        message: 'Wrong wallet',
+        theme: 'red',
+      })
     }
     if (checkedToday == true) {
       return addNotification({
