@@ -19,6 +19,8 @@ const Leaderboard = ({ handleClickActive }) => {
     const activeTask = createSocialTaskStore(state => state.activeTasks);
     const checkBoughtSeasonBadge = createSeasonBadgeStore(state => state.checkBoughtSeasonBadge);
 
+    const currentRank = 14;
+
     if (activeTask.length === 0) {
         handleClickActive(0);
         navigate("/");
@@ -31,7 +33,7 @@ const Leaderboard = ({ handleClickActive }) => {
     };
 
     return (
-        <div className="bg-[#1e1e1e] flex flex-row w-screen">
+        <div className="bg-[#1e1e1e] flex flex-row w-screen h-screen">
             <div className="bg-[#1e1e1e] overflow-y-hidden overflow-x-auto w-screen h-[90vh] relative">
                 <div className="relative pt-[6vh]"></div>
 
@@ -126,9 +128,9 @@ const Leaderboard = ({ handleClickActive }) => {
                             return (
                                 <div key={index} className="relative rounded-[25px] w-[70vw] items-center mx-auto my-2" style={{ backgroundColor: bgColor }}>
                                     <div className={`py-[2vh] grid grid-cols-4 ${textColor}`}>
-                                        <div className="font-nats font-bold col-span-1">{item.rank}</div>
-                                        <div className={`font-nats font-medium col-span-2 ${nameColor}`}>{item.username ?? "sampleName"}</div>
-                                        <div className="font-nats right-[5px] items-baseline">{item.points}</div>
+                                        <div className="font-nats text-2xl font-bold col-span-1">{item.rank}</div>
+                                        <div className={`font-nats font-normal text-2xl col-span-2 ${nameColor}`}>{item.username ?? "sampleName"}</div>
+                                        <div className="font-nats text-2xl right-[5px] items-baseline">{item.points}</div>
                                     </div>
                                 </div>
                             );
@@ -138,15 +140,15 @@ const Leaderboard = ({ handleClickActive }) => {
                         <div className="relative">
                             <div className="relative text-white">...</div>
 
-                            {leaderboard?.usersNearCurrentRank.map((item, index) => (
-                                <div key={index} className="relative rounded-[25px] w-[70vw] items-center mx-auto my-2">
+                            {leaderboard?.usersNearCurrentRank.map((item, index) => {
+                                if (item!=null) return <div key={index} className="relative rounded-[25px] w-[70vw] items-center mx-auto my-2">
                                     <div className="py-[2vh] grid grid-cols-4 text-[#ffffff]/[70%]">
-                                        <div className="font-nats font-bold col-span-1">{item.rank}</div>
+                                        <div className="font-nats font-bold col-span-1">{leaderboard?.currentRank - 2 + index}</div>
                                         <div className="font-nats font-medium col-span-2 text-[#ffffff]">{item.username ?? "sampleName"}</div>
                                         <div className="font-nats right-[5px] items-baseline">{item.points}</div>
                                     </div>
                                 </div>
-                            ))}
+                            })}
                         </div>
                     ) : null}
 
