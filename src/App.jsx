@@ -43,7 +43,7 @@ function App() {
       console.log(WebApp.initDataUnsafe.user.id.toString());
       let token = await doLogin(
         WebApp.initDataUnsafe.user.id.toString(),
-        WebApp.initDataUnsafe.user.username
+        WebApp.initDataUnsafe.user.username ?? WebApp.initDataUnsafe.user.first_name + " " + WebApp.initDataUnsafe.user.last_name
       )
       const userRefId = WebApp.initDataUnsafe?.start_param?.toString()
       console.log(userRefId);
