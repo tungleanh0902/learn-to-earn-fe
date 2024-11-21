@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import { createUserStore } from "./api/user.api";
 import { createSocialTaskStore } from "./api/socialTask.api";
 import { createSeasonBadgeStore } from "./api/seasonBadge.api";
+import { useEffect } from 'react';
 
 const Leaderboard = ({ handleClickActive }) => {
     const navigate = useNavigate();
@@ -19,11 +20,19 @@ const Leaderboard = ({ handleClickActive }) => {
     const activeTask = createSocialTaskStore(state => state.activeTasks);
     const checkBoughtSeasonBadge = createSeasonBadgeStore(state => state.checkBoughtSeasonBadge);
 
-    const currentRank = 14;
-
-    if (activeTask.length === 0) {
-        handleClickActive(0);
-        navigate("/");
+    useEffect(() => {
+        if (leaderboard.leaderboard == undefined) {
+            handleClickActive(0);
+            navigate("/");
+        }
+    })
+    
+    const shortName = (username) => {
+        if (username && username.length > 7) {
+            return username.slice(0, 7)+"..."
+        } else {
+            return username
+        }
     }
 
     const handleCopyLink = () => {
@@ -63,17 +72,17 @@ const Leaderboard = ({ handleClickActive }) => {
                 <div className="relative grid grid-cols-3 pt-[5vh] w-[80vw] items-center mx-auto">
                     <div className="col-start-1 col-span-1 items-center mx-auto">
                         <img
-                            className=""
+                            className="text-center"
                             src={top2}
                             alt="Top 2"
                         />
 
-                        <div className="text-white font-nats text-xl">
-                            {leaderboard?.leaderboard[1].username ?? "Vatani"}
+                        <div className="text-white font-nats text-xl text-center">
+                            {shortName(leaderboard?.leaderboard && leaderboard?.leaderboard[1]?.username) ?? "Vatani"}
                         </div>
 
                         <div className="text-[#ffffff]/[70%] font-nats">
-                            {leaderboard?.leaderboard[1].points ?? 0} pts
+                            {leaderboard?.leaderboard && leaderboard?.leaderboard[1]?.points} pts
                         </div>
                     </div>
 
@@ -85,11 +94,11 @@ const Leaderboard = ({ handleClickActive }) => {
                         ></img>
 
                         <div className="text-white font-nats text-xl">
-                            {leaderboard?.leaderboard[0].username}
+                            {shortName(leaderboard?.leaderboard && leaderboard?.leaderboard[0]?.username)}
                         </div>
 
                         <div className="text-[#ffffff]/[70%] font-nats">
-                            {leaderboard?.leaderboard[0].points ?? 0} pts
+                            {leaderboard?.leaderboard && leaderboard?.leaderboard[0]?.points} pts
                         </div>
                     </div>
 
@@ -101,11 +110,11 @@ const Leaderboard = ({ handleClickActive }) => {
                         />
 
                         <div className="text-white font-nats text-xl">
-                            {leaderboard?.leaderboard[2].username ?? "Jonathan"}
+                            {shortName(leaderboard?.leaderboard && leaderboard?.leaderboard[2]?.username) ?? "Jonathan"}
                         </div>
 
                         <div className="text-[#ffffff]/[70%] font-nats">
-                            {leaderboard?.leaderboard[2].points ?? 0} pts
+                            {leaderboard?.leaderboard && leaderboard?.leaderboard[2]?.points} pts
                         </div>
                     </div>
                 </div>
@@ -113,7 +122,7 @@ const Leaderboard = ({ handleClickActive }) => {
                 <div className="pt-[3vh]"></div>
 
                 <div className="max-h-[37vh] overflow-y-auto">
-                    {leaderboard?.leaderboard
+                    {leaderboard?.leaderboard && leaderboard?.leaderboard
                         .filter((item, index) => {
                             if (checkBoughtSeasonBadge && leaderboard?.currentRank >= 11 && leaderboard?.currentRank <= 13) {
                                 return (index >= 3 && index <= leaderboard?.currentRank + 1);

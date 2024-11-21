@@ -33,7 +33,6 @@ const QuestionSection = ({isCampaign, handleClickActive}) => {
         handleClickActive(0)
         navigate("/");
     }
-
     useEffect(() => {
         if (isCampaign) {
             if (lessonForCampaign.length == 0 || !lessonForCampaign || lessonForCampaign?.questions?.length == 0) {
