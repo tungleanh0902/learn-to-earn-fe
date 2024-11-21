@@ -30,7 +30,7 @@ const Navigation = ({active, handleClickActive, setIsCampaign}) => {
 
     return (
         <div className="bg-[#1e1e1e] w-[100vw]">
-            <ul className="flex relative top-[-2vh] justify-between items-center px-4">
+            <ul className="flex relative justify-between items-center px-4">
                 {Menus.map((menu, i) => (
                     <li key={i} className={`cursor-pointer ${active === i ? 'text-white' : 'text-gray-500'}`} onClick={() => handleClick(i, menu.path)}>
                         <a className="px-1 font-adlam-display">

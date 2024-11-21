@@ -75,7 +75,7 @@ const Home = ({ active, handleClickActive, setIsCampaign }) => {
                 <button
                     className="relative bg-white w-[75vw] justify-center mx-auto rounded-[13px]"
                     onClick={() => handleClick(1, "/learn")}>
-                    <div className="py-[1vh] font-adlam font-bold text-2xl">Daily quizzzz</div>
+                    <div className="py-[1vh] font-adlam font-bold text-2xl">Learn to earn</div>
                 </button>
 
                 <div className="pt-[3vh]"></div>

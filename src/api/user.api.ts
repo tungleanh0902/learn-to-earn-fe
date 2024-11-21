@@ -63,7 +63,7 @@ export const createUserStore = create((set: any, get: any, next: any) => (
 
         getLeaderBoard: async () => {
             await callApi('user/leaderboard', "POST", null, (res) => {
-                set({ Leaderboard: res.data })
+                set({ leaderboard: res.data })
             }, get().token)
         },
 

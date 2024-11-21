@@ -41,3 +41,8 @@
     font-family: "Auvicwant";
     src: url('./assets/fonts/EduAUVICWANTPre-VariableFont_wght.ttf') format("truetype");
 }
+
+@font-face {
+    font-family: "NATS";
+    src: url('./assets/fonts/NATS-Regular.ttf') format("truetype");
+}
