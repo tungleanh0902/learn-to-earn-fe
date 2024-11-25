@@ -49,6 +49,10 @@ const Home = ({ active, handleClickActive, setIsCampaign }) => {
     return (
         <div className="bg-[#1e1e1e] flex flex-row justify-center w-full h-full">
             <div className="bg-[#1e1e1e] overflow-y-scroll h-[78vh] w-screen h-screen relative">
+                <button 
+                    className ="relative bg-white text-black"
+                    onClick={() => handleClick(1, "/game")}
+                >Game</button>
                 <div className="relative pt-[5vh] font-baloo text-2xl font-bold text-white">Streaks: {userInfo?.streak ?? 1}x</div>
 
                 <button
