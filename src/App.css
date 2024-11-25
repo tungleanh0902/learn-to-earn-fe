@@ -143,3 +143,37 @@
 .active {
   background-color: white;
 }
+
+@keyframes fall {
+  from {
+    top: 0;
+  }
+  to {
+    top: 100%;
+  }
+}
+  game-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    margin-bottom: 20px;
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+  }
+  
+  /* button:hover { */
+    /* background-color: #0056b3; */
+  /* } */
+  
+
+.animate-fall {
+  animation: fall 5s linear forwards;
+}
+
+.gift-item {
+  color: #ff6347; /* Màu đỏ để dễ nhận biết hộp quà */
+  background-color: #ffe4e1; /* Màu nền nhạt */
+  border: 2px dashed #ff4500; /* Đường viền khác biệt */
+}
