@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css'
 import './index.css'
 import darkAavatar from './assets/avatar-dark.svg';
@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import WebApp from '@twa-dev/sdk'
 import { createUserStore } from "./api/user.api";
 import { createSeasonBadgeStore } from "./api/seasonBadge.api";
+import { isTMA } from '@telegram-apps/sdk';
 
 const Home = ({ active, handleClickActive, setIsCampaign }) => {
     const navigate = useNavigate();
@@ -18,6 +19,17 @@ const Home = ({ active, handleClickActive, setIsCampaign }) => {
     const doCheckIn = createUserStore(state => state.checkIn)
     const isApiLoading = createUserStore(state => state.isApiLoading)
     const checkBoughtSeasonBadge = createSeasonBadgeStore(state => state.checkBoughtSeasonBadge)
+
+    const [checkTma, setCheckTma] = useState(false);
+
+    useEffect(() => {
+        async function fetch() {
+            let isTma = await isTMA()
+            console.log(isTma);
+            setCheckTma(isTma)
+        }
+        fetch()
+    }, [])
 
     const handleClick = (index, path) => {
         if (isApiLoading == true) {
@@ -70,7 +82,20 @@ const Home = ({ active, handleClickActive, setIsCampaign }) => {
 
                 <div className="relative text-white font-baloo font-bold text-3xl">{userInfo?.points ?? 0} pts</div>
 
-                <div className="relative text-white text-base font-nunito-bold font-bold pb-[10vh]">{userInfo?.refCount ?? 0} referral</div>
+                <div className="relative text-white text-base font-nunito-bold font-bold pb-[3vh]">{userInfo?.refCount ?? 0} referral</div>
+
+                {
+                    checkTma ?
+                        <></>
+                        :
+                        <>
+                            <div class="relative bg-white w-[75vw] justify-center mx-auto rounded-[13px]">
+                                <input id="npm-install" type="text" class="col-span-6 bg-gray-50 border border-gray-300 text-gray-500 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500" value={`${import.meta.env.VITE_INVITE_URL}?startapp=${WebApp.initDataUnsafe.user.id.toString()}`} disabled readonly />
+                            </div>
+                            <div className="pt-[3vh]"></div>
+                        </>
+                }
+
 
                 <button
                     className="relative bg-white w-[75vw] justify-center mx-auto rounded-[13px]"
