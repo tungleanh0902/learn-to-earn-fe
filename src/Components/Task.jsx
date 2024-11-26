@@ -115,6 +115,7 @@ const Task = ({handleClickActive}) => {
                         <PointsPopUp className="flex-none"
                             points={newPoint}
                             isActive={isActive}
+                            isTon={false}
                         />
                         :
                         <></>

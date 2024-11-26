@@ -155,12 +155,29 @@
   game-button {
     padding: 10px 20px;
     font-size: 16px;
-    margin-bottom: 20px;
     cursor: pointer;
     background-color: #007bff;
     color: white;
     border: none;
     border-radius: 5px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  back-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    position: absolute;
+    top: 60%;
+    left: 50%;
+    transform: translate(-50%, -50%);
   }
   
   /* button:hover { */

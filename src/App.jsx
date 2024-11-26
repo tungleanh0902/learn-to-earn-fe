@@ -50,7 +50,6 @@ function App() {
         WebApp.initDataUnsafe.user.username ?? WebApp.initDataUnsafe.user.first_name + " " + WebApp.initDataUnsafe.user.last_name
       )
       const userRefId = WebApp.initDataUnsafe?.start_param?.toString()
-      console.log(userRefId);
       setUserId(userRefId)
       if (userRefId) {
         await addRef(userRefId, token);
