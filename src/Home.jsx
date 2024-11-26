@@ -51,7 +51,7 @@ const Home = ({ active, handleClickActive, setIsCampaign }) => {
             <div className="bg-[#1e1e1e] overflow-y-scroll h-[78vh] w-screen h-screen relative">
                 <div className="relative pt-[5vh] font-baloo text-2xl font-bold text-white">Streaks: {userInfo?.streak ?? 1}x</div>
 
-                <button 
+                <button
                     className="fixed top-[3vh] right-[5vw]"
                     onClick={() => handleCopyLink()}>
                     <img
@@ -95,7 +95,6 @@ const Home = ({ active, handleClickActive, setIsCampaign }) => {
                             <div className="pt-[3vh]"></div>
                         </>
                 }
-
 
                 <button
                     className="relative bg-white w-[75vw] justify-center mx-auto rounded-[13px]"
