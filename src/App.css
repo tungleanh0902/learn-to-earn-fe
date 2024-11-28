@@ -156,12 +156,13 @@
     padding: 10px 20px;
     font-size: 16px;
     cursor: pointer;
-    background-color: #007bff;
-    color: white;
+    background-color: #b2bd38;
+    color: rgb(0, 0, 0);
     border: none;
-    border-radius: 5px;
+    border-radius: 20px;
     position: absolute;
     top: 50%;
+    font-family: 'Baloo Da', sans-serif;
     left: 50%;
     transform: translate(-50%, -50%);
   }
@@ -170,10 +171,10 @@
     padding: 10px 20px;
     font-size: 16px;
     cursor: pointer;
-    background-color: #007bff;
-    color: white;
+    background-color: #dfe784;
+    color: rgb(0, 0, 0);
     border: none;
-    border-radius: 5px;
+    border-radius: 20px;
     position: absolute;
     top: 60%;
     left: 50%;

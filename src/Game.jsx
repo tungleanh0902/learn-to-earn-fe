@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 import gamebg from "./assets/game-bg.png";
 import frame from "./assets/frame.png";
+import dropgame from "./assets/drop-game.svg";
 
 import { createWordGameStore } from "./api/wordGame.api";
 import { createUserStore } from "./api/user.api";
@@ -18,7 +19,10 @@ const Game = () => {
     const [choosenWordIds, setChoosenWordIds] = useState([])
     const [topic, setTopic] = useState("")
     const [isDefault, setIsDefault] = useState(true)
+    const [isInvisible, setIsInvisible] = useState([]); // Initialize boolean array
 
+
+    
     const token = createUserStore(state => state.token)
     const userInfo = createUserStore(state => state.userInfo)
     const updateUserInfo = createUserStore(state => state.updateUserInfo)
@@ -36,10 +40,11 @@ const Game = () => {
         setGameRunning(true);
         setItems([]);
         setGameTime(35);
+        setIsInvisible(new Array(gameState.challenge.length).fill(false));
     };
 
-    const handleCatch = async (item) => {
-        setItems(items.filter((i) => i !== item)); // Xóa vật phẩm đã bắt
+    const handleCatch = async (item, index) => {
+        isInvisible[index] = false; // Xóa vật phẩm đã bắt
         setChoosenWordIds((prevItem) => [...prevItem, item._id.toString()])
         setIsDefault(true)
         if (item.topicIds.includes(game.topic._id.toString())) {
@@ -52,15 +57,20 @@ const Game = () => {
     // Logic tạo vật phẩm rơi 
     useEffect(() => {
         if (gameRunning) {
-            let itemIdx = 0
+            let itemIdx = 0;
+            words[itemIdx].left = Math.floor(Math.random() * 50) + "vw"
+            words[itemIdx].index = itemIdx
+            isInvisible[itemIdx] = true;
             const interval = setInterval(() => {
-                words[itemIdx].left = Math.floor(Math.random() * 50) + "vw"
+                words[itemIdx + 1].left = Math.floor(Math.random() * 50) + "vw"
+                words[itemIdx + 1].index = itemIdx + 1
+                isInvisible[itemIdx + 1] = true;
                 console.log(words[itemIdx]);
                 if (words[itemIdx]) {
                     setItems((prevItems) => [...prevItems, words[itemIdx]]);
                 }
                 itemIdx += 1
-            }, 1000);
+            }, 1500);
             return () => clearInterval(interval);
         }
     }, [gameRunning]);
@@ -100,7 +110,7 @@ const Game = () => {
     }
 
     const handleBack = () => {
-        navigate("/");
+        navigate("/earn");
     }
 
     return (
@@ -117,36 +127,56 @@ const Game = () => {
                         :
                         <></>
                 }
+                <div className="absolute top-[5vh] left-[5vw] text-3xl font-bold font-baloo text-white">Satori Drop</div>
+
                 {gameRunning ?
                     <>
-                        <p className="text-white">Topic: {topic}</p>
                         <div 
-                        className="relative w-[90vw] h-[80vh] mx-auto border-2 border-[#ccc] overflow-hidden rounded-[10px]"
+                        className="relative w-[100vw] h-[90vh] mx-auto overflow-hidden"
                         style={{
-                            backgroundImage: `url(${frame})`,
+                            backgroundImage: `url(${dropgame})`,
                             backgroundSize: 'cover',
                             backgroundPosition: 'center',
                           }}>
+                            <div className="absolute top-[10vh] right-[5vw] text-xl font-bold font-baloo text-white">Topic: {topic}</div>
+                            <div className="absolute top-[5vh] left-[5vw] text-3xl font-bold font-baloo text-white">Satori Drop</div>
+
                             {items.map((item) => (
-                                <div
-                                    className="absolute text-[36px] font-bold animate-fall text-[#333] bg-[rgba(255,255,255,0.8)] p-[10px] rounded-[10%]"
-                                    style={{ left: item?.left }}
-                                    onClick={() => handleCatch(item)}
-                                >
-                                    {item?.content}
-                                </div>
+                                isInvisible[item?.index] && (
+                                    <div
+                                        className="absolute text-[36px] font-bold animate-fall text-black bg-white bg-opacity-80 backdrop-blur-xl p-[10px] rounded-[10%]"
+                                        style={{ left: item?.left }}
+                                        onClick={() => handleCatch(item, item?.index)}
+                                    >
+                                        {item?.content}
+                                    </div>
+                                )
                             ))}
                         </div>
                         <p className="text-white ">Time Remaining: {gameTime}s</p>
                     </>
                     :
                     <>
-                        <game-button disabled={userInfo?.tickets > 0 ? false : true} onClick={startGame}>{userInfo?.tickets > 0 ? "Start Game" : "Out of ticket"}</game-button>
-                        <back-button onClick={handleBack}>Back</back-button>
-                        <img className="w-[90vw] h-[90vh] mx-auto border-2 border-[#ccc] rounded-[10px]"
-                            alt="Game Background"
-                            src={frame}
-                        ></img>
+                        <button
+                            className="px-4 py-2 text-3xl cursor-pointer bg-[#ffffff] text-black border-none rounded-[20px] absolute top-[30vh] left-1/2 transform -translate-x-1/2 -translate-y-1/2 font-baloo font-bold"
+                            onClick={startGame}
+                            disabled={userInfo?.tickets <= 0}
+                        >
+                            {userInfo?.tickets > 0 ? "Start Game" : "Out of ticket"}
+                        </button>
+                        <button
+                            className="px-4 py-2 text-3xl cursor-pointer bg-[#ffffff] text-black border-none rounded-[20px] absolute top-[42vh] left-1/2 transform -translate-x-1/2 -translate-y-1/2 font-baloo font-bold"
+                            onClick={handleBack}
+                        >
+                            Back
+                        </button>
+                        <div className="w-[100vw] h-[90vh] mx-auto"
+                            style={{
+                                backgroundImage: `url(${dropgame})`,
+                                backgroundSize: 'cover',
+                                backgroundPosition: 'center',
+                            }}
+                        ></div>
                     </>
                 }
             </div>

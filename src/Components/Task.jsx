@@ -129,7 +129,7 @@ const Task = ({handleClickActive}) => {
                     </li>
                 ))}
             </ul>
-            <ul className="relative max-h-[49vh] overflow-y-auto">
+            <ul className="relative max-h-[33vh] overflow-y-auto">
                 {filteredTaskItems.map((task, i) => (
                     <li key={i} className="relative pl-[10vw] items-center grid grid-cols-4 mar margin-task">
                         <img src={getImage(task.platform)} alt={task.title} className="w-6 h-6" />
