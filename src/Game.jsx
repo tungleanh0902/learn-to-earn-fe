@@ -3,6 +3,7 @@ import PointsPopUp from './Components/PointsPopUp';
 import { useNavigate } from 'react-router-dom';
 
 import gamebg from "./assets/game-bg.png";
+import frame from "./assets/frame.png";
 
 import { createWordGameStore } from "./api/wordGame.api";
 import { createUserStore } from "./api/user.api";
@@ -119,7 +120,13 @@ const Game = () => {
                 {gameRunning ?
                     <>
                         <p className="text-white">Topic: {topic}</p>
-                        <div className="bg-[rgba(255,255,255,0.8)] relative w-[90vw] h-[80vh] mx-auto border-2 border-[#ccc] overflow-hidden rounded-[10px]">
+                        <div 
+                        className="relative w-[90vw] h-[80vh] mx-auto border-2 border-[#ccc] overflow-hidden rounded-[10px]"
+                        style={{
+                            backgroundImage: `url(${frame})`,
+                            backgroundSize: 'cover',
+                            backgroundPosition: 'center',
+                          }}>
                             {items.map((item) => (
                                 <div
                                     className="absolute text-[36px] font-bold animate-fall text-[#333] bg-[rgba(255,255,255,0.8)] p-[10px] rounded-[10%]"
@@ -138,7 +145,7 @@ const Game = () => {
                         <back-button onClick={handleBack}>Back</back-button>
                         <img className="w-[90vw] h-[90vh] mx-auto border-2 border-[#ccc] rounded-[10px]"
                             alt="Game Background"
-                            src={gamebg}
+                            src={frame}
                         ></img>
                     </>
                 }
