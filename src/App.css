@@ -139,3 +139,7 @@
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
 }
+
+.active {
+  background-color: white;
+}
