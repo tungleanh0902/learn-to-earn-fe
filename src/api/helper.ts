@@ -32,13 +32,13 @@ export const callApi = async (url, method, data, callback, token) => {
                     err.response.data &&
                     err.response.data.message
                 ) {
-                    return addNotification({
+                    throw addNotification({
                         title: 'Error',
                         message: err.response.data.message,
                         theme: 'red',
                     })
                 } else if (err.response) {
-                    return addNotification({
+                    throw addNotification({
                         title: 'Error',
                         message: err.response.statusText,
                         theme: 'red',
@@ -67,4 +67,11 @@ export const createTransaction = (receiver: string, amount: string, payload: str
             },
         ],
     };
+}
+export const shortName = (username) => {
+    if (username && username.length > 7) {
+        return username.slice(0, 7)+"..."
+    } else {
+        return username
+    }
 }

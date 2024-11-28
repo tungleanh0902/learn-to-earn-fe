@@ -85,5 +85,13 @@ export const createUserStore = create((set: any, get: any, next: any) => (
                 set({ userInfo: res.data.user })
             }, get().token)
         },
+
+        checkTop10: async () => {
+            let bodyData
+            await callApi('user/check_current_rank', "POST", null, (res) => {
+                bodyData = res.data.userRank
+            }, get().token)
+            return bodyData
+        },
     }
 ))

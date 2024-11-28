@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import share from './assets/share-icon.png';
 // import top1 from './assets/top1.svg';
@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import { createUserStore } from "./api/user.api";
 import { createSocialTaskStore } from "./api/socialTask.api";
 import { createSeasonBadgeStore } from "./api/seasonBadge.api";
-import { useEffect } from 'react';
+import { shortName } from './api/helper';
 
 const Leaderboard = ({ handleClickActive }) => {
     const navigate = useNavigate();
@@ -26,14 +26,6 @@ const Leaderboard = ({ handleClickActive }) => {
             navigate("/");
         }
     })
-    
-    const shortName = (username) => {
-        if (username && username.length > 7) {
-            return username.slice(0, 7)+"..."
-        } else {
-            return username
-        }
-    }
 
     const handleCopyLink = () => {
         const inviteLink = `${import.meta.env.VITE_INVITE_URL}?startapp=${WebApp.initDataUnsafe.user.id.toString()}`;
