@@ -11,6 +11,7 @@ import { createUserStore } from "./api/user.api";
 import { createSocialTaskStore } from "./api/socialTask.api";
 import { createQuizzStore } from "./api/quizz.api";
 import { createSeasonBadgeStore } from "./api/seasonBadge.api";
+import { createVoucherStore } from "./api/voucher.api";
 import WebApp from '@twa-dev/sdk'
 import { THEME, TonConnectUIProvider } from "@tonconnect/ui-react";
 import { wallets } from './constants';
@@ -28,6 +29,7 @@ function App() {
   const checkCheckinDaily = createUserStore(state => state.checkCheckinDaily)
   const addRef = createUserStore(state => state.addRef)
   const getLeaderBoard = createUserStore(state => state.getLeaderBoard)
+  const getVouchers = createVoucherStore(state => state.getVouchers)
   
   const [active, setActive] = useState(0);
   const [isCampaign, setIsCampaign] = useState(false)
@@ -61,7 +63,7 @@ function App() {
       }
       await currentSeasonBadge()
       await getLeaderBoard()
-
+      await getVouchers(token)
       await setApiLoading(false)
     }
 

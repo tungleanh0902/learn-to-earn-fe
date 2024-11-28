@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import { createUserStore } from "./api/user.api";
 import { createSocialTaskStore } from "./api/socialTask.api";
 import { createSeasonBadgeStore } from "./api/seasonBadge.api";
+import { shortName } from './api/helper';
 
 const Leaderboard = ({ handleClickActive }) => {
     const navigate = useNavigate();
@@ -19,10 +20,12 @@ const Leaderboard = ({ handleClickActive }) => {
     const activeTask = createSocialTaskStore(state => state.activeTasks);
     const checkBoughtSeasonBadge = createSeasonBadgeStore(state => state.checkBoughtSeasonBadge);
 
-    if (activeTask.length === 0) {
-        handleClickActive(0);
-        navigate("/");
-    }
+    useEffect(() => {
+        if (leaderboard.leaderboard == undefined) {
+            handleClickActive(0);
+            navigate("/");
+        }
+    })
 
     const handleCopyLink = () => {
         const inviteLink = `${import.meta.env.VITE_INVITE_URL}?startapp=${WebApp.initDataUnsafe.user.id.toString()}`;
