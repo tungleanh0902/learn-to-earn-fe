@@ -21,8 +21,6 @@ const Game = () => {
     const [isDefault, setIsDefault] = useState(true)
     const [isInvisible, setIsInvisible] = useState([]); // Initialize boolean array
 
-
-    
     const token = createUserStore(state => state.token)
     const userInfo = createUserStore(state => state.userInfo)
     const updateUserInfo = createUserStore(state => state.updateUserInfo)
@@ -70,7 +68,7 @@ const Game = () => {
                     setItems((prevItems) => [...prevItems, words[itemIdx]]);
                 }
                 itemIdx += 1
-            }, 1500);
+            }, 1000);
             return () => clearInterval(interval);
         }
     }, [gameRunning]);
@@ -138,8 +136,8 @@ const Game = () => {
                             backgroundSize: 'cover',
                             backgroundPosition: 'center',
                           }}>
-                            <div className="absolute top-[10vh] right-[5vw] text-xl font-bold font-baloo text-white">Topic: {topic}</div>
-                            <div className="absolute top-[5vh] left-[5vw] text-3xl font-bold font-baloo text-white">Satori Drop</div>
+                            <div className="absolute top-[5vh] right-[5vw] text-xl font-bold font-baloo text-white z-50 bg-black p-[10px] rounded-xl">Topic: {topic}</div>
+                            <div className="absolute top-[10vh] left-[5vw] text-3xl font-bold font-baloo text-white">Satori Drop</div>
 
                             {items.map((item) => (
                                 isInvisible[item?.index] && (
@@ -165,7 +163,7 @@ const Game = () => {
                             {userInfo?.tickets > 0 ? "Start Game" : "Out of ticket"}
                         </button>
                         <button
-                            className="px-4 py-2 text-3xl cursor-pointer bg-[#ffffff] text-black border-none rounded-[20px] absolute top-[42vh] left-1/2 transform -translate-x-1/2 -translate-y-1/2 font-baloo font-bold"
+                            className="px-4 py-2 text-xl cursor-pointer text-white border-none rounded-[20px] absolute top-[38vh] left-1/2 transform -translate-x-1/2 -translate-y-1/2 font-baloo font-bold"
                             onClick={handleBack}
                         >
                             Back
