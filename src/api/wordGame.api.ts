@@ -5,21 +5,25 @@ export const createWordGameStore = create((set: any, get: any, next: any) => (
     {
         game: {},
 
-        answerWordGame: async (taskId: String, token: String) => {
-            let user
+        answerWordGame: async (choosenWordIds: string, topicId: string, token: string) => {
+            let data
             await callApi('word/answer', "POST", {
-                taskId,
+                choosenWordIds,
+                topicId
             }, (res) => {
                 console.log(res);
-                user = res.data.user
+                data = res.data
             }, token)
-            return user
+            return data
         },
 
-        getGame: async (token: String) => {
+        getGame: async (token: string) => {
+            let game
             await callApi('word/get_game', "POST", null, (res) => {
                 console.log(res);
                 set({ game: res.data })
+                game = res.data
             }, token)
+            return game
         },
     }))

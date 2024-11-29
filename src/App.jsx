@@ -7,6 +7,8 @@ import Earn from "./Earn";
 import Learn from "./Learn";
 import Leaderboard from "./Leaderboard";
 import Shop from './Shop';
+import Game from './Game';
+
 import { createUserStore } from "./api/user.api";
 import { createSocialTaskStore } from "./api/socialTask.api";
 import { createQuizzStore } from "./api/quizz.api";
@@ -48,7 +50,6 @@ function App() {
         WebApp.initDataUnsafe.user.username ?? WebApp.initDataUnsafe.user.first_name + " " + WebApp.initDataUnsafe.user.last_name
       )
       const userRefId = WebApp.initDataUnsafe?.start_param?.toString()
-      console.log(userRefId);
       setUserId(userRefId)
       if (userRefId) {
         await addRef(userRefId, token);
@@ -109,6 +110,7 @@ function App() {
                 />
               } />
               <Route path="/shop" element={<Shop />} />
+              <Route path="/game" element={<Game />} />
             </Routes>
           </div>
           <div className="footer max-h-[10vh]">

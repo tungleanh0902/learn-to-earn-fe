@@ -119,6 +119,7 @@ const QuestionSection = ({isCampaign, handleClickActive}) => {
                         <PointsPopUp className="flex-none"
                             points={newPoint}
                             isActive={isActive}
+                            isTon={false}
                         />
                         :
                         <></>

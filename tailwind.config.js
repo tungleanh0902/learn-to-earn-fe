@@ -23,6 +23,7 @@ export default {
       },
       backgroundImage: {
         'custom-gradient': 'linear-gradient(180deg, rgb(20, 50, 90) 0%, rgb(30, 30, 30) 100%)',
+        'beach': "url('../src/assets/game-bg.png')",
       },
     },
   },
