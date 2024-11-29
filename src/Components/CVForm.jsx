@@ -15,7 +15,6 @@ const CVForm = ({ currentItem, handleClose }) => {
     const [isActive, setIsActive] = useState(false);
     const [newPoint, setNewPoint] = useState(0);
 
-    const [phone, setPhone] = useState("")
     const [name, setName] = useState("")
     const [email, setEmail] = useState("")
     const [link, setLink] = useState("")
@@ -27,13 +26,6 @@ const CVForm = ({ currentItem, handleClose }) => {
                 theme: 'red',
               }) 
         }
-        let pattern = /(03|05|07|08|09|01[2|6|8|9])+([0-9]{8})\b/
-        if (!pattern.test(phone)) {
-            throw addNotification({
-                message: 'Invalid phone number',
-                theme: 'red',
-              }) 
-        }
         let emailPattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
         if (!emailPattern.test(email)) {
             throw addNotification({
@@ -41,7 +33,7 @@ const CVForm = ({ currentItem, handleClose }) => {
                 theme: 'red',
               }) 
         }
-        let data = await createCvProfile(phone, name, email, link, currentItem, token)
+        let data = await createCvProfile(name, email, link, currentItem, token)
         console.log(data);
         setNewPoint(data.points)
         updateUserInfo(data.user) 
@@ -82,14 +74,6 @@ const CVForm = ({ currentItem, handleClose }) => {
                                                     console.log(e.target.value);
                                                     setName(e.target.value)
                                                 }} class="block min-w-0 grow py-1.5 pl-1 pr-3 text-base text-gray-900 placeholder:text-gray-400 focus:outline focus:outline-0 sm:text-sm/6"/>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="sm:col-span-4">
-                                        <label className="block font-medium text-left text-gray-900">Phone</label>
-                                        <div class="mt-2">
-                                            <div class="flex rounded-md bg-white pl-3 outline outline-1 -outline-offset-1 outline-gray-300 focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-indigo-600">
-                                                <input value={phone} onChange={(e) => setPhone(e.target.value)} type="text" class="block min-w-0 grow py-1.5 pl-1 pr-3 text-base text-gray-900 placeholder:text-gray-400 focus:outline focus:outline-0 sm:text-sm/6"/>
                                             </div>
                                         </div>
                                     </div>
