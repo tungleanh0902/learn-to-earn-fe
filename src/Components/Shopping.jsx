@@ -9,7 +9,7 @@ import addNotification from 'react-push-notification';
 import { createSeasonBadgeStore } from "../api/seasonBadge.api";
 import { createUserStore } from "../api/user.api";
 import { createVoucherStore } from "../api/voucher.api";
-import Popup from './Popup';
+import Popup from './Popups/Popup';
 
 const Shopping = () => {
   const wallet = useTonWallet();

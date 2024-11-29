@@ -1,6 +1,6 @@
 import React from 'react';
-import Navigation from './Navigation';
-import { shortName } from '../api/helper';
+import Navigation from '../Navigation';
+import { shortName } from '../../api/helper';
 
 const PopupVoucher = ({ item, handleClose }) => {
     return (

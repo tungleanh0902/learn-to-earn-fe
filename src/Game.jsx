@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import PointsPopUp from './Components/PointsPopUp';
+import PointsPopUp from './Components/Popups/PointsPopUp';
 import { useNavigate } from 'react-router-dom';
 
 import gamebg from "./assets/game-bg.png";
