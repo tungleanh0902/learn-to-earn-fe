@@ -58,10 +58,11 @@ const CVForm = ({ currentItem, handleClose }) => {
                         :
                         <></>
                 }
-                <div class="justify-between p-4">
-                    <h3 class="text-4xl text-[#3367D5] font-semibold">
+                <div className="justify-between p-4">
+                    <h3 className="text-4xl text-[#3367D5] font-semibold">
                         Mazii Job
                     </h3>
+                    <p className='text-[#3367D5]'>Top Japanese Job Search Platform</p>
                     <form>
                         <div class="space-y-12">
                             <div class="border-b border-gray-900/10 pb-12">
