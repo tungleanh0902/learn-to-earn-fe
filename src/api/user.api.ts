@@ -93,5 +93,11 @@ export const createUserStore = create((set: any, get: any, next: any) => (
             }, get().token)
             return bodyData
         },
+
+        withdrawTon: async (data) => {
+            await callApi('user/withdraw_ton', "POST", data, (res) => {
+                set({ userInfo: res.user })
+            }, get().token)
+        },
     }
 ))
