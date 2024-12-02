@@ -203,7 +203,7 @@ const Game = () => {
                                 </p>
                             </div>
 
-                            <div className="absolute bottom-[5vh] left-[15vw] right-[15vw] items-center">
+                            <div className="absolute bottom-[5vh] left-[10vw] right-[10vw] items-center">
                                 <div className="text-white font-abeezee text-sm">Invite 5/3 friends to earn TON</div>
                                 <div className="bg-white rounded-[18px] px-[1vw] max-w-[100%]">
                                     <div className="font-adlam text-2xl px-[5vw] py-[0.7vh]">Let's go !!!🚀</div>
