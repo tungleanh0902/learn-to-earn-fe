@@ -1,17 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { createSentenceGameStore } from '../api/sentenceGame.api';
 import { createUserStore } from '../api/user.api';
-
-import { DndContext } from '@dnd-kit/core';
-// import { SortableContext, arrayMove } from '@dnd-kit/sortable';
-// import { SentencePart } from './SentencePart';
 import { createPortal } from 'react-dom'
-// import { SentenceRow } from './SentenceRow';
 
 const SentenceGame = () => {
-    const getGame = createSentenceGameStore(state => state.getGame);
-    const game = createSentenceGameStore(state => state.game);
-    const token = createUserStore(state => state.token);
 
     // const [selectedAnswer, setSelectedAnswer] = useState(null);
     const [selectedPhrase, setSelectedPhrase] = useState(null);
@@ -20,15 +12,19 @@ const SentenceGame = () => {
     const [randomItems, setRandomItems] = useState([]);
     const [shuffledPhrases, setShuffledPhrases] = useState([]);
     const [currentMeanings, setCurrentMeanings] = useState([]);
+    const [items, setItems] = useState([]);
 
-    const items = [
-        [['Phrase 1', '1'], ['Meaning 1', '1']],
-        [['Phrase 2', '2'], ['Meaning 2', '2']],
-        [['Phrase 3', '3'], ['Meaning 3', '3']],
-        [['Phrase 4', '4'], ['Meaning 4', '4']],
-        [['Phrase 5', '5'], ['Meaning 5', '5']],
-        [['Phrase 6', '6'], ['Meaning 6', '6']],
-    ];
+    const token = createUserStore(state => state.token);
+    const userInfo = createUserStore(state => state.userInfo);
+    const updateUserInfo = createUserStore(state => state.updateUserInfo);
+    const answerSentenceGame = createSentenceGameStore(state => state.answerSentenceGame);
+    const getGame = createSentenceGameStore(state => state.getGame);
+    const game = createSentenceGameStore(state => state.game);
+
+    const startGame = async () => {
+        let gameState = await getGame(token);
+        console.log(gameState);
+    }
 
     // Function to shuffle the array and pick 3 random elements
     const getRandomItems = (array, num) => {
@@ -100,6 +96,15 @@ const SentenceGame = () => {
             <div className="bg-[#1e1e1e] overflow-y-hidden overflow-x-auto w-screen h-[90vh] relative">
                 <div className='relative font-adlam text-white text-2xl pt-[5vh] text-left pl-[10vw] pr-[10vw]'>
                     Choose the corresponding meaning of the given phrase
+
+                    <button
+                            className="px-4 py-2 text-3xl cursor-pointer bg-[#ffffff] text-black border-none rounded-[20px] absolute top-[30vh] left-1/2 transform -translate-x-1/2 -translate-y-1/2 font-baloo font-bold"
+                            onClick={startGame}
+                            disabled={userInfo?.tickets <= 0}
+                        >
+                            {userInfo?.tickets > 0 ? "Start Game" : "Out of ticket"}
+                        </button>
+
                 </div>
 
                 <div className="flex justify-around mt-10">

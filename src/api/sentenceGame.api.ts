@@ -7,7 +7,7 @@ export const createSentenceGameStore = create((set: any, get: any, next: any) =>
 
         answerSentenceGame: async (taskId: String, token: String) => {
             let user
-            await callApi('sentence/answer', "POST", {
+            await callApi('word/answer_match_meaning', "POST", {
                 taskId,
             }, (res) => {
                 console.log(res);
@@ -17,7 +17,7 @@ export const createSentenceGameStore = create((set: any, get: any, next: any) =>
         },
 
         getGame: async (token: String) => {
-            await callApi('sentence/get_game', "POST", null, (res) => {
+            await callApi('word/get_game_match_meaning', "POST", null, (res) => {
                 console.log(res);
                 set({ game: res.data })
             }, token)
