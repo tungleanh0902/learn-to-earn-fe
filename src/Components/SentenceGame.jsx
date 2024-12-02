@@ -21,10 +21,25 @@ const SentenceGame = () => {
     const getGame = createSentenceGameStore(state => state.getGame);
     const game = createSentenceGameStore(state => state.game);
 
-    const startGame = async () => {
-        let gameState = await getGame(token);
-        console.log(gameState);
-    }
+    // const startGame = async () => {
+    //     let gameState = await getGame(token);
+    //     gameState.challenge.forEach((item, index) => {
+    //         items.push([[item.content, index], [item.meaning, index]]);
+    //     })
+    // }
+
+    useEffect(() => {
+        const fetchItems = async () => {
+            if (token) {
+                let gameState = await getGame(token);
+                gameState.challenge.forEach((item, index) => {
+                    items.push([[item.content, index], [item.meaning, index]]); 
+                })
+            }
+        };
+
+        fetchItems();
+    }, [token, getGame]);
 
     // Function to shuffle the array and pick 3 random elements
     const getRandomItems = (array, num) => {
@@ -96,15 +111,6 @@ const SentenceGame = () => {
             <div className="bg-[#1e1e1e] overflow-y-hidden overflow-x-auto w-screen h-[90vh] relative">
                 <div className='relative font-adlam text-white text-2xl pt-[5vh] text-left pl-[10vw] pr-[10vw]'>
                     Choose the corresponding meaning of the given phrase
-
-                    <button
-                            className="px-4 py-2 text-3xl cursor-pointer bg-[#ffffff] text-black border-none rounded-[20px] absolute top-[30vh] left-1/2 transform -translate-x-1/2 -translate-y-1/2 font-baloo font-bold"
-                            onClick={startGame}
-                            disabled={userInfo?.tickets <= 0}
-                        >
-                            {userInfo?.tickets > 0 ? "Start Game" : "Out of ticket"}
-                        </button>
-
                 </div>
 
                 <div className="flex justify-around mt-10">

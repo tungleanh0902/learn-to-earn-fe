@@ -17,9 +17,12 @@ export const createSentenceGameStore = create((set: any, get: any, next: any) =>
         },
 
         getGame: async (token: String) => {
+            let game
             await callApi('word/get_game_match_meaning', "POST", null, (res) => {
                 console.log(res);
                 set({ game: res.data })
+                game = res.data
             }, token)
+            return game
         },
     }))
