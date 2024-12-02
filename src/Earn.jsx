@@ -2,9 +2,13 @@ import React, { useEffect } from 'react';
 import WeeklyCampaign from './Components/WeeklyCampaign';
 import Task from './Components/Task';
 import { useNavigate } from 'react-router-dom';
+import ton from './assets/ton.png';
 import Game from './Game';
+import { createUserStore } from "./api/user.api";
 
 const Earn = ({ active, handleClickActive, setIsCampaign }) => {
+    const userInfo = createUserStore(state => state.userInfo)
+
     const navigate = useNavigate();
 
     const handleClick = (index, path) => {
@@ -18,6 +22,13 @@ const Earn = ({ active, handleClickActive, setIsCampaign }) => {
             <div className="bg-[#1e1e1e] overflow-hidden w-screen h-[90vh] relative">
                 <div className="relative text-[40px] font-baloo font-bold text-white text-left left-[5vw] pt-[3vh]">
                     Earn
+                </div>
+
+                <div className="absolute text-right font-baloo font-bold text-black bg-white rounded-l-2xl rounded-r-xl text-left right-[10vw] top-[5vh]">
+                    <div className='flex'>
+                        <img src={ton} alt="" className='w-[30px] rounded-full' />
+                        <div className='pt-[5px] pl-[5px] pr-[10px] text-right font-medium'>{userInfo?.bonusTon ?? 0}</div>
+                    </div>
                 </div>
 
                 <div className="relative">
