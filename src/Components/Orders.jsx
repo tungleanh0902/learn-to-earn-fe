@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import mazii from '../assets/mazii.png';
 import { createVoucherStore } from "../api/voucher.api";
-import PopupVoucher from './PopupVoucher';
+import PopupVoucher from '../Components/Popups/PopupVoucher';
 
 const Orders = () => {
     const vouchers = createVoucherStore(state => state.vouchers)

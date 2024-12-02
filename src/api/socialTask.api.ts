@@ -15,6 +15,20 @@ export const createSocialTaskStore = create((set: any, get: any, next: any) => (
             return data
         },
 
+        createCvProfile: async (name: String, email: String, link: String, taskId: String, token: String) => {
+            let data
+            await callApi('social_task/create_cv_profile', "POST", {
+                name,
+                email,
+                link,
+                taskId
+            }, (res) => {
+                data = res.data
+            }, token)
+            return data
+        },
+
+
         getActiveTasks: async (token: String) => {
             await callApi('social_task/all_active', "POST", null, (res) => {
                 set({ activeTasks: res.data })

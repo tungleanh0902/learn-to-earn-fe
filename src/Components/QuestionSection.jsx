@@ -3,7 +3,7 @@ import { createQuizzStore } from "../api/quizz.api";
 import { createUserStore } from "../api/user.api";
 import { createSocialTaskStore } from "../api/socialTask.api";
 import { useNavigate } from 'react-router-dom';
-import PointsPopUp from './PointsPopUp';
+import PointsPopUp from './Popups/PointsPopUp';
 
 const QuestionSection = ({isCampaign, handleClickActive}) => {
     const navigate = useNavigate();
