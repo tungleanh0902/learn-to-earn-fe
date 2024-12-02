@@ -20,6 +20,7 @@ const Game = () => {
     const [topic, setTopic] = useState("")
     const [isDefault, setIsDefault] = useState(true)
     const [isInvisible, setIsInvisible] = useState([]); // Initialize boolean array
+    const [popUpVisible, setPopupVisible] = useState(true);
 
     const token = createUserStore(state => state.token)
     const userInfo = createUserStore(state => state.userInfo)
@@ -31,6 +32,7 @@ const Game = () => {
     const [newPoint, setNewPoint] = useState("0");
     const [isTon, setIsTon] = useState(false);
 
+
     const startGame = async () => {
         let gameState = await getGame(token)
         setWords(gameState.challenge)
@@ -39,6 +41,10 @@ const Game = () => {
         setItems([]);
         setGameTime(35);
         setIsInvisible(new Array(gameState.challenge.length).fill(false));
+    };
+
+    const closePopUp = () => {
+        setPopupVisible(false);
     };
 
     const handleCatch = async (item, index) => {
@@ -177,6 +183,35 @@ const Game = () => {
                         ></div>
                     </>
                 }
+
+                {popUpVisible && (
+                    <div 
+                    className=" inset-0 flex items-center justify-center fixed"
+                    onClick={closePopUp}>
+                        <div className="bg-[#0088cc] w-[80vw] h-[70vh] rounded-[20px] relative ">
+                            <div className="pt-[3vh] relative"></div>
+                            <div className="font-adlam text-white font-medium text-4xl relative">Satori Drop</div>
+                            <div className="pt-[2vh] relative"></div>
+                            <div className="font-baloo text-white font-bold text-xl">How to play?</div>
+
+                            <div className="label">
+                                <p className ="text-white text-left pl-[10vw] pr-[5vw] text-sm font-afacad-variable">
+                                    <div className="list-item">Words in Japanese will fall from the top of the screen</div>
+                                    <div className="list-item">Your job is to catch the right words that match the theme or meaning.</div>
+                                    <div className="list-item">If you miss or pick the wrong word, you lose points or time.</div>
+                                    <div className="list-item">Score more than 1000 points to have a chance to earn TON.</div>
+                                </p>
+                            </div>
+
+                            <div className="absolute bottom-[5vh] left-[15vw] right-[15vw] items-center">
+                                <div className="text-white font-abeezee text-sm">Invite 5/3 friends to earn TON</div>
+                                <div className="bg-white rounded-[18px] px-[1vw] max-w-[100%]">
+                                    <div className="font-adlam text-2xl px-[5vw] py-[0.7vh]">Let's go !!!🚀</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );
