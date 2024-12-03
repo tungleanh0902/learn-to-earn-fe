@@ -6,6 +6,10 @@ export const createQuizzStore = create((set: any, get: any, next: any) => (
         lesson: [],
         lessonForCampaign: [],
         questionIdx: 0,
+        wrongStreak: 0,
+        doIncreaseWrongStreak: async (val: number) => {
+            set({ wrongStreak: val })
+        },
         doIncreaseIndex: async (idx: number) => {
             set({ questionIdx: idx })
         },
