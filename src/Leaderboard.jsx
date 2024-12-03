@@ -68,7 +68,7 @@ const Leaderboard = ({ handleClickActive }) => {
                         />
 
                         <div className="text-white font-nats text-xl text-center">
-                            {shortName(leaderboard?.leaderboard && leaderboard?.leaderboard[1]?.username) ?? "Vatani"}
+                            {shortName(leaderboard?.leaderboard && leaderboard?.leaderboard[1]?.username, 7)}
                         </div>
 
                         <div className="text-[#ffffff]/[70%] font-nats">
@@ -84,7 +84,7 @@ const Leaderboard = ({ handleClickActive }) => {
                         ></img>
 
                         <div className="text-white font-nats text-xl">
-                            {shortName(leaderboard?.leaderboard && leaderboard?.leaderboard[0]?.username)}
+                            {shortName(leaderboard?.leaderboard && leaderboard?.leaderboard[0]?.username, 7)}
                         </div>
 
                         <div className="text-[#ffffff]/[70%] font-nats">
@@ -100,7 +100,7 @@ const Leaderboard = ({ handleClickActive }) => {
                         />
 
                         <div className="text-white font-nats text-xl">
-                            {shortName(leaderboard?.leaderboard && leaderboard?.leaderboard[2]?.username) ?? "Jonathan"}
+                            {shortName(leaderboard?.leaderboard && leaderboard?.leaderboard[2]?.username, 7)}
                         </div>
 
                         <div className="text-[#ffffff]/[70%] font-nats">
@@ -128,7 +128,7 @@ const Leaderboard = ({ handleClickActive }) => {
                                 <div key={index} className="relative rounded-[25px] w-[70vw] items-center mx-auto my-2" style={{ backgroundColor: bgColor }}>
                                     <div className={`py-[2vh] grid grid-cols-4 ${textColor}`}>
                                         <div className="font-nats text-2xl font-bold col-span-1">{item.rank}</div>
-                                        <div className={`font-nats font-normal text-2xl col-span-2 ${nameColor}`}>{item.username ?? "sampleName"}</div>
+                                        <div className={`font-nats font-normal text-2xl col-span-2 ${nameColor}`}>{shortName(item.username ?? "sampleNameeeeee", 10)}</div>
                                         <div className="font-nats text-2xl right-[5px] items-baseline">{item.points}</div>
                                     </div>
                                 </div>

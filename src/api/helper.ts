@@ -68,9 +68,9 @@ export const createTransaction = (receiver: string, amount: string, payload: str
         ],
     };
 }
-export const shortName = (username) => {
-    if (username && username.length > 7) {
-        return username.slice(0, 7)+"..."
+export const shortName = (username, length = 7) => {
+    if (username && username.length > length) {
+        return username.slice(0, length)+"..."
     } else {
         return username
     }
