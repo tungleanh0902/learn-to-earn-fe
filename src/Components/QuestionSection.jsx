@@ -4,6 +4,7 @@ import { createUserStore } from "../api/user.api";
 import { createSocialTaskStore } from "../api/socialTask.api";
 import { useNavigate } from 'react-router-dom';
 import PointsPopUp from './Popups/PointsPopUp';
+import PopupMazii from './Popups/PopupMazii';
 
 const QuestionSection = ({isCampaign, handleClickActive}) => {
     const navigate = useNavigate();
@@ -17,6 +18,8 @@ const QuestionSection = ({isCampaign, handleClickActive}) => {
     const answerQuizz = createQuizzStore(state => state.answerQuizz)
     const doIncreaseIndex = createQuizzStore(state => state.doIncreaseIndex)
     const questionIdx = createQuizzStore(state => state.questionIdx)
+    const wrongStreak = createQuizzStore(state => state.wrongStreak)
+    const doIncreaseWrongStreak = createQuizzStore(state => state.doIncreaseWrongStreak)
     const answerSpecialQuizz = createQuizzStore(state => state.answerSpecialQuizz)
     const answerQuizzCampaign = createQuizzStore(state => state.answerQuizzCampaign)
     const activeTask = createSocialTaskStore(state => state.activeTasks)
@@ -29,6 +32,8 @@ const QuestionSection = ({isCampaign, handleClickActive}) => {
     const [isActive, setIsActive] = useState(false);
     const [newPoint, setNewPoint] = useState(0);
     const [wrongActive, setWrongActive] = useState(false);
+    const [prevAnswer, setPrevAnswer] = useState(true);
+    const [activePopUp, setActivePopUp] = useState(false);
 
     if (activeTask.length == 0) {
         handleClickActive(0)
@@ -54,17 +59,34 @@ const QuestionSection = ({isCampaign, handleClickActive}) => {
         setHighlightedAnswer(answerId);
     };
 
+    const handleClose = () => {
+        setActivePopUp(false)
+        doIncreaseWrongStreak(0)
+        setPrevAnswer(true)
+    }
+
     const handleConfirmClick = async () => {
+        console.log("handleConfirmClick");
         if (highlightedAnswer == null) {
             return
         }
         setSelectedAnswer(highlightedAnswer);
+        let isCorrect = false;
         for (let index = 0; index < currentQuestion.options.length; index++) {
             const option = currentQuestion.options[index];
             if (option._id == highlightedAnswer && option?.isCorrect == true) {
+                isCorrect = true;
                 setIsCorrect(true);
-            } else {
-                setWrongActive(true);
+                doIncreaseWrongStreak(0)
+                setPrevAnswer(true)
+                console.log(wrongStreak);
+            }
+        }
+        if (isCorrect == false) {
+            setWrongActive(true);
+            setPrevAnswer(false)
+            if (prevAnswer == false) {
+                doIncreaseWrongStreak(wrongStreak+1)
             }
         }
         let newUser
@@ -112,6 +134,11 @@ const QuestionSection = ({isCampaign, handleClickActive}) => {
             setIsActive(false)
             setNewPoint(0)
         }, 2000); // 0.5 seconds delay
+        console.log(wrongStreak);
+        
+        if (wrongStreak == 5) {
+            setActivePopUp(true)
+        }
     };
 
     return (
@@ -123,6 +150,14 @@ const QuestionSection = ({isCampaign, handleClickActive}) => {
                             points={newPoint}
                             isActive={isActive}
                             isTon={false}
+                        />
+                        :
+                        <></>
+                }
+                {
+                    activePopUp ?
+                        <PopupMazii className="flex-none"
+                            handleClose={handleClose}
                         />
                         :
                         <></>
@@ -162,12 +197,13 @@ const QuestionSection = ({isCampaign, handleClickActive}) => {
 
                             {/* {highlightedAnswer && !selectedAnswer && ( */}
                             <div className={`relative py-[0.5vh] flex-none rounded-[15px] w-[75%] mx-[12.5%] mt-[5%] ${selectedAnswer ? (isCorrect ? 'bg-green-500' : 'bg-red-500') : 'bg-white'}`}>
-                                <div
+                                <button
+                                    disabled={activePopUp}
                                     className={`relative font-adlam-display font-bold text-[150%] my-[2%] cursor-pointer ${selectedAnswer ? 'text-white' : 'text-black'}`}
                                     onClick={selectedAnswer ? null : handleConfirmClick}
                                 >
                                     {selectedAnswer ? (isCorrect ? 'Correct!' : 'Incorrect!') : 'Confirm'}
-                                </div>
+                                </button>
                             </div>
                             {/* )}} */}
                         </>
