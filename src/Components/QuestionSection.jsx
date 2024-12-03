@@ -28,6 +28,7 @@ const QuestionSection = ({isCampaign, handleClickActive}) => {
     const [outOfQuestion, setOutOfQuestion] = useState(false);
     const [isActive, setIsActive] = useState(false);
     const [newPoint, setNewPoint] = useState(0);
+    const [wrongActive, setWrongActive] = useState(false);
 
     if (activeTask.length == 0) {
         handleClickActive(0)
@@ -62,6 +63,8 @@ const QuestionSection = ({isCampaign, handleClickActive}) => {
             const option = currentQuestion.options[index];
             if (option._id == highlightedAnswer && option?.isCorrect == true) {
                 setIsCorrect(true);
+            } else {
+                setWrongActive(true);
             }
         }
         let newUser
@@ -105,7 +108,7 @@ const QuestionSection = ({isCampaign, handleClickActive}) => {
             setSelectedAnswer(null);
             setHighlightedAnswer(null);
             setIsCorrect(null);
-
+            setWrongActive(false)
             setIsActive(false)
             setNewPoint(0)
         }, 2000); // 0.5 seconds delay
@@ -132,25 +135,25 @@ const QuestionSection = ({isCampaign, handleClickActive}) => {
                             {/* <div className="text-white">{newPoint}</div> */}
                             <div className="relative pt-[3vh] grid grid-cols-2 gap-2 px-[12%] font-bold font-nunito-bold">
                                 <div
-                                    className={`answer-box bg-[#c3e2c2] ${highlightedAnswer == currentQuestion?.options[0]._id ? 'border-4 border-blue-500' : ''} ${selectedAnswer == currentQuestion?.options[0]._id && !isCorrect ? 'bg-red-500 text-white' : ''} ${selectedAnswer == currentQuestion?.options[0]._id && isCorrect ? 'bg-green-500 text-white' : ''}`}
+                                    className={`answer-box bg-[#c3e2c2] ${wrongActive && currentQuestion?.options[0]?.isCorrect == true ? 'bg-green-500 text-white' : ''} ${highlightedAnswer == currentQuestion?.options[0]._id ? 'border-4 border-blue-500' : ''} ${selectedAnswer == currentQuestion?.options[0]._id && !isCorrect ? 'bg-red-500 text-white' : ''} ${selectedAnswer == currentQuestion?.options[0]._id && isCorrect ? 'bg-green-500 text-white' : ''}`}
                                     onClick={() => handleAnswerClick(currentQuestion?.options[0]._id)}
                                 >
                                     {currentQuestion?.options[0].content}
                                 </div>
                                 <div
-                                    className={`answer-box bg-[#e4efc4] ${highlightedAnswer == currentQuestion?.options[1]._id ? 'border-4 border-blue-500' : ''} ${selectedAnswer == currentQuestion?.options[1]._id && !isCorrect ? 'bg-red-500 text-white' : ''} ${selectedAnswer == currentQuestion?.options[1]._id && isCorrect ? 'bg-green-500 text-white' : ''}`}
+                                    className={`answer-box bg-[#e4efc4] ${wrongActive && currentQuestion?.options[1]?.isCorrect == true ? 'bg-green-500 text-white' : ''} ${highlightedAnswer == currentQuestion?.options[1]._id ? 'border-4 border-blue-500' : ''} ${selectedAnswer == currentQuestion?.options[1]._id && !isCorrect ? 'bg-red-500 text-white' : ''} ${selectedAnswer == currentQuestion?.options[1]._id && isCorrect ? 'bg-green-500 text-white' : ''}`}
                                     onClick={() => handleAnswerClick(currentQuestion?.options[1]._id)}
                                 >
                                     {currentQuestion?.options[1].content}
                                 </div>
                                 <div
-                                    className={`answer-box bg-[#FEEE91] ${highlightedAnswer == currentQuestion?.options[2]._id ? 'border-4 border-blue-500' : ''} ${selectedAnswer == currentQuestion?.options[2]._id && !isCorrect ? 'bg-red-500 text-white' : ''} ${selectedAnswer == currentQuestion?.options[2]._id && isCorrect ? 'bg-green-500 text-white' : ''}`}
+                                    className={`answer-box bg-[#FEEE91] ${wrongActive && currentQuestion?.options[2]?.isCorrect == true ? 'bg-green-500 text-white' : ''} ${highlightedAnswer == currentQuestion?.options[2]._id ? 'border-4 border-blue-500' : ''} ${selectedAnswer == currentQuestion?.options[2]._id && !isCorrect ? 'bg-red-500 text-white' : ''} ${selectedAnswer == currentQuestion?.options[2]._id && isCorrect ? 'bg-green-500 text-white' : ''}`}
                                     onClick={() => handleAnswerClick(currentQuestion?.options[2]._id)}
                                 >
                                     {currentQuestion?.options[2].content}
                                 </div>
                                 <div
-                                    className={`answer-box bg-[#CD8D7A] ${highlightedAnswer == currentQuestion?.options[3]._id ? 'border-4 border-blue-500' : ''} ${selectedAnswer == currentQuestion?.options[3]._id && !isCorrect ? 'bg-red-500 text-white' : ''} ${selectedAnswer == currentQuestion?.options[3]._id && isCorrect ? 'bg-green-500 text-white' : ''}`}
+                                    className={`answer-box bg-[#CD8D7A] ${wrongActive && currentQuestion?.options[3]?.isCorrect == true ? 'bg-green-500 text-white' : ''} ${highlightedAnswer == currentQuestion?.options[3]._id ? 'border-4 border-blue-500' : ''} ${selectedAnswer == currentQuestion?.options[3]._id && !isCorrect ? 'bg-red-500 text-white' : ''} ${selectedAnswer == currentQuestion?.options[3]._id && isCorrect ? 'bg-green-500 text-white' : ''}`}
                                     onClick={() => handleAnswerClick(currentQuestion?.options[3]._id)}
                                 >
                                     {currentQuestion?.options[3].content}
