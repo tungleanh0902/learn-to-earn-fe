@@ -209,7 +209,7 @@ const Shopping = () => {
               handleClose={handleClose}
             />
         }
-        <div className="relative mt-[15px] bg-[#1e6252] w-[80vw] h-[37vh] left-[10vw] rounded-[15px]">
+        {/* <div className="relative mt-[15px] bg-[#1e6252] w-[80vw] h-[37vh] left-[10vw] rounded-[15px]">
           <div className="relative pt-[4vh] font-adlam-display text-4xl text-white [text-shadow:0px_4px_4px_#00000040]">Special shop</div>
 
           <div className="relative font-medium text-[24px] pt-[1vh] pb-[1vh] text-white text-center font-afacad-variable">Mazii license</div>
@@ -239,7 +239,7 @@ const Shopping = () => {
               </div>
             </button>
           )}
-        </div>
+        </div> */}
 
         <div className="relative bg-[#1e3e62] w-[80vw] h-[62vh] top-[3vh] left-[10vw] rounded-[15px]">
           <div className="relative text-white top-[1vh] font-adlam-display text-3xl break-words [text-shadow:0px_4px_4px_#00000040]">
@@ -334,7 +334,7 @@ const Shopping = () => {
           )}
         </div>
 
-        <div className="relative top-[9vh] bg-[#1e6252] w-[80vw] h-[40vh] left-[10vw] rounded-[15px]">
+        <div className="relative top-[9vh] bg-[#1e6252] w-[80vw] h-[40vh] left-[10vw] rounded-[15px] mb-[140px]">
           <div className="relative pt-[4vh] font-adlam-display text-3xl text-white [text-shadow:0px_4px_4px_#00000040]">Streak Saver</div>
 
           <div className="relative font-medium pt-[3vh] pb-[1vh] text-white text-left left-[7vw] font-afacad-variable">Automatic save your streak</div>
