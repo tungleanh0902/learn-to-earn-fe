@@ -7,6 +7,8 @@ export const createQuizzStore = create((set: any, get: any, next: any) => (
         lessonForCampaign: [],
         questionIdx: 0,
         wrongStreak: 0,
+        quizzSummary: {},
+
         doIncreaseWrongStreak: async (val: number) => {
             set({ wrongStreak: val })
         },
@@ -74,5 +76,14 @@ export const createQuizzStore = create((set: any, get: any, next: any) => (
             } catch (error) {
                 set({ lessonForCampaign: [] })
             }
+        },
+
+        doSummaryQuizzDaily: async (token: String) => {
+            let data
+            await callApi('quizz/summary', "POST", null, (res) => { 
+                data = res.data
+                set({ quizzSummary: res.data })
+            }, token)
+            return data
         },
     }))

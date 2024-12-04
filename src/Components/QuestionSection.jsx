@@ -5,8 +5,10 @@ import { createSocialTaskStore } from "../api/socialTask.api";
 import { useNavigate } from 'react-router-dom';
 import PointsPopUp from './Popups/PointsPopUp';
 import PopupMazii from './Popups/PopupMazii';
+import { DonutChart } from "./DonutChart";
+import star from "../assets/star.png" 
 
-const QuestionSection = ({isCampaign, handleClickActive}) => {
+const QuestionSection = ({ isCampaign, handleClickActive }) => {
     const navigate = useNavigate();
 
     const lesson = createQuizzStore(state => state.lesson)
@@ -22,6 +24,7 @@ const QuestionSection = ({isCampaign, handleClickActive}) => {
     const doIncreaseWrongStreak = createQuizzStore(state => state.doIncreaseWrongStreak)
     const answerSpecialQuizz = createQuizzStore(state => state.answerSpecialQuizz)
     const answerQuizzCampaign = createQuizzStore(state => state.answerQuizzCampaign)
+    const doSummaryQuizzDaily = createQuizzStore(state => state.doSummaryQuizzDaily)
     const activeTask = createSocialTaskStore(state => state.activeTasks)
 
     const [currentQuestion, setCurrentQuestion] = useState(null);
@@ -34,25 +37,32 @@ const QuestionSection = ({isCampaign, handleClickActive}) => {
     const [wrongActive, setWrongActive] = useState(false);
     const [prevAnswer, setPrevAnswer] = useState(true);
     const [activePopUp, setActivePopUp] = useState(false);
+    const [summary, setSummary] = useState({}); 
 
     if (activeTask.length == 0) {
         handleClickActive(0)
         navigate("/");
     }
     useEffect(() => {
-        if (isCampaign) {
-            if (lessonForCampaign.length == 0 || !lessonForCampaign || lessonForCampaign?.questions?.length == 0) {
-                setOutOfQuestion(true)
+        async function fetch() {
+            if (isCampaign) {
+                if (lessonForCampaign.length == 0 || !lessonForCampaign || lessonForCampaign?.questions?.length == 0) {
+                    await fetchSummary()
+                    setOutOfQuestion(true)
+                } else {
+                    setCurrentQuestion(lessonForCampaign?.questions[questionIdx])
+                }
             } else {
-                setCurrentQuestion(lessonForCampaign?.questions[questionIdx])
-            }
-        } else {
-            if (lesson.length == 0 || !lesson || lesson?.questions?.length == 0) {
-                setOutOfQuestion(true)
-            } else {
-                setCurrentQuestion(lesson?.questions[questionIdx])
+                if (lesson.length == 0 || !lesson || lesson?.questions?.length == 0) {
+                    await fetchSummary()
+                    setOutOfQuestion(true)
+                } else {
+                    setCurrentQuestion(lesson?.questions[questionIdx])
+                }
             }
         }
+
+        fetch()
     }, []);
 
     const handleAnswerClick = (answerId) => {
@@ -86,22 +96,22 @@ const QuestionSection = ({isCampaign, handleClickActive}) => {
             setWrongActive(true);
             setPrevAnswer(false)
             if (prevAnswer == false) {
-                doIncreaseWrongStreak(wrongStreak+1)
+                doIncreaseWrongStreak(wrongStreak + 1)
             }
         }
         let newUser
         let points = 0
         if (isCampaign) {
-            let data = await answerQuizzCampaign(highlightedAnswer, token) 
+            let data = await answerQuizzCampaign(highlightedAnswer, token)
             newUser = data.user
             points = data.points
         } else {
             if (userInfo.moreQuizz > 0) {
-                let data = await answerSpecialQuizz(highlightedAnswer, token) 
+                let data = await answerSpecialQuizz(highlightedAnswer, token)
                 newUser = data.user
                 points = data.points
             } else {
-                let data = await answerQuizz(highlightedAnswer, token) 
+                let data = await answerQuizz(highlightedAnswer, token)
                 newUser = data.user
                 points = data.points
             }
@@ -110,10 +120,11 @@ const QuestionSection = ({isCampaign, handleClickActive}) => {
         setIsActive(true)
         await updateUserInfo(newUser)
 
-        setTimeout(() => {
+        setTimeout(async () => {
             let nextIdx = questionIdx + 1
             if (isCampaign) {
                 if (questionIdx == lessonForCampaign.questions.length - 1) {
+                    await fetchSummary()
                     setOutOfQuestion(true)
                 } else {
                     doIncreaseIndex(nextIdx)
@@ -121,6 +132,7 @@ const QuestionSection = ({isCampaign, handleClickActive}) => {
                 }
             } else {
                 if (questionIdx == lesson.questions.length - 1) {
+                    await fetchSummary()
                     setOutOfQuestion(true)
                 } else {
                     doIncreaseIndex(nextIdx)
@@ -135,17 +147,35 @@ const QuestionSection = ({isCampaign, handleClickActive}) => {
             setNewPoint(0)
         }, 2000); // 0.5 seconds delay
         console.log(wrongStreak);
-        
+
         if (wrongStreak == 5) {
             setActivePopUp(true)
         }
     };
 
+    const fetchSummary = async () => {
+        let data = await doSummaryQuizzDaily(token)
+        let summaryArray = []
+        summaryArray.push({ value: data.correctAnswers }) 
+        summaryArray.push({ value: data.falseAnswers }) 
+        setSummary(summaryArray)
+    }
+
+    const handleGoHome = () => {
+        handleClickActive(0)
+        navigate("/");
+    }
+
+    const handleGoShop = () => {
+        handleClickActive(4)
+        navigate("/shop");
+    }
+
     return (
         <div className="overflow-hidden">
             <div className="items-center flex-col">
                 {
-                    isActive && newPoint!=0 ?
+                    isActive && newPoint != 0 ?
                         <PointsPopUp className="flex-none"
                             points={newPoint}
                             isActive={isActive}
@@ -162,51 +192,87 @@ const QuestionSection = ({isCampaign, handleClickActive}) => {
                         :
                         <></>
                 }
-                    {outOfQuestion == true ?
-                        <p className="font-nunito-bold text-bold text-white text-[120%]">Out of daily quizz</p>
-                        :
-                        <>
-                            <p className="font-nunito-bold text-bold text-white text-[120%]">{currentQuestion?.content ?? "Question"}</p>
-                            {/* <div className="text-white">{newPoint}</div> */}
-                            <div className="relative pt-[3vh] grid grid-cols-2 gap-2 px-[12%] font-bold font-nunito-bold">
-                                <div
-                                    className={`answer-box bg-[#c3e2c2] ${wrongActive && currentQuestion?.options[0]?.isCorrect == true ? 'bg-green-500 text-white' : ''} ${highlightedAnswer == currentQuestion?.options[0]._id ? 'border-4 border-blue-500' : ''} ${selectedAnswer == currentQuestion?.options[0]._id && !isCorrect ? 'bg-red-500 text-white' : ''} ${selectedAnswer == currentQuestion?.options[0]._id && isCorrect ? 'bg-green-500 text-white' : ''}`}
-                                    onClick={() => handleAnswerClick(currentQuestion?.options[0]._id)}
-                                >
-                                    {currentQuestion?.options[0].content}
+                {outOfQuestion == true ?
+                    <div className="absolute fixed m-auto left-0 right-0 p-4 w-[350px] max-h-full z-50 top-20">
+                        <div className="relative rounded-lg shadow bg-black">
+                            <div className="items-center justify-between p-4 text-white">
+                                <h3 class="text-base text-4xl leading-relaxed text-white">
+                                    Congratulations!!!
+                                </h3>
+                                <p className='text-white'>🚀</p>
+                                <div className="absolute top-[-40px] ml-[-205px]">
+                                    <DonutChart data={summary} width={700} height={400} />
                                 </div>
-                                <div
-                                    className={`answer-box bg-[#e4efc4] ${wrongActive && currentQuestion?.options[1]?.isCorrect == true ? 'bg-green-500 text-white' : ''} ${highlightedAnswer == currentQuestion?.options[1]._id ? 'border-4 border-blue-500' : ''} ${selectedAnswer == currentQuestion?.options[1]._id && !isCorrect ? 'bg-red-500 text-white' : ''} ${selectedAnswer == currentQuestion?.options[1]._id && isCorrect ? 'bg-green-500 text-white' : ''}`}
-                                    onClick={() => handleAnswerClick(currentQuestion?.options[1]._id)}
-                                >
-                                    {currentQuestion?.options[1].content}
+                                <div className='mt-[60px] mb-[80px]'>
+                                    <div>
+                                        <span className='text-4xl'>{summary[0].value}</span><span className='text-sm'>/ {summary[0].value + summary[1].value}</span>
+                                    </div>
+                                    <p className='text-sm'>Quizz played</p>
                                 </div>
-                                <div
-                                    className={`answer-box bg-[#FEEE91] ${wrongActive && currentQuestion?.options[2]?.isCorrect == true ? 'bg-green-500 text-white' : ''} ${highlightedAnswer == currentQuestion?.options[2]._id ? 'border-4 border-blue-500' : ''} ${selectedAnswer == currentQuestion?.options[2]._id && !isCorrect ? 'bg-red-500 text-white' : ''} ${selectedAnswer == currentQuestion?.options[2]._id && isCorrect ? 'bg-green-500 text-white' : ''}`}
-                                    onClick={() => handleAnswerClick(currentQuestion?.options[2]._id)}
-                                >
-                                    {currentQuestion?.options[2].content}
+                                <div className='flex text-left'>
+                                    <div className='bg-[#BB2B17] w-[140px] p-[15px] rounded-xl mr-[20px]'>
+                                        <p className='text-xl mb-[5px]'>{summary[1].value}</p>
+                                        <p className='text-xs'>Wrong</p>
+                                    </div>
+                                    <div className='bg-[#209F66] relative w-[140px] p-[15px] rounded-xl'>
+                                        <p className='text-xl mb-[5px]'>{summary[0].value}</p>
+                                        <p className='text-xs'>Quizz won</p>
+                                        <img className='absolute top-3 right-5' src={star} alt="" />
+                                    </div>
                                 </div>
-                                <div
-                                    className={`answer-box bg-[#CD8D7A] ${wrongActive && currentQuestion?.options[3]?.isCorrect == true ? 'bg-green-500 text-white' : ''} ${highlightedAnswer == currentQuestion?.options[3]._id ? 'border-4 border-blue-500' : ''} ${selectedAnswer == currentQuestion?.options[3]._id && !isCorrect ? 'bg-red-500 text-white' : ''} ${selectedAnswer == currentQuestion?.options[3]._id && isCorrect ? 'bg-green-500 text-white' : ''}`}
-                                    onClick={() => handleAnswerClick(currentQuestion?.options[3]._id)}
-                                >
-                                    {currentQuestion?.options[3].content}
-                                </div>
-                            </div>
-
-                            {/* {highlightedAnswer && !selectedAnswer && ( */}
-                            <div className={`relative py-[0.5vh] flex-none rounded-[15px] w-[75%] mx-[12.5%] mt-[5%] ${selectedAnswer ? (isCorrect ? 'bg-green-500' : 'bg-red-500') : 'bg-white'}`}>
+                                <p className='text-[#707579] text-bold mt-[10px] mb-[5px]'>Out of questions</p>
                                 <button
-                                    disabled={activePopUp}
-                                    className={`relative font-adlam-display font-bold text-[150%] my-[2%] cursor-pointer ${selectedAnswer ? 'text-white' : 'text-black'}`}
-                                    onClick={selectedAnswer ? null : handleConfirmClick}
-                                >
-                                    {selectedAnswer ? (isCorrect ? 'Correct!' : 'Incorrect!') : 'Confirm'}
+                                    onClick={handleGoShop}
+                                    className="bottom-[3vh] py-[1vh] rounded-[15px] w-[60vw] left-[10vw] text-black font-adlam-display text-xl bg-white">
+                                        Buy more quizzes
                                 </button>
+                                <button onClick={handleGoHome} className='text-[#707579]'>Go back home</button>
                             </div>
-                            {/* )}} */}
-                        </>
+                        </div>
+                    </div>
+                    :
+                    <>
+                        <p className="font-nunito-bold text-bold text-white text-[120%]">{currentQuestion?.content ?? "Question"}</p>
+                        {/* <div className="text-white">{newPoint}</div> */}
+                        <div className="relative pt-[3vh] grid grid-cols-2 gap-2 px-[12%] font-bold font-nunito-bold">
+                            <div
+                                className={`answer-box bg-[#c3e2c2] ${wrongActive && currentQuestion?.options[0]?.isCorrect == true ? 'bg-green-500 text-white' : ''} ${highlightedAnswer == currentQuestion?.options[0]._id ? 'border-4 border-blue-500' : ''} ${selectedAnswer == currentQuestion?.options[0]._id && !isCorrect ? 'bg-red-500 text-white' : ''} ${selectedAnswer == currentQuestion?.options[0]._id && isCorrect ? 'bg-green-500 text-white' : ''}`}
+                                onClick={() => handleAnswerClick(currentQuestion?.options[0]._id)}
+                            >
+                                {currentQuestion?.options[0].content}
+                            </div>
+                            <div
+                                className={`answer-box bg-[#e4efc4] ${wrongActive && currentQuestion?.options[1]?.isCorrect == true ? 'bg-green-500 text-white' : ''} ${highlightedAnswer == currentQuestion?.options[1]._id ? 'border-4 border-blue-500' : ''} ${selectedAnswer == currentQuestion?.options[1]._id && !isCorrect ? 'bg-red-500 text-white' : ''} ${selectedAnswer == currentQuestion?.options[1]._id && isCorrect ? 'bg-green-500 text-white' : ''}`}
+                                onClick={() => handleAnswerClick(currentQuestion?.options[1]._id)}
+                            >
+                                {currentQuestion?.options[1].content}
+                            </div>
+                            <div
+                                className={`answer-box bg-[#FEEE91] ${wrongActive && currentQuestion?.options[2]?.isCorrect == true ? 'bg-green-500 text-white' : ''} ${highlightedAnswer == currentQuestion?.options[2]._id ? 'border-4 border-blue-500' : ''} ${selectedAnswer == currentQuestion?.options[2]._id && !isCorrect ? 'bg-red-500 text-white' : ''} ${selectedAnswer == currentQuestion?.options[2]._id && isCorrect ? 'bg-green-500 text-white' : ''}`}
+                                onClick={() => handleAnswerClick(currentQuestion?.options[2]._id)}
+                            >
+                                {currentQuestion?.options[2].content}
+                            </div>
+                            <div
+                                className={`answer-box bg-[#CD8D7A] ${wrongActive && currentQuestion?.options[3]?.isCorrect == true ? 'bg-green-500 text-white' : ''} ${highlightedAnswer == currentQuestion?.options[3]._id ? 'border-4 border-blue-500' : ''} ${selectedAnswer == currentQuestion?.options[3]._id && !isCorrect ? 'bg-red-500 text-white' : ''} ${selectedAnswer == currentQuestion?.options[3]._id && isCorrect ? 'bg-green-500 text-white' : ''}`}
+                                onClick={() => handleAnswerClick(currentQuestion?.options[3]._id)}
+                            >
+                                {currentQuestion?.options[3].content}
+                            </div>
+                        </div>
+
+                        {/* {highlightedAnswer && !selectedAnswer && ( */}
+                        <div className={`relative py-[0.5vh] flex-none rounded-[15px] w-[75%] mx-[12.5%] mt-[5%] ${selectedAnswer ? (isCorrect ? 'bg-green-500' : 'bg-red-500') : 'bg-white'}`}>
+                            <button
+                                disabled={activePopUp}
+                                className={`relative font-adlam-display font-bold text-[150%] my-[2%] cursor-pointer ${selectedAnswer ? 'text-white' : 'text-black'}`}
+                                onClick={selectedAnswer ? null : handleConfirmClick}
+                            >
+                                {selectedAnswer ? (isCorrect ? 'Correct!' : 'Incorrect!') : 'Confirm'}
+                            </button>
+                        </div>
+                        {/* )}} */}
+                    </>
                 }
             </div>
         </div>
