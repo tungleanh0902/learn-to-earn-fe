@@ -49,6 +49,7 @@ const QuestionSection = ({ isCampaign, handleClickActive }) => {
                 if (lessonForCampaign.length == 0 || !lessonForCampaign || lessonForCampaign?.questions?.length == 0) {
                     await fetchSummary()
                     setOutOfQuestion(true)
+                    setCurrentQuestion(null)
                 } else {
                     setCurrentQuestion(lessonForCampaign?.questions[questionIdx])
                 }
@@ -56,6 +57,7 @@ const QuestionSection = ({ isCampaign, handleClickActive }) => {
                 if (lesson.length == 0 || !lesson || lesson?.questions?.length == 0) {
                     await fetchSummary()
                     setOutOfQuestion(true)
+                    setCurrentQuestion(null)
                 } else {
                     setCurrentQuestion(lesson?.questions[questionIdx])
                 }
@@ -126,6 +128,7 @@ const QuestionSection = ({ isCampaign, handleClickActive }) => {
                 if (questionIdx == lessonForCampaign.questions.length - 1) {
                     await fetchSummary()
                     setOutOfQuestion(true)
+                    setCurrentQuestion(null)
                 } else {
                     doIncreaseIndex(nextIdx)
                     setCurrentQuestion(lessonForCampaign.questions[nextIdx]);
@@ -134,6 +137,7 @@ const QuestionSection = ({ isCampaign, handleClickActive }) => {
                 if (questionIdx == lesson.questions.length - 1) {
                     await fetchSummary()
                     setOutOfQuestion(true)
+                    setCurrentQuestion(null)
                 } else {
                     doIncreaseIndex(nextIdx)
                     setCurrentQuestion(lesson.questions[nextIdx]);
