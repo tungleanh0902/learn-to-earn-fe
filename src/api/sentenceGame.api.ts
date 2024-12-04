@@ -5,10 +5,10 @@ export const createSentenceGameStore = create((set: any, get: any, next: any) =>
     {
         game: {},
 
-        answerSentenceGame: async (taskId: String, token: String) => {
+        answerSentenceGame: async (phraseId: String, meaningId: String, token: String) => {
             let user
             await callApi('word/answer_match_meaning', "POST", {
-                taskId,
+                phraseId, meaningId,
             }, (res) => {
                 console.log(res);
                 user = res.data.user
