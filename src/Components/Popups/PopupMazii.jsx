@@ -4,7 +4,9 @@ import Navigation from '../Navigation';
 const PopupMazii = ({ handleClose }) => {
     const handleClick = () => {
         window.open("https://job.mazii.net/vi-VN", '_blank');
-        handleClose()
+        setTimeout(() => {
+            handleClose()
+        }, 5000)
     }
 
     return (

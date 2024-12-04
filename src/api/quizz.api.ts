@@ -8,6 +8,7 @@ export const createQuizzStore = create((set: any, get: any, next: any) => (
         questionIdx: 0,
         wrongStreak: 0,
         quizzSummary: {},
+        answers: 0,
 
         doIncreaseWrongStreak: async (val: number) => {
             set({ wrongStreak: val })
@@ -19,7 +20,10 @@ export const createQuizzStore = create((set: any, get: any, next: any) => (
         getRandomLesson: async (token: String) => {
             try {
                 await callApi('quizz/random_lesson', "POST", null, (res) => {
-                    set({ lesson: res.data[0] })
+                    set({ 
+                        lesson: res.data.lessons[0],
+                        answers: res.data.answers
+                    })
                 }, token)
             } catch (error) {
                 set({ lesson: [] })
@@ -33,6 +37,7 @@ export const createQuizzStore = create((set: any, get: any, next: any) => (
                     optionId
                 }, (res) => {
                     data = res.data
+                    set({ answers: data.answers })
                 }, token)
                 return data
             } catch (error) {
