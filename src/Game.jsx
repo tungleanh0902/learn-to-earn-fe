@@ -8,6 +8,7 @@ import dropgame from "./assets/drop-game.svg";
 
 import { createWordGameStore } from "./api/wordGame.api";
 import { createUserStore } from "./api/user.api";
+import { wait } from "./api/helper";
 
 const Game = () => {
     const navigate = useNavigate();
@@ -99,10 +100,6 @@ const Game = () => {
         fetch()
     }, [gameTime, gameRunning]);
 
-    function wait(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
-    }
-
     async function openPopUp(isTon, points, timeout) {
         setIsTon(isTon)
         setNewPoint(points)
@@ -161,6 +158,11 @@ const Game = () => {
                     </>
                     :
                     <>
+                        <p
+                            className="px-4 py-2 text-xl cursor-pointer text-white border-none rounded-[20px] absolute top-[22vh] left-1/2 transform -translate-x-1/2 -translate-y-1/2 font-baloo font-bold"
+                        >
+                            Tickets: {userInfo?.tickets ?? 0}
+                        </p>
                         <button
                             className="px-4 py-2 text-3xl cursor-pointer bg-[#ffffff] text-black border-none rounded-[20px] absolute top-[30vh] left-1/2 transform -translate-x-1/2 -translate-y-1/2 font-baloo font-bold"
                             onClick={startGame}

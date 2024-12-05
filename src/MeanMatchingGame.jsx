@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { createMeanMatchingGameStore } from '../api/meanMatchingGame.api';
-import { createUserStore } from '../api/user.api';
-import { createPortal } from 'react-dom'
-import kanjimaster from '../assets/kanji_master.svg';
+import { createMeanMatchingGameStore } from './api/meanMatchingGame.api';
+import { createUserStore } from './api/user.api';
+import kanjimaster from './assets/kanji_master.svg';
 import { useNavigate } from 'react-router-dom';
+import PointsPopUp from './Components/Popups/PointsPopUp';
+import { wait } from './api/helper';
 
-const SentenceGame = () => {
+const MeanMatchingGame = () => {
     const navigate = useNavigate();
 
     // const [selectedAnswer, setSelectedAnswer] = useState(null);
@@ -24,6 +25,10 @@ const SentenceGame = () => {
     const [currentQuestion, setCurrentQuestion] = useState(0);
     const [pairCount, setPairCount] = useState(0);
     const [selectedAnswer, setSelectedAnswer] = useState([]);
+    const [isActive, setIsActive] = useState(false);
+    const [newPoint, setNewPoint] = useState("0");
+    const [isTon, setIsTon] = useState(false);
+    const [isDefault, setIsDefault] = useState(true)
 
     const token = createUserStore(state => state.token);
     const userInfo = createUserStore(state => state.userInfo);
@@ -82,6 +87,16 @@ const SentenceGame = () => {
 
     const handleBack = () => {
         navigate("/earn")
+    }
+
+    async function openPopUp(isTon, points, timeout) {
+        setIsTon(isTon)
+        setNewPoint(points)
+        setIsActive(true)
+        await wait(timeout)
+        setIsActive(false)
+        setNewPoint("0")
+        setIsTon(false)
     }
 
     const handlePhraseClick = (phrase, id) => {
@@ -147,7 +162,7 @@ const SentenceGame = () => {
                         setGameRunning(false);
                         // let data = await answerSentenceGame(choosenPhraseIds, choosenMeaningIds, token)
                         // updateUserInfo(data.user)
-                        setIsDefault(false)
+                        // setIsDefault(false)
                         // await openPopUp(false, "+"+data.points, 2000)
                         // await wait(500)
                         // if (data.bonusTon) {
@@ -189,7 +204,17 @@ const SentenceGame = () => {
                         backgroundPosition: 'center',
                     }}
                 ></div>
-
+                {
+                    isActive ?
+                        <PointsPopUp
+                            points={newPoint}
+                            isActive={isActive}
+                            isTon={isTon}
+                            isDefault={isDefault}
+                        />
+                        :
+                        <></>
+                }
                 {gameRunning ? 
                     <>
                         <div className="font-baloo text-white text-2xl absolute top-[6vh] right-[5vw] font-semibold">Time left: {gameTime}s</div>
@@ -223,6 +248,11 @@ const SentenceGame = () => {
                     </> 
                     : 
                     <>
+                        <p
+                            className="px-4 py-2 text-xl cursor-pointer text-white border-none rounded-[20px] absolute top-[22vh] left-1/2 transform -translate-x-1/2 -translate-y-1/2 font-baloo font-bold"
+                        >
+                            Tickets: {userInfo?.tickets ?? 0}
+                        </p>
                         <button
                             className="px-4 py-2 text-3xl cursor-pointer bg-[#ffffff] text-black border-none rounded-[20px] absolute top-[30vh] left-1/2 transform -translate-x-1/2 -translate-y-1/2 font-baloo font-bold"
                             onClick={startGame}
@@ -243,4 +273,4 @@ const SentenceGame = () => {
     );
 };
 
-export default SentenceGame;
+export default MeanMatchingGame;

@@ -6,14 +6,14 @@ export const createMeanMatchingGameStore = create((set: any, get: any, next: any
         game: {},
 
         answerMeanMatchingGame: async (data: any, token: String) => {
-            let user
+            let bodyData
             await callApi('word/answer_match_meaning', "POST",
                 data
             , (res) => {
                 console.log(res);
-                user = res.data.user
+                bodyData = res.data
             }, token)
-            return user
+            return bodyData
         },
 
         getGame: async (token: String) => {
