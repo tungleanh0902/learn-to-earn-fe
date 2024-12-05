@@ -1,15 +1,15 @@
 import { create } from "zustand";
 import { callApi } from "./helper"
 
-export const createSentenceGameStore = create((set: any, get: any, next: any) => (
+export const createMeanMatchingGameStore = create((set: any, get: any, next: any) => (
     {
         game: {},
 
-        answerSentenceGame: async (phraseId: String, meaningId: String, token: String) => {
+        answerMeanMatchingGame: async (data: any, token: String) => {
             let user
-            await callApi('word/answer_match_meaning', "POST", {
-                phraseId, meaningId,
-            }, (res) => {
+            await callApi('word/answer_match_meaning', "POST",
+                data
+            , (res) => {
                 console.log(res);
                 user = res.data.user
             }, token)

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { createSentenceGameStore } from '../api/sentenceGame.api';
+import { createMeanMatchingGameStore } from '../api/meanMatchingGame.api';
 import { createUserStore } from '../api/user.api';
 import { createPortal } from 'react-dom'
 import kanjimaster from '../assets/kanji_master.svg';
@@ -11,8 +11,9 @@ const SentenceGame = () => {
     // const [selectedAnswer, setSelectedAnswer] = useState(null);
     const [selectedPhrase, setSelectedPhrase] = useState(null);
     const [selectedMeaning, setSelectedMeaning] = useState(null);
+    const [selectedPhraseId, setSelectedPhraseId] = useState(null);
+    const [selectedMeaningId, setSelectedMeaningId] = useState(null);
     const [isCorrect, setIsCorrect] = useState(null);
-    const [randomItems, setRandomItems] = useState([]);
     const [shuffledPhrases, setShuffledPhrases] = useState([]);
     const [currentMeanings, setCurrentMeanings] = useState([]);
     const [items, setItems] = useState([]);
@@ -22,17 +23,13 @@ const SentenceGame = () => {
     const [isPhraseDisable, setIsPhraseDisable] = useState([]);
     const [currentQuestion, setCurrentQuestion] = useState(0);
     const [pairCount, setPairCount] = useState(0);
-    const [choosenPhraseIds, setChoosenPhraseIds] = useState([]);
-    const [choosenMeaningIds, setChoosenMeaningIds] = useState([]);
-    const [itemId, setItemId] = useState([]);
+    const [selectedAnswer, setSelectedAnswer] = useState([]);
 
     const token = createUserStore(state => state.token);
-    // console.log(token);
     const userInfo = createUserStore(state => state.userInfo);
     const updateUserInfo = createUserStore(state => state.updateUserInfo);
-    const answerSentenceGame = createSentenceGameStore(state => state.answerSentenceGame);
-    const getGame = createSentenceGameStore(state => state.getGame);
-    const game = createSentenceGameStore(state => state.game);
+    const getGame = createMeanMatchingGameStore(state => state.getGame);
+    const answerMeanMatchingGame = createMeanMatchingGameStore(state => state.answerMeanMatchingGame);
 
     const incrementPairCount = () => {
         setPairCount(prevInt => prevInt + 1);
@@ -61,19 +58,15 @@ const SentenceGame = () => {
         setCurrentQuestion(0);
         setPairCount(0);
         setItems([]);
-        setItemId([]);
-        itemId.push(0);
+        // let tmpItems = []
         let gameState = await getGame(token);
         let i = 1;
         gameState.challenge.forEach((item) => {
             items.push([[item.content, i], [item.meaning, i]]);
+            // tmpItems.push([[item.content, i], [item.meaning, i]]);
             i += 1;
-            itemId.push(item._id);
         })
-        console.log(itemId[1]);
-        // console.log(items);        
-        setChoosenMeaningIds([]);
-        setChoosenPhraseIds([]);
+        // setItems(tmpItems)
         setIsMeaningDisable(new Array(items.length).fill(false));
         setIsPhraseDisable(new Array(items.length).fill(false));
         setGameRunning(true);
@@ -91,20 +84,24 @@ const SentenceGame = () => {
         navigate("/earn")
     }
 
-    const handlePhraseClick = (phrase) => {
+    const handlePhraseClick = (phrase, id) => {
         if (selectedPhrase == phrase) {
             setSelectedPhrase(null);
+            setSelectedPhraseId(null)
         }
         else {
+            setSelectedPhraseId(id)
             setSelectedPhrase(phrase);
         }
     }
 
-    const handleMeaningClick = (meaning) => {
+    const handleMeaningClick = (meaning, id) => {
         if (selectedMeaning == meaning) {
             setSelectedMeaning(null);
+            setSelectedMeaningId(null)
         }
         else {
+            setSelectedMeaningId(id)
             setSelectedMeaning(meaning);
         }
     }
@@ -116,7 +113,8 @@ const SentenceGame = () => {
                 return () => clearTimeout(timer);
             } else if (gameTime == 0) {
                 setGameRunning(false);
-                let data = await answerSentenceGame(choosenPhraseIds, choosenMeaningIds, token);
+                console.log(selectedAnswer);
+                let data = await answerMeanMatchingGame({answers: selectedAnswer}, token);
                 updateUserInfo(data.user);
                 await openPopUp(false, "+"+ data.points, 2000)
                 await wait(500)
@@ -130,9 +128,13 @@ const SentenceGame = () => {
 
     useEffect(() => {
         if (selectedPhrase && selectedMeaning) {
-            setChoosenPhraseIds((prevItem) => [...prevItem, itemId[selectedPhrase].toString()]);
-            setChoosenMeaningIds((prevItem) => [...prevItem, itemId[selectedMeaning].toString()]);
-            setIsCorrect(selectedMeaning == selectedPhrase);
+            console.log(selectedMeaning);
+            console.log(selectedPhrase);
+            setSelectedAnswer((prevItem) => [...prevItem, {
+                content: selectedPhrase,
+                meaning: selectedMeaning
+            }])
+            setIsCorrect(selectedMeaningId == selectedPhraseId);
         }
       }, [selectedPhrase, selectedMeaning]);
 
@@ -143,14 +145,14 @@ const SentenceGame = () => {
                 if (pairCount == 3) {
                     if (currentQuestion == 16) {
                         setGameRunning(false);
-                        let data = await answerSentenceGame(choosenPhraseIds, choosenMeaningIds, token)
-                        updateUserInfo(data.user)
+                        // let data = await answerSentenceGame(choosenPhraseIds, choosenMeaningIds, token)
+                        // updateUserInfo(data.user)
                         setIsDefault(false)
-                        await openPopUp(false, "+"+data.points, 2000)
-                        await wait(500)
-                        if (data.bonusTon) {
-                            await openPopUp(true, "+"+data.bonusTon, 2000)
-                        }
+                        // await openPopUp(false, "+"+data.points, 2000)
+                        // await wait(500)
+                        // if (data.bonusTon) {
+                        //     await openPopUp(true, "+"+data.bonusTon, 2000)
+                        // }
                     }
                     incrementCurrentQuestion();
                     setPairCount(0);
@@ -197,9 +199,9 @@ const SentenceGame = () => {
                                 <div className="absolute top-[0vh] grid grid-cols-2 gap-2">{shuffledPhrases.slice(currentQuestion, currentQuestion + 4).map((phrase, index) => (
                                     <button
                                         key={phrase[1]}
-                                        className={`sentence-box w-[35vw] text-black font-adlam font-bold bg-[#d9d9d9] col-start-1 col-span-1 mb-4 overflow-hidden text-ellipsis ${selectedPhrase == phrase[1] ? 'border-4 border-blue-500' : ''} ${selectedPhrase == phrase[1] && isCorrect == false ? 'bg-red-500 text-white' : ''} ${selectedPhrase == phrase[1] && isCorrect ? 'bg-green-500 text-white' : ''} ${isPhraseDisable[phrase[1]] ? 'bg-transparent border-none' : ''}`}
-                                        onClick={() => handlePhraseClick(phrase[1])}
-                                        disabled={isPhraseDisable[phrase[1]] == true}> 
+                                        className={`sentence-box w-[35vw] text-black font-adlam font-bold bg-[#d9d9d9] col-start-1 col-span-1 mb-4 overflow-hidden text-ellipsis ${selectedPhrase == phrase[0] ? 'border-4 border-blue-500' : ''} ${selectedPhrase == phrase[0] && isCorrect == false ? 'bg-red-500 text-white' : ''} ${selectedPhrase == phrase[0] && isCorrect ? 'bg-green-500 text-white' : ''} ${isPhraseDisable[phrase[0]] ? 'invisible' : ''}`}
+                                        onClick={() => handlePhraseClick(phrase[0], phrase[1])}
+                                        disabled={isPhraseDisable[phrase[0]] == true}> 
                                             {isPhraseDisable[phrase[1]] ? null : phrase[0]}
                                     </button>
                                 ))}
@@ -208,9 +210,9 @@ const SentenceGame = () => {
                                 <div className="absolute left-[42vw] grid grid-cols-2 gap-2">{currentMeanings.slice(currentQuestion, currentQuestion + 4).map((meaning, index) => (
                                     <button
                                         key={meaning[1]}
-                                        className={`sentence-box w-[35vw] text-black font-adlam font-bold bg-[#d9d9d9] col-start-2 col-span-1 mb-4 overflow-hidden text-ellipsis  ${selectedMeaning == meaning[1] ? 'border-4 border-blue-500' : ''} ${selectedMeaning == meaning[1] && isCorrect == false ? 'bg-red-500 text-white' : ''} ${selectedMeaning == meaning[1] && isCorrect ? 'bg-green-500 text-white' : ''} ${isMeaningDisable[meaning[1]] ? 'bg-transparent border-none' : ''}`}
-                                        onClick={() => handleMeaningClick(meaning[1])}
-                                        disabled={isMeaningDisable[meaning[1]] == true}>
+                                        className={`sentence-box w-[35vw] text-black font-adlam font-bold bg-[#d9d9d9] col-start-2 col-span-1 mb-4 overflow-hidden text-ellipsis  ${selectedMeaning == meaning[0] ? 'border-4 border-blue-500' : ''} ${selectedMeaning == meaning[0] && isCorrect == false ? 'bg-red-500 text-white' : ''} ${selectedMeaning == meaning[0] && isCorrect ? 'bg-green-500 text-white' : ''} ${isMeaningDisable[meaning[0]] ? 'invisible' : ''}`}
+                                        onClick={() => handleMeaningClick(meaning[0], meaning[1])}
+                                        disabled={isMeaningDisable[meaning[0]] == true}>
                                             {isMeaningDisable[meaning[1]] ? null : meaning[0]}
                                     </button>
                                 ))}
