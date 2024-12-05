@@ -6,10 +6,6 @@ export default defineConfig({
   plugins: [
     react(),
   ],
-  server: {
-    port: 5173,
-    host: 'localhost',
-  },
   resolve: {
     alias: {
       process: "process/browser"
