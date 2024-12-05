@@ -8,6 +8,7 @@ import Learn from "./Learn";
 import Leaderboard from "./Leaderboard";
 import Shop from './Shop';
 import Game from './Game';
+import MeanMatchingGame from './MeanMatchingGame';
 
 import { createUserStore } from "./api/user.api";
 import { createSocialTaskStore } from "./api/socialTask.api";
@@ -111,6 +112,7 @@ function App() {
               } />
               <Route path="/shop" element={<Shop />} />
               <Route path="/game" element={<Game />} />
+              <Route path="/mean-matching-game" element={<MeanMatchingGame />}/>
             </Routes>
           </div>
           <div className="footer max-h-[10vh]">

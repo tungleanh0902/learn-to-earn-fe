@@ -108,7 +108,16 @@
   text-align: center;
   padding: 1rem;
   aspect-ratio: 1 / 1;
-  
+}
+
+.sentence-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  text-align: center;
+  padding: 0.8rem;
+  aspect-ratio: 1.8 / 1;
 }
 
 .footer {
