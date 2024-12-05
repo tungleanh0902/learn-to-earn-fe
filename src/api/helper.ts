@@ -2,7 +2,6 @@ import addNotification from 'react-push-notification';
 import axios from "axios";
 
 export const callApi = async (url, method, data, callback, token) => {
-    console.log(url);
     return axios({
         url: `${import.meta.env.VITE_URL_API}/${url}`,
         method: method,

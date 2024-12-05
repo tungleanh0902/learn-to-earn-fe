@@ -84,45 +84,55 @@ const Task = ({ handleClickActive }) => {
         : activeTask.filter(task => task.tag === categoryState);
 
     async function onClaimTask(taskId, platform, link) {
-        if (platform == "mazii") {
-            setIsHidden(false)
-            setCurrentItem(taskId)
-        } else {
-            if (platform != "wallet") {
-                window.open(link, '_blank');
+        console.log("onClaimTask");
+        try {
+            if (platform == "mazii") {
+                setIsHidden(false)
+                setCurrentItem(taskId)
             } else {
-                await onConnectWallet(platform)
+                if (platform != "wallet") {
+                    window.open(link, '_blank');
+                } else {
+                    await onConnectWallet(platform)
+                }
+                console.log("claim");
+                let data = await claim(taskId, token)
+                setNewPoint(data.points)
+                setIsActive(true)
+                await updateUserInfo(data.user)
+                await getActiveTask(token)
+                setTimeout(() => {
+                    setIsActive(false)
+                    setNewPoint(0)
+                }, 2000)
             }
-            let data = await claim(taskId, token)
-            setNewPoint(data.points)
-            setIsActive(true)
-            await updateUserInfo(data.user)
-            await getActiveTask(token)
-            setTimeout(() => {
-                setIsActive(false)
-                setNewPoint(0)
-            }, 2000)
+        } catch (error) {
+            console.log(error);
         }
     }
 
     async function onConnectWallet(platform) {
-        try {
+        console.log("onConnectWallet", platform);
+        await new Promise(async (resolve, reject) => {
             if (platform == "wallet") {
                 if (wallet) {
                     await tonConnectUI.disconnect()
                 }
                 await tonConnectUI.openModal()
-                tonConnectUI.onStatusChange(async w => {
-                    if (w.account?.address) {
+                let x = 0;
+                tonConnectUI.onStatusChange(async (w) => {
+                    console.log(x);
+                    if (w.account?.address && x==0) {
+                        x++;
                         await connectWallet({
                             address: w.account.address
                         })
+
+                        resolve();
                     }
                 })
             }
-        } catch (error) {
-            console.log(error);
-        }
+        })
     }
 
     return (
