@@ -29,6 +29,7 @@ const MeanMatchingGame = () => {
     const [newPoint, setNewPoint] = useState("0");
     const [isTon, setIsTon] = useState(false);
     const [isDefault, setIsDefault] = useState(true)
+    const [popUpVisible, setPopupVisible] = useState(true);
 
     const token = createUserStore(state => state.token);
     const userInfo = createUserStore(state => state.userInfo);
@@ -268,6 +269,34 @@ const MeanMatchingGame = () => {
                         </button>
                     </>
                 }
+                {popUpVisible && (
+                    <div 
+                    className=" inset-0 flex items-center justify-center fixed"
+                    onClick={() => setPopupVisible(false)}>
+                        <div className="bg-[#0088cc] w-[80vw] h-[70vh] rounded-[20px] relative ">
+                            <div className="pt-[3vh] relative"></div>
+                            <div className="font-adlam text-white font-medium text-4xl relative">Mean matching</div>
+                            <div className="pt-[2vh] relative"></div>
+                            <div className="font-baloo text-white font-bold text-xl">How to play?</div>
+
+                            <div className="label">
+                                <p className ="text-white text-left pl-[10vw] pr-[5vw] text-sm font-afacad-variable">
+                                    <div className="list-item">Players will be given 20 Japanese words.</div>
+                                    <div className="list-item">Your task is to connect them based on their meanings.</div>
+                                    <div className="list-item">If you can't find a suitable word within the given time or pick an invalid word, you lose points or time.</div>
+                                    <div className="list-item">Try to connect as many words as possible to score over 200 points and have a chance to earn TON.</div>
+                                </p>
+                            </div>
+
+                            <div className="absolute bottom-[5vh] left-[10vw] right-[10vw] items-center">
+                                <div className="text-white font-abeezee text-sm">Invite 5/3 friends to earn TON</div>
+                                <div className="bg-white rounded-[18px] px-[1vw] max-w-[100%]">
+                                    <div className="font-adlam text-2xl px-[5vw] py-[0.7vh]">Let's go !!!🚀</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );
