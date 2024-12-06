@@ -46,7 +46,7 @@ const QuestionSection = ({ isCampaign, handleClickActive }) => {
     useEffect(() => {
         async function fetch() {
             if (isCampaign) {
-                if (!lessonForCampaign || lessonForCampaign.length == 0 || lessonForCampaign?.questions?.length == 0) {
+                if (!lessonForCampaign || lessonForCampaign?.questions?.length == 0) {
                     await fetchSummary()
                     setOutOfQuestion(true)
                     setCurrentQuestion(null)
@@ -54,7 +54,7 @@ const QuestionSection = ({ isCampaign, handleClickActive }) => {
                     setCurrentQuestion(lessonForCampaign?.questions[questionIdx])
                 }
             } else {
-                if (!lesson || lesson.length == 0 || lesson?.questions?.length == 0) {
+                if (!lesson || lesson?.questions?.length == 0) {
                     await fetchSummary()
                     setOutOfQuestion(true)
                     setCurrentQuestion(null)
