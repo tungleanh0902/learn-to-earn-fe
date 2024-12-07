@@ -11,22 +11,32 @@ const PopupVoucher = ({ item, handleClose }) => {
                         Mazii Dict
                     </h3>
                     <div className="grid grid-cols-4 gap-4 my-[10px]">
-                        <div className='ml-[30px] w-[120px] text-left'>Duration</div>
+                        <div className='ml-[30px] w-[130px] text-left'>Duration</div>
                         <div className='ml-[120px] w-[120px] text-left'>Lifetime</div>
                     </div>
                     <div className="relative h-px w-[66vw] left-[7vw] bg-[#d9d9d936]"></div>
                     <div className="grid grid-cols-4 gap-4 my-[10px]">
-                        <div className='ml-[30px] w-[120px] text-left'>Purchase date</div>
+                        <div className='ml-[30px] w-[130px] text-left'>Purchase date</div>
                         <div className='ml-[120px] w-[120px] text-left'>{item.createdAt.substring(0, 10)}</div>
                     </div>
                     <div className="relative h-px w-[66vw] left-[7vw] bg-[#d9d9d936]"></div>
                     <div className="grid grid-cols-4 gap-4 my-[10px]">
-                        <div className='ml-[30px] w-[120px] text-left'>Tx</div>
+                        <div className='ml-[30px] w-[130px] text-left'>Activation period</div>
+                        <div className='ml-[120px] w-[120px] text-left'>1 year</div>
+                    </div>
+                    <div className="relative h-px w-[66vw] left-[7vw] bg-[#d9d9d936]"></div>
+                    <div className="grid grid-cols-4 gap-4 my-[10px]">
+                        <div className='ml-[30px] w-[130px] text-left'>Activation date</div>
+                        <div className='ml-[120px] w-[120px] text-left'>2024-12-31</div>
+                    </div>
+                    <div className="relative h-px w-[66vw] left-[7vw] bg-[#d9d9d936]"></div>
+                    <div className="grid grid-cols-4 gap-4 my-[10px]">
+                        <div className='ml-[30px] w-[130px] text-left'>Tx</div>
                         <div className='ml-[120px] w-[120px] text-left'>{shortName(item.tx)}</div>
                     </div>
                     <div className="relative h-px w-[66vw] left-[7vw] bg-[#d9d9d936]"></div>
                     <div className="grid grid-cols-4 gap-4 my-[10px]">
-                        <div className='ml-[30px] w-[120px] text-left'>License Key</div>
+                        <div className='ml-[30px] w-[130px] text-left'>License Key</div>
                         <div className='ml-[120px] w-[120px] text-left'>{item.voucher.code}</div>
                     </div>
                     <div className="relative h-px w-[66vw] left-[7vw] bg-[#d9d9d936]"></div>
