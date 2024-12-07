@@ -209,23 +209,34 @@ const Shopping = () => {
               handleClose={handleClose}
             />
         }
-        {/* <div className="relative mt-[15px] bg-[#1e6252] w-[80vw] h-[37vh] left-[10vw] rounded-[15px]">
+        <div className="relative mt-[15px] bg-[#1e6252] w-[80vw] h-[46vh] left-[10vw] rounded-[15px]">
           <div className="relative pt-[4vh] font-adlam-display text-4xl text-white [text-shadow:0px_4px_4px_#00000040]">Special shop</div>
 
           <div className="relative font-medium text-[24px] pt-[1vh] pb-[1vh] text-white text-center font-afacad-variable">Mazii license</div>
           <div className="relative h-px w-[66vw] left-[7vw] bg-[#d9d9d936]"></div>
 
-          <div className="relative text-[#6f7478] top-[5vh] text-white font-afacad-italic">
+          <div className="grid grid-cols-4 gap-4 my-[10px] text-white">
+              <div className='ml-[30px] w-[130px] text-left'>Activation period</div>
+              <div className='ml-[120px] w-[120px] text-left'>1 year</div>
+          </div>
+          <div className="relative h-px w-[66vw] left-[7vw] bg-[#d9d9d936]"></div>
+          <div className="grid grid-cols-4 gap-4 my-[10px] text-white">
+              <div className='ml-[30px] w-[130px] text-left'>Activation date</div>
+              <div className='ml-[120px] w-[120px] text-left'>2024-12-31</div>
+          </div>
+          <div className="relative h-px w-[66vw] left-[7vw] bg-[#d9d9d936]"></div>
+
+          <div className="relative text-[#6f7478] text-white font-afacad-italic">
             <span>Only </span>
             <span className="line-through">30$</span>
-            <span className> | 2 TON</span>
+            <span className> | 1 TON</span>
           </div>
 
           {wallet ? (
             <button
               disabled={loading ? true : false}
               onClick={handleBuyLicense}
-              className="absolute bottom-[3vh] bg-white rounded-[20px] w-[60vw] left-[10vw] [text-shadow:0px_4px_11px_#00000040] font-adlam-display text-2xl">
+              className="bottom-[3vh] bg-white rounded-[20px] w-[60vw] left-[10vw] [text-shadow:0px_4px_11px_#00000040] font-adlam-display text-2xl">
               <div className="py-[1vh]">
                 {loading ? "Loading..." : "BUY NOW"}
               </div>
@@ -233,15 +244,15 @@ const Shopping = () => {
           ) : (
             <button
               onClick={() => tonConnectUI.openModal()}
-              className="absolute bottom-[3vh] bg-white rounded-[20px] w-[60vw] left-[10vw] [text-shadow:0px_4px_11px_#00000040] font-adlam-display text-2xl">
+              className="bottom-[3vh] bg-white rounded-[20px] w-[60vw] left-[10vw] [text-shadow:0px_4px_11px_#00000040] font-adlam-display text-2xl">
               <div className="py-[1vh]">
                 Connect wallet
               </div>
             </button>
           )}
-        </div> */}
+        </div>
 
-        <div className="relative bg-[#1e3e62] w-[80vw] h-[62vh] top-[3vh] left-[10vw] rounded-[15px]">
+        <div className="relative bg-[#1e3e62] w-[80vw] h-[58vh] top-[3vh] left-[10vw] rounded-[15px]">
           <div className="relative text-white top-[1vh] font-adlam-display text-3xl break-words [text-shadow:0px_4px_4px_#00000040]">
             Get more with Premium
           </div>

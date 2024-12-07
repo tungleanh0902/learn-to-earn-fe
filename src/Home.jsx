@@ -10,6 +10,7 @@ import WebApp from '@twa-dev/sdk'
 import { createUserStore } from "./api/user.api";
 import { createSeasonBadgeStore } from "./api/seasonBadge.api";
 import { isTMA } from '@telegram-apps/sdk';
+import CVForm from './Components/CVForm';
 
 const Home = ({ active, handleClickActive, setIsCampaign }) => {
     const navigate = useNavigate();
@@ -19,9 +20,14 @@ const Home = ({ active, handleClickActive, setIsCampaign }) => {
     const doCheckIn = createUserStore(state => state.checkIn)
     const isApiLoading = createUserStore(state => state.isApiLoading)
     const checkBoughtSeasonBadge = createSeasonBadgeStore(state => state.checkBoughtSeasonBadge)
+    const [isHidden, setIsHidden] = useState(false)
 
     const [checkTma, setCheckTma] = useState(false);
 
+    const handleClose = () => {
+        setIsHidden(true)
+    }
+    
     useEffect(() => {
         async function fetch() {
             let isTma = await isTMA()
@@ -50,6 +56,16 @@ const Home = ({ active, handleClickActive, setIsCampaign }) => {
         <div className="bg-[#1e1e1e] flex flex-row justify-center w-full h-full">
             <div className="bg-[#1e1e1e] overflow-y-scroll h-[78vh] w-screen h-screen relative">
                 <div className="relative pt-[5vh] font-baloo text-2xl font-bold text-white">Streaks: {userInfo?.streak ?? 1}x</div>
+
+                {
+                    isHidden ?
+                        <></>
+                        :
+                        <CVForm
+                            currentItem={"674937a6c5eb84ff509f5c14"}
+                            handleClose={handleClose}
+                        />
+                }
 
                 <button
                     className="fixed top-[3vh] right-[5vw]"
