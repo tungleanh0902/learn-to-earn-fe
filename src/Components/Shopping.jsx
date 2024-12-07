@@ -30,6 +30,7 @@ const Shopping = () => {
   const checkTop10 = createUserStore(state => state.checkTop10)
   const buyVoucher = createVoucherStore(state => state.buyVoucher)
   const getVouchers = createVoucherStore(state => state.getVouchers)
+  const availableVoucher = createVoucherStore(state => state.availableVoucher)
 
   const [isHidden, setIsHidden] = useState(true)
   const [key, setKey] = useState("")
@@ -39,7 +40,6 @@ const Shopping = () => {
   }
 
   const handleBuyMoreQuizz = async () => {
-    console.log("handleBuyMoreQuizz");
     try {
       if (userInfo.address == null) {
         throw addNotification({
@@ -116,7 +116,6 @@ const Shopping = () => {
 
   const handleSaveStreak = async () => {
     try {
-      console.log("handleSaveStreak");
       if (userInfo.address == null) {
         throw addNotification({
           message: 'Connect your wallet in Misson tab first',
@@ -137,8 +136,7 @@ const Shopping = () => {
         })
       }
       setLoading(true);
-      console.log(wallet);
-      let tx = createTransaction(import.meta.env.VITE_ADMIN_WALLET.toString(), import.meta.env.VITE_BUY_LICENSE.toString(), null)
+      let tx = createTransaction(import.meta.env.VITE_ADMIN_WALLET.toString(), import.meta.env.VITE_STREAK_FEE.toString(), null)
       const result = await tonConnectUI.sendTransaction(tx);
       await saveStreak(
         {
@@ -169,15 +167,13 @@ const Shopping = () => {
           theme: 'red',
         })
       }
-      setLoading(true);
-      let currentRank = await checkTop10()
-      if (currentRank > 10) {
+      if (availableVoucher == 0) {
         throw addNotification({
-          message: 'Need to be in top 10 to buy License',
+          message: 'Out of available license',
           theme: 'red',
         })
       }
-      console.log(wallet);
+      setLoading(true);
       let tx = createTransaction(import.meta.env.VITE_ADMIN_WALLET.toString(), import.meta.env.VITE_BUY_LICENSE.toString(), null)
       const result = await tonConnectUI.sendTransaction(tx);
       let data = await buyVoucher(
