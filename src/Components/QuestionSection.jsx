@@ -70,7 +70,6 @@ const QuestionSection = ({ isCampaign, handleClickActive }) => {
     const handleAnswerClick = (answerId) => {
         setHighlightedAnswer(answerId);
     };
-    console.log(outOfQuestion);
     
     const handleClose = () => {
         setActivePopUp(false)
@@ -79,7 +78,6 @@ const QuestionSection = ({ isCampaign, handleClickActive }) => {
     }
 
     const handleConfirmClick = async () => {
-        console.log("handleConfirmClick");
         if (highlightedAnswer == null) {
             return
         }
