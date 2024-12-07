@@ -30,6 +30,7 @@ const MeanMatchingGame = () => {
     const [isTon, setIsTon] = useState(false);
     const [isDefault, setIsDefault] = useState(true)
     const [popUpVisible, setPopupVisible] = useState(true);
+    const [isClickable, setIsClickable] = useState([]);
 
     const token = createUserStore(state => state.token);
     const userInfo = createUserStore(state => state.userInfo);
@@ -75,6 +76,7 @@ const MeanMatchingGame = () => {
         // setItems(tmpItems)
         setIsMeaningDisable(new Array(items.length).fill(false));
         setIsPhraseDisable(new Array(items.length).fill(false));
+        setIsClickable(new Array(items.length).fill(true));
         setGameRunning(true);
         setCurrentMeanings([]);
         setShuffledPhrases([]);
@@ -157,6 +159,8 @@ const MeanMatchingGame = () => {
     useEffect(() => {
         async function fetch() {
             if (isCorrect == true) {
+                setIsClickable[selectedPhrase] = false;
+                setIsClickable[selectedMeaning] = false;
                 incrementPairCount();
                 if (pairCount == 3) {
                     if (currentQuestion == 16) {
@@ -227,7 +231,7 @@ const MeanMatchingGame = () => {
                                         key={phrase[1]}
                                         className={`sentence-box w-[35vw] text-black font-adlam font-bold bg-[#d9d9d9] col-start-1 col-span-1 mb-4 overflow-hidden text-ellipsis ${selectedPhrase == phrase[0] ? 'border-4 border-blue-500' : ''} ${selectedPhrase == phrase[0] && isCorrect == false ? 'bg-red-500 text-white' : ''} ${selectedPhrase == phrase[0] && isCorrect ? 'bg-green-500 text-white' : ''} ${isPhraseDisable[phrase[0]] ? 'invisible' : ''}`}
                                         onClick={() => handlePhraseClick(phrase[0], phrase[1])}
-                                        disabled={isPhraseDisable[phrase[0]] == true}> 
+                                        disabled={isClickable[phrase[0]] == false}> 
                                             {isPhraseDisable[phrase[1]] ? null : phrase[0]}
                                     </button>
                                 ))}
@@ -238,7 +242,7 @@ const MeanMatchingGame = () => {
                                         key={meaning[1]}
                                         className={`sentence-box w-[35vw] text-black font-adlam font-bold bg-[#d9d9d9] col-start-2 col-span-1 mb-4 overflow-hidden text-ellipsis  ${selectedMeaning == meaning[0] ? 'border-4 border-blue-500' : ''} ${selectedMeaning == meaning[0] && isCorrect == false ? 'bg-red-500 text-white' : ''} ${selectedMeaning == meaning[0] && isCorrect ? 'bg-green-500 text-white' : ''} ${isMeaningDisable[meaning[0]] ? 'invisible' : ''}`}
                                         onClick={() => handleMeaningClick(meaning[0], meaning[1])}
-                                        disabled={isMeaningDisable[meaning[0]] == true}>
+                                        disabled={isClickable[meaning[0]] == false}>
                                             {isMeaningDisable[meaning[1]] ? null : meaning[0]}
                                     </button>
                                 ))}
