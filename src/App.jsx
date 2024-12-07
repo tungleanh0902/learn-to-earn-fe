@@ -33,6 +33,7 @@ function App() {
   const addRef = createUserStore(state => state.addRef)
   const getLeaderBoard = createUserStore(state => state.getLeaderBoard)
   const getVouchers = createVoucherStore(state => state.getVouchers)
+  const getAvailableVouchers = createVoucherStore(state => state.getAvailableVouchers)
   
   const [active, setActive] = useState(0);
   const [isCampaign, setIsCampaign] = useState(false)
@@ -67,6 +68,7 @@ function App() {
       await getLeaderBoard()
       await getVouchers(token)
       await setApiLoading(false)
+      await getAvailableVouchers()
     }
 
     fetch()
