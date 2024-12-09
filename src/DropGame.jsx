@@ -139,8 +139,8 @@ const Game = () => {
                             backgroundSize: 'cover',
                             backgroundPosition: 'center',
                           }}>
-                            <div className="absolute top-[5vh] right-[5vw] text-xl font-bold font-baloo text-white z-40 bg-black p-[10px] rounded-xl">Topic: {topic}</div>
-                            <div className="absolute top-[10vh] left-[5vw] text-3xl font-bold font-baloo text-white">Satori Drop</div>
+                            <div className="absolute top-[5vh] right-[5vw] max-w-[40vw] text-xl font-bold font-baloo text-white z-40 bg-black p-[10px] rounded-xl">Topic: {topic}</div>
+                            <div className="absolute top-[5vh] left-[5vw] text-3xl font-bold font-baloo text-white">Satori Drop</div>
 
                             {items.map((item) => (
                                 isInvisible[item?.index] && (

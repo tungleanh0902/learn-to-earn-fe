@@ -7,7 +7,7 @@ import Earn from "./Earn";
 import Learn from "./Learn";
 import Leaderboard from "./Leaderboard";
 import Shop from './Shop';
-import Game from './Game';
+import DropGame from './DropGame';
 import MeanMatchingGame from './MeanMatchingGame';
 
 import { createUserStore } from "./api/user.api";
@@ -113,7 +113,7 @@ function App() {
                 />
               } />
               <Route path="/shop" element={<Shop />} />
-              <Route path="/game" element={<Game />} />
+              <Route path="/drop-game" element={<DropGame />} />
               <Route path="/mean-matching-game" element={<MeanMatchingGame />}/>
             </Routes>
           </div>

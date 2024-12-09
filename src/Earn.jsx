@@ -60,7 +60,7 @@ const Earn = ({ active, handleClickActive, setIsCampaign }) => {
 
                         <div className="absolute bottom-[10px] right-[5px] w-[76px] h-[26px] bg-[#d9d9d9] rounded-[18px]">
                             <button
-                                onClick={() => handleClick(1, "/game")}
+                                onClick={() => handleClick(1, "/drop-game")}
                                 className="text-black text-xl font-nunito-bold font-bold text-center">
                                 Play
                             </button>
