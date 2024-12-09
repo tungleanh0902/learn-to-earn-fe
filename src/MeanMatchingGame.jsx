@@ -200,7 +200,7 @@ const MeanMatchingGame = () => {
     return (
         <div className="bg-[#1e1e1e] flex flex-row w-screen h-screen">
             <div className="bg-[#1e1e1e] overflow-y-hidden overflow-x-auto w-screen h-[90vh] relative">
-                <div className="absolute top-[5vh] left-[5vw] font-baloo text-white text-3xl font-bold">Kanji Master</div>
+                <div className="absolute top-[5vh] left-[5vw] font-baloo text-white text-3xl font-bold">Mean Matching</div>
                 
                 <div className="w-[100vw] h-[90vh] mx-auto"
                     style={{
@@ -222,7 +222,7 @@ const MeanMatchingGame = () => {
                 }
                 {gameRunning ? 
                     <>
-                        <div className="font-baloo text-white text-2xl absolute top-[6vh] right-[5vw] font-semibold">Time left: {gameTime}s</div>
+                        <div className="font-baloo text-white text-2xl absolute top-[6vh] left-[60vw] font-semibold">Time left: {gameTime}s</div>
 
                         <div className="absolute font-adlam text-white top-[20vh] left-[10vw]">
                             <div>
