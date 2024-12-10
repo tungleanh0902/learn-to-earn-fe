@@ -20,6 +20,61 @@ import { THEME, TonConnectUIProvider } from "@tonconnect/ui-react";
 import { wallets } from './constants';
 import Navigation from './Components/Navigation';
 
+import { createAppKit } from '@reown/appkit/react'
+import { defineChain } from '@reown/appkit/networks'
+
+import { WagmiProvider } from 'wagmi'
+import { arbitrum, mainnet } from '@reown/appkit/networks'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { WagmiAdapter } from '@reown/appkit-adapter-wagmi'
+const queryClient = new QueryClient()
+// Define the custom network
+const kaia = defineChain({
+  id: 1001,
+  caipNetworkId: 'eip155:1001',
+  chainNamespace: 'eip155',
+  name: 'Kaia',
+  nativeCurrency: {
+    decimals: 18,
+    name: 'Kaia',
+    symbol: 'KAIA',
+  },
+  rpcUrls: {
+    default: {
+      http: ['https://kaia-kairos.blockpi.network/v1/rpc/public'],
+      webSocket: ['wss://public-en-kairos.node.kaia.io/ws'],
+    },
+  },
+  blockExplorers: {
+    default: { name: 'Explorer', url: 'https://kairos.kaiascope.com/' },
+  },
+})
+
+const projectId = import.meta.env.VITE_PROJECT_ID
+const wagmiAdapter = new WagmiAdapter({
+  networks: [kaia],
+  projectId,
+  ssr: true
+})
+
+// 3. Create modal
+createAppKit({
+  adapters: [wagmiAdapter],
+  networks: [kaia],
+  projectId,
+  features: {
+    analytics: true,
+    email: false,
+    socials: [],
+    allWallets: 'ONLY_MOBILE'
+  },
+  themeMode: 'light',
+  themeVariables: {
+    '--w3m-color-mix': '#00DCFF',
+    '--w3m-color-mix-strength': 20
+  }
+})
+
 function App() {
   const setApiLoading = createUserStore(state => state.setApiLoading)
   const doLogin = createUserStore(state => state.login)
@@ -34,13 +89,13 @@ function App() {
   const getLeaderBoard = createUserStore(state => state.getLeaderBoard)
   const getVouchers = createVoucherStore(state => state.getVouchers)
   const getAvailableVouchers = createVoucherStore(state => state.getAvailableVouchers)
-  
+
   const [active, setActive] = useState(0);
   const [isCampaign, setIsCampaign] = useState(false)
   const [userId, setUserId] = useState("")
-  
+
   const handleClickActive = (index) => {
-      setActive(index);
+    setActive(index);
   };
 
   useEffect(() => {
