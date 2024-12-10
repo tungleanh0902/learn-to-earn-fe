@@ -20,7 +20,7 @@ const Shopping = () => {
   const wallet = useTonWallet();
   const [tonConnectUI] = useTonConnectUI();
   const { data: hash, sendTransaction, error } = useSendTransaction()
-  const { data: contractHash, writeContract } = useWriteContract()
+  const { data: contractHash, writeContract, error: errorContract } = useWriteContract()
 
   const { address, isConnected, caipAddress, status } = useAppKitAccount()
   const modal = useAppKit()
@@ -88,8 +88,6 @@ const Shopping = () => {
       sendTransaction({ to: ownerAddress, value: amount })
     } catch (error) {
       console.error(e);
-      return setLoading(false);
-    } finally {
       return setLoading(false);
     }
   }
@@ -173,8 +171,6 @@ const Shopping = () => {
   
     } catch (error) {
       console.error(e);
-      return setLoading(false);
-    } finally {
       return setLoading(false);
     }
   }
@@ -260,8 +256,6 @@ const Shopping = () => {
     } catch (error) {
       console.error(e);
       return setLoading(false);
-    } finally {
-      return setLoading(false);
     }
   }
 
@@ -336,8 +330,6 @@ const Shopping = () => {
     } catch (e) {
       console.error(e);
       return setLoading(false);
-    } finally {
-      setLoading(false);
     }
   }
 
@@ -418,6 +410,7 @@ const Shopping = () => {
             setKey(data.voucher.code)
             setIsHidden(false)
             await getVouchers(token)
+            setLoading(false)
             break;
           case "badge":
             await buyNftEvm(
@@ -428,16 +421,19 @@ const Shopping = () => {
               },
               token
             )
+            setLoading(false)
             break;
           case "quizz":
             await buyMoreQuizzEvm({
               tx: hash
             })
+            setLoading(false)
             break;
           case "streak":
             await saveStreakEvm({
               tx: hash
             })
+            setLoading(false)
             break;
           default:
             break;
@@ -446,15 +442,21 @@ const Shopping = () => {
         console.log(error);
       }
     }
-    console.log(hash);
-    console.log(contractHash);
-    console.log(isConfirmed);
     if ((hash || contractHash) && isConfirmed) {
       console.log(isConfirmed);
       fetch()
     }
   }, [hash, isConfirmed, contractHash])
 
+  useEffect(() => {
+    if (error) {
+      setLoading(false)
+    }
+    if (errorContract) {
+      setLoading(false)
+    }
+  }, [error, errorContract])
+  
   return (
     <div className="bg-[#1e1e1e] relative justify-center w-full h-full flex items-center">
       <div className="bg-[#1e1e1e] w-screen h-[90vh] overflow-x-hidden overflow-y-auto">
