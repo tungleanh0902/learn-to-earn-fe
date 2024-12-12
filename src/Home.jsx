@@ -68,11 +68,6 @@ const Home = ({ active, handleClickActive, setIsCampaign }) => {
                 }
 
                 <button
-                    onClick={() => handleClick(1, "/word-filling-game")}
-                    className="bg-white text-black"
-                >Word Filling</button>
-
-                <button
                     className="fixed top-[3vh] right-[5vw]"
                     onClick={() => handleCopyLink()}>
                     <img

@@ -52,8 +52,50 @@ const Earn = ({ active, handleClickActive, setIsCampaign }) => {
 
                 <div className="relative pt-[2vh]"></div>
 
-                <div className='flex'>
-                    <div className="relative w-[160px] h-[110px] bg-[#0088cc] rounded-[20px] left-6 mr-[15px]">
+                <div className="pl-[5vw] pr-[5vw] overflow-x-auto flex space-x-4 flex-row">
+                    <div className="relative h-[18vh] bg-[#0088cc] rounded-[20px] flex-1">
+                        <p className="text-left pl-[10px] pt-[10px] font-nunito-bold font-bold text-white text-xl leading-[normal]">
+                            Satori Drop
+                        </p>
+
+                        <div className="absolute bottom-[2vh] right-[1vw] w-[20vw] h-[4vh] bg-[#d9d9d9] rounded-[18px]">
+                            <button
+                                onClick={() => handleClick(1, "/game")}
+                                className="text-black text-xl font-nunito-bold font-bold text-center">
+                                Play
+                            </button>
+                        </div>
+                    </div>
+                    <div className="relative h-[18vh] bg-[#0088cc] rounded-[20px] flex-1">
+                        <p className="text-left pl-[10px] pt-[10px] font-nunito-bold font-bold text-white text-xl leading-[normal]">
+                            Mean Matching
+                        </p>
+
+                        <div className="absolute bottom-[2vh] right-[1vw] w-[20vw] h-[4vh] bg-[#d9d9d9] rounded-[18px]">
+                            <button
+                                onClick={() => handleClick(1, "/mean-matching-game")}
+                                className="text-black text-xl font-nunito-bold font-bold text-center">
+                                Play
+                            </button>
+                        </div>
+                    </div>
+                    <div className="relative h-[18vh] bg-[#0088cc] rounded-[20px] flex-1">
+                        <p className="text-left pl-[10px] pt-[10px] font-nunito-bold font-bold text-white text-xl leading-[normal]">
+                            Word Filling
+                        </p>
+
+                        <div className="absolute bottom-[2vh] right-[1vw] w-[20vw] h-[4vh] bg-[#d9d9d9] rounded-[18px]">
+                            <button
+                                onClick={() => handleClick(1, "/word-filling-game")}
+                                className="text-black text-xl font-nunito-bold font-bold text-center">
+                                Play
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                {/* <div className='overflow-x-auto flex scrollbar-hide'>
+                    <div className="relative w-[160 px] h-[110px] bg-[#0088cc] rounded-[20px] left-6">
                         <p className="text-left ml-[10px] mt-[10px] font-nunito-bold font-bold text-white text-xl tracking-[0] leading-[normal]">
                             Satori Drop
                         </p>
@@ -67,7 +109,7 @@ const Earn = ({ active, handleClickActive, setIsCampaign }) => {
                         </div>
                     </div>
 
-                    <div className="relative w-[160px] h-[110px] bg-[#0088cc] rounded-[20px] left-6">
+                    <div className="relative w-[160px] h-[110px] bg-[#0088cc] rounded-[20px] left-6 ">
                         <p className="text-left ml-[10px] mt-[10px] font-nunito-bold font-bold text-white text-xl tracking-[0] leading-[normal]">
                             Mean matching
                         </p>
@@ -80,7 +122,21 @@ const Earn = ({ active, handleClickActive, setIsCampaign }) => {
                             </button>
                         </div>
                     </div>
-                </div>
+
+                    <div className="relative w-[160px] h-[110px] bg-[#0088cc] rounded-[20px] left-6">
+                        <p className="text-left ml-[10px] mt-[10px] font-nunito-bold font-bold text-white text-xl tracking-[0] leading-[normal]">
+                            Satori Drop
+                        </p>
+
+                        <div className="absolute bottom-[10px] right-[5px] w-[76px] h-[26px] bg-[#d9d9d9] rounded-[18px]">
+                            <button
+                                onClick={() => handleClick(1, "/game")}
+                                className="text-black text-xl font-nunito-bold font-bold text-center">
+                                Play
+                            </button>
+                        </div>
+                    </div>
+                </div> */}
 
                 
 
