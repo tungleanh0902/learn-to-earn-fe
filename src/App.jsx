@@ -7,7 +7,7 @@ import Earn from "./Earn";
 import Learn from "./Learn";
 import Leaderboard from "./Leaderboard";
 import Shop from './Shop';
-import Game from './Game';
+import DropGame from './DropGame';
 import MeanMatchingGame from './MeanMatchingGame';
 import WordFillingGame from './WordFillingGame';
 
@@ -20,6 +20,9 @@ import WebApp from '@twa-dev/sdk'
 import { THEME, TonConnectUIProvider } from "@tonconnect/ui-react";
 import { wallets } from './constants';
 import Navigation from './Components/Navigation';
+
+import { MetaMaskContextProvider } from './hooks/useMetamask'
+import WordFillingGame from './WordFillingGame';
 
 function App() {
   const setApiLoading = createUserStore(state => state.setApiLoading)
@@ -35,13 +38,13 @@ function App() {
   const getLeaderBoard = createUserStore(state => state.getLeaderBoard)
   const getVouchers = createVoucherStore(state => state.getVouchers)
   const getAvailableVouchers = createVoucherStore(state => state.getAvailableVouchers)
-  
+
   const [active, setActive] = useState(0);
   const [isCampaign, setIsCampaign] = useState(false)
   const [userId, setUserId] = useState("")
-  
+
   const handleClickActive = (index) => {
-      setActive(index);
+    setActive(index);
   };
 
   useEffect(() => {
@@ -68,68 +71,70 @@ function App() {
       await currentSeasonBadge()
       await getLeaderBoard()
       await getVouchers(token)
-      await setApiLoading(false)
       await getAvailableVouchers()
+      await setApiLoading(false)
     }
-
-    fetch()
+    if (WebApp.initDataUnsafe?.user) {
+      fetch()
+    }
   }, []);
 
   return (
-    <TonConnectUIProvider
-      manifestUrl="https://ton-connect.github.io/demo-dapp-with-wallet/tonconnect-manifest.json"
-      uiPreferences={{ theme: THEME.DARK }}
-      walletsListConfiguration={wallets}
-      actionsConfiguration={{
-        twaReturnUrl: 'https://t.me/devl2e_bot/dev/start'
-      }}
-    >
-      <Router>
-        <div className="App flex flex-col min-h-screen">
-          <div className="flex-grow">
-            <Routes>
-              <Route path="/" element={
-                <Home 
-                  active={active}
-                  handleClickActive={handleClickActive}
-                  setIsCampaign={setIsCampaign}
-                  userId={userId}
-                />
-              } />
-              <Route path="/earn" element={
-                <Earn
-                  active={active}
-                  handleClickActive={handleClickActive}
-                  setIsCampaign={setIsCampaign}
-                />
-              } />
-              <Route path="/learn" element={<Learn
+    <MetaMaskContextProvider>
+      <TonConnectUIProvider
+        manifestUrl="https://ton-connect.github.io/demo-dapp-with-wallet/tonconnect-manifest.json"
+        uiPreferences={{ theme: THEME.DARK }}
+        walletsListConfiguration={wallets}
+        actionsConfiguration={{
+          twaReturnUrl: 'https://t.me/devl2e_bot/dev/start'
+        }}
+      >
+        <Router>
+          <div className="App flex flex-col min-h-screen">
+            <div className="flex-grow">
+              <Routes>
+                <Route path="/" element={
+                  <Home
+                    active={active}
+                    handleClickActive={handleClickActive}
+                    setIsCampaign={setIsCampaign}
+                    userId={userId}
+                  />
+                } />
+                <Route path="/earn" element={
+                  <Earn
+                    active={active}
+                    handleClickActive={handleClickActive}
+                    setIsCampaign={setIsCampaign}
+                  />
+                } />
+                <Route path="/learn" element={<Learn
                   isCampaign={isCampaign}
                   handleClickActive={handleClickActive}
                 />
-              } />
-              <Route path="/leaderboard" element={
-                <Leaderboard
-                  handleClickActive={handleClickActive}
-                />
-              } />
-              <Route path="/shop" element={<Shop />} />
-              <Route path="/game" element={<Game />} />
-              <Route path="/mean-matching-game" element={<MeanMatchingGame />}/>
-              <Route path="/word-filling-game" element={<WordFillingGame />} />
-            </Routes>
+                } />
+                <Route path="/leaderboard" element={
+                  <Leaderboard
+                    handleClickActive={handleClickActive}
+                  />
+                } />
+                <Route path="/shop" element={<Shop />} />
+                <Route path="/drop-game" element={<DropGame />} />
+                <Route path="/mean-matching-game" element={<MeanMatchingGame />} />
+                <Route path="/word-filling-gane" element={<WordFillingGame />} />
+              </Routes>
+            </div>
+            <div className="footer max-h-[10vh]">
+              <Navigation
+                active={active}
+                handleClickActive={handleClickActive}
+                setIsCampaign={setIsCampaign}
+              />
+            </div>
           </div>
-          <div className="footer max-h-[10vh]">
-            <Navigation
-              active={active}
-              handleClickActive={handleClickActive}
-              setIsCampaign={setIsCampaign}
-            />
-          </div>
-        </div>
-      </Router>
-    </TonConnectUIProvider >
-
+        </Router>
+      </TonConnectUIProvider >
+    </MetaMaskContextProvider>
   );
 }
 
