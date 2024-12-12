@@ -27,6 +27,16 @@ export const createUserStore = create((set: any, get: any, next: any) => (
             return get().token
         },
 
+        loginEvm: async (evmAddress: string) => {
+            await callApi('user/login_evm', "POST", {
+                evmAddress,
+            }, (res) => {
+                set({ token: res.token })
+                set({ userInfo: res.user })
+            }, null)
+            return get().token
+        },
+
         checkIn: async () => {
             let user
             await callApi('user/daily', "POST", null, (res) => {
@@ -43,8 +53,22 @@ export const createUserStore = create((set: any, get: any, next: any) => (
             }, token)
         },
 
+        getUserInfo: async (userId: string) => {
+            let data
+            await callApi('user/user_info', "POST", { userId: userId }, (res) => {
+                data = res.data.user
+            }, get().token)
+            return data
+        },
+
         saveStreak: async (data) => {
             await callApi('user/save_streak', "POST", data, (res) => { 
+                set({ userInfo: res.data.user }) 
+            }, get().token)
+        },
+
+        saveStreakEvm: async (data) => {
+            await callApi('user/save_streak_kaia', "POST", data, (res) => { 
                 set({ userInfo: res.data.user }) 
             }, get().token)
         },
@@ -72,6 +96,11 @@ export const createUserStore = create((set: any, get: any, next: any) => (
             }, get().token)
         },
 
+        connectWalletEvm: async (data) => {
+            await callApi('user/connect_evm_wallet', "POST", data, (res) => {
+            }, get().token)
+        },
+
         getMintBodyData: async (data) => {
             let bodyData
             await callApi('user/mint_body_data', "POST", data, (res) => {
@@ -82,6 +111,12 @@ export const createUserStore = create((set: any, get: any, next: any) => (
 
         buyMoreQuizz: async (data) => {
             await callApi('user/buy_more_quizz', "POST", data, (res) => {
+                set({ userInfo: res.data.user })
+            }, get().token)
+        },
+
+        buyMoreQuizzEvm: async (data) => {
+            await callApi('user/buy_more_quizz_kaia', "POST", data, (res) => {
                 set({ userInfo: res.data.user })
             }, get().token)
         },

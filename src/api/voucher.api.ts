@@ -15,6 +15,15 @@ export const createVoucherStore = create((set: any, get: any, next: any) => (
             return bodyData
         },
 
+        buyVoucherEvm: async (data, token) => {
+            let bodyData
+            await callApi('voucher/buy_voucher_kaia', "POST", data, (res) => {
+                console.log(res);
+                bodyData = res.data
+            }, token)
+            return bodyData
+        },
+
         getVouchers: async (token) => {
             await callApi('voucher/get_vouchers', "POST", null, (res) => {
                 console.log(res);

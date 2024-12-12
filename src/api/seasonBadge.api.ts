@@ -4,7 +4,7 @@ import { callApi } from "./helper"
 export const createSeasonBadgeStore = create((set: any, get: any, next: any) => (
     {
         seasonBadge: {},
-        checkBoughtSeasonBadge: Boolean,
+        checkBoughtSeasonBadge: false,
         itemAddress: String,
         tokenId: String,
 
@@ -13,6 +13,16 @@ export const createSeasonBadgeStore = create((set: any, get: any, next: any) => 
             token: String,
         ) => {
             await callApi('badge/buy_nft', "POST", data, (res) => {
+                set({ checkBoughtSeasonBadge: true })
+                set({ userInfo: res.data.user })
+            }, token)
+        },
+
+        buyNftEvm: async (
+            data,
+            token: String,
+        ) => {
+            await callApi('badge/buy_nft_kaia', "POST", data, (res) => {
                 set({ checkBoughtSeasonBadge: true })
                 set({ userInfo: res.data.user })
             }, token)
