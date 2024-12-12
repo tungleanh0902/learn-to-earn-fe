@@ -27,6 +27,16 @@ export const createUserStore = create((set: any, get: any, next: any) => (
             return get().token
         },
 
+        loginEvm: async (evmAddress: string) => {
+            await callApi('user/login_evm', "POST", {
+                evmAddress,
+            }, (res) => {
+                set({ token: res.token })
+                set({ userInfo: res.user })
+            }, null)
+            return get().token
+        },
+
         checkIn: async () => {
             let user
             await callApi('user/daily', "POST", null, (res) => {

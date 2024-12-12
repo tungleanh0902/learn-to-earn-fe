@@ -26,7 +26,7 @@ const Leaderboard = ({ handleClickActive }) => {
     }
 
     const handleCopyLink = () => {
-        const inviteLink = `${import.meta.env.VITE_INVITE_URL}?startapp=${WebApp.initDataUnsafe.user.id.toString()}`;
+        const inviteLink = `${import.meta.env.VITE_INVITE_URL}?startapp=${WebApp.initDataUnsafe?.user.id.toString()}`;
         navigator.clipboard.writeText(inviteLink);
         alert('Invite link copied to clipboard!');
     };

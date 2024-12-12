@@ -11,10 +11,8 @@ import { useTonConnectUI, useTonWallet } from "@tonconnect/ui-react";
 import { useNavigate } from 'react-router-dom';
 import PointsPopUp from './Popups/PointsPopUp';
 import CVForm from './CVForm';
-import {
-    useAppKit, useAppKitAccount
-  } from '@reown/appkit/react'
 import addNotification from 'react-push-notification';
+import { useMetaMask } from '../hooks/useMetamask'
 
 function capitalizeFirstLetter(val) {
     return String(val).charAt(0).toUpperCase() + String(val).slice(1);
@@ -51,10 +49,8 @@ const Task = ({ handleClickActive }) => {
     const navigate = useNavigate();
     const wallet = useTonWallet();
     const [tonConnectUI] = useTonConnectUI();
-
+    const { wallet: evmWallet, hasProvider, isConnecting, connectMetaMask } = useMetaMask()
     // 4. Use modal hook
-    const modal = useAppKit()
-    const { address, isConnected } = useAppKitAccount()
 
     const [isHidden, setIsHidden] = useState(true)
     const [currentItem, setCurrentItem] = useState()
@@ -216,7 +212,7 @@ const Task = ({ handleClickActive }) => {
                             <span className="absolute right-[115px] w-[80px] h-[23px] bg-[#d9d9d9] rounded-[20px] col-start-4 col-span-1">
                                 <button
                                     onClick={() => {
-                                        modal.open()
+                                        connectMetaMask()
                                     }}
                                     className="relative text-black font-adlam-display pt-[-1.5px]">
                                     Connect

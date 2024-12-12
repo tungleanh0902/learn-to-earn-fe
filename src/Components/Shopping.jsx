@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Check from '../assets/Check.png'
-import { createTransaction } from '../api/helper';
+import { createTransaction, wait } from '../api/helper';
 import {
   useTonConnectUI,
   useTonWallet
@@ -10,20 +10,17 @@ import { createSeasonBadgeStore } from "../api/seasonBadge.api";
 import { createUserStore } from "../api/user.api";
 import { createVoucherStore } from "../api/voucher.api";
 import Popup from './Popups/Popup';
-import { useSendTransaction, useWaitForTransactionReceipt, useWriteContract } from 'wagmi'
-import { useAppKitAccount, useAppKit } from "@reown/appkit/react";
 import kaialogo from '../assets/kaia.jpeg';
 import tonwallet from '../assets/Tonwallet.png';
 import { abi } from '../contracts/badge.json'
+import { isTMA } from '@telegram-apps/sdk';
+import { useMetaMask } from '../hooks/useMetamask'
+import web3 from 'web3'
+import { ethers } from 'ethers';
 
 const Shopping = () => {
   const wallet = useTonWallet();
   const [tonConnectUI] = useTonConnectUI();
-  const { data: hash, sendTransaction, error } = useSendTransaction()
-  const { data: contractHash, writeContract, error: errorContract } = useWriteContract()
-
-  const { address, isConnected, caipAddress, status } = useAppKitAccount()
-  const modal = useAppKit()
 
   const buyNft = createSeasonBadgeStore(state => state.buyNft)
   const buyNftEvm = createSeasonBadgeStore(state => state.buyNftEvm)
@@ -52,7 +49,7 @@ const Shopping = () => {
   const [selectedNetwork, setSelectedNetwork] = useState("kaia")
   const [isWallet, setIsWallet] = useState(false)
   const [option, setOption] = useState(null)
-
+  const { wallet: evmWallet, hasProvider, isConnecting, connectMetaMask } = useMetaMask()
   const handleClose = () => {
     setIsHidden(true)
   }
@@ -75,7 +72,7 @@ const Shopping = () => {
           theme: 'red',
         })
       }
-      if (userInfo.evmAddress != address) {
+      if (userInfo.evmAddress != evmWallet.accounts[0]) {
         await tonConnectUI.disconnect()
         throw addNotification({
           message: 'Wrong wallet',
@@ -85,9 +82,31 @@ const Shopping = () => {
       setLoading(true);
       let ownerAddress = import.meta.env.VITE_ADMIN_EVM_WALLET
       let amount = import.meta.env.VITE_MORE_QUIZZ_FEE_EVM
-      sendTransaction({ to: ownerAddress, value: amount })
+      let tx = await window.ethereum.request({
+        method: "eth_sendTransaction",
+        // The following sends an EIP-1559 transaction. Legacy transactions are also supported.
+        params: [
+          {
+            // The user's active address.
+            from: evmWallet.accounts[0],
+            // Required except during contract publications.
+            to: ownerAddress,
+            // Only required to send ether to the recipient from the initiating external account.
+            value: web3.utils.toHex(BigInt(parseFloat(amount)) * BigInt(10 ** 18)),
+            "gas": "0x9999",
+            "maxFeePerGas": "0x5d21dba00",
+            "maxPriorityFeePerGas": "0x5d21dba00"
+          },
+        ],
+      })
+      await wait(1000)
+      await buyMoreQuizzEvm({
+        tx: tx
+      })
+      setLoading(false)
+      await wait(1000)
     } catch (error) {
-      console.error(e);
+      console.error(error);
       return setLoading(false);
     }
   }
@@ -142,7 +161,7 @@ const Shopping = () => {
           theme: 'red',
         })
       }
-      if (userInfo.evmAddress != address) {
+      if (userInfo.evmAddress != evmWallet.accounts[0]) {
         await tonConnectUI.disconnect()
         throw addNotification({
           message: 'Wrong wallet',
@@ -153,24 +172,33 @@ const Shopping = () => {
       let amount = import.meta.env.VITE_MINT_NFT_FEE_EVM
       let evmAddress = import.meta.env.VITE_ADMIN_EVM_WALLET
       if (userInfo?.refUser) {
-        let user = await getUserInfo(userInfo?.refUser) 
+        let user = await getUserInfo(userInfo?.refUser)
         if (user.evmAddress) {
-          evmAddress = user.evmAddress 
+          evmAddress = user.evmAddress
         }
       }
-      console.log(contractAddress);
-      console.log(evmAddress);
-      console.log(amount);
-      await writeContract({
-        address: contractAddress,
+      const { ethereum } = window;
+      const provider = new ethers.providers.Web3Provider(ethereum);
+      const signer = provider.getSigner();
+      // create minimal contract instance for getting nonce
+      const badge = new ethers.Contract(
+        contractAddress,
         abi,
-        functionName: 'mintNFT',
-        args: [evmAddress],
-        value: amount,
-      })
-  
+        signer
+      );
+      let tx = await badge.mintNFT(evmAddress, { value: web3.utils.toHex(BigInt(amount) * BigInt(10 ** 18)), })
+      await tx.wait()
+      await buyNftEvm(
+        {
+          badgeId: seasonBadge._id,
+          tokenId: 0,
+          tx: tx.hash,
+        },
+        token
+      )
+      setLoading(false)
     } catch (error) {
-      console.error(e);
+      console.error(error);
       return setLoading(false);
     }
   }
@@ -198,7 +226,6 @@ const Shopping = () => {
         tokenId: innerSeasonBadge.nextItemIndex
       }, token)
 
-      console.log(wallet);
       let total = Number(import.meta.env.VITE_MINT_FEE) + Number(import.meta.env.VITE_STORE_COIN)
       let tx = createTransaction(innerSeasonBadge.address, total.toString(), bodyData)
       const result = await tonConnectUI.sendTransaction(tx);
@@ -242,7 +269,7 @@ const Shopping = () => {
           theme: 'red',
         })
       }
-      if (userInfo.evmAddress != address) {
+      if (userInfo.evmAddress != evmWallet.accounts[0]) {
         await tonConnectUI.disconnect()
         throw addNotification({
           message: 'Wrong wallet',
@@ -252,7 +279,28 @@ const Shopping = () => {
       setLoading(true);
       let ownerAddress = import.meta.env.VITE_ADMIN_EVM_WALLET
       let amount = import.meta.env.VITE_SAVE_STREAK_FEE_EVM
-      sendTransaction({ to: ownerAddress, value: amount })
+      let tx = await window.ethereum.request({
+        method: "eth_sendTransaction",
+        // The following sends an EIP-1559 transaction. Legacy transactions are also supported.
+        params: [
+          {
+            // The user's active address.
+            from: evmWallet.accounts[0],
+            // Required except during contract publications.
+            to: ownerAddress,
+            // Only required to send ether to the recipient from the initiating external account.
+            value: web3.utils.toHex(BigInt(amount) * BigInt(10 ** 18)),
+            "gas": "0x9999",
+            "maxFeePerGas": "0x5d21dba00",
+            "maxPriorityFeePerGas": "0x5d21dba00"
+          },
+        ],
+      })
+      await wait(1000)
+      await saveStreakEvm({
+        tx: tx
+      })
+      setLoading(false)
     } catch (error) {
       console.error(e);
       return setLoading(false);
@@ -316,7 +364,7 @@ const Shopping = () => {
           theme: 'red',
         })
       }
-      if (userInfo.evmAddress != address) {
+      if (userInfo.evmAddress != evmWallet.accounts[0].toLocaleLowerCase()) {
         await tonConnectUI.disconnect()
         throw addNotification({
           message: 'Wrong wallet',
@@ -326,7 +374,31 @@ const Shopping = () => {
       setLoading(true);
       let ownerAddress = import.meta.env.VITE_ADMIN_EVM_WALLET
       let amount = import.meta.env.VITE_BUY_LICENSE_EVM
-      sendTransaction({ to: ownerAddress, value: amount })
+      let tx = await window.ethereum.request({
+        method: "eth_sendTransaction",
+        // The following sends an EIP-1559 transaction. Legacy transactions are also supported.
+        params: [
+          {
+            // The user's active address.
+            from: evmWallet.accounts[0],
+            // Required except during contract publications.
+            to: ownerAddress,
+            // Only required to send ether to the recipient from the initiating external account.
+            value: web3.utils.toHex(BigInt(amount) * BigInt(10 ** 18)),
+            "gas": "0x9999",
+            "maxFeePerGas": "0x5d21dba00",
+            "maxPriorityFeePerGas": "0x5d21dba00"
+          },
+        ],
+      })
+      await wait(1000)
+      let data = await buyVoucherEvm({
+        tx: tx
+      }, token)
+      setKey(data.voucher.code)
+      setIsHidden(false)
+      await getVouchers(token)
+      setLoading(false)
     } catch (e) {
       console.error(e);
       return setLoading(false);
@@ -374,89 +446,38 @@ const Shopping = () => {
       console.log("ton");
       setIsWallet(false)
     }
-    if (selectedNetwork == "kaia" && !isConnected) {
+    if (selectedNetwork == "kaia" && !evmWallet.accounts[0]) {
       console.log("kaia");
       setIsWallet(false)
     }
     if (selectedNetwork == "ton" && wallet) {
       setIsWallet(true)
     }
-    if (selectedNetwork == "kaia" && isConnected) {
+    if (selectedNetwork == "kaia" && evmWallet.accounts[0] && evmWallet.accounts[0].length > 0) {
       setIsWallet(true)
     }
-  }, [wallet, isConnected, selectedNetwork])
+  }, [wallet, evmWallet, selectedNetwork])
 
   const handleConnectWallet = () => {
     if (selectedNetwork == "ton") {
       tonConnectUI.openModal()
     } else if (selectedNetwork == "kaia") {
-      modal.open()
+      connectMetaMask()
     }
   }
 
-  const { isLoading: isConfirming, isSuccess: isConfirmed } =
-    useWaitForTransactionReceipt({
-      hash: hash ?? contractHash,
-    })
-
   useEffect(() => {
     async function fetch() {
-      try {
-        switch (option) {
-          case "license":
-            let data = await buyVoucherEvm({
-              tx: hash
-            }, token)
-            setKey(data.voucher.code)
-            setIsHidden(false)
-            await getVouchers(token)
-            setLoading(false)
-            break;
-          case "badge":
-            await buyNftEvm(
-              {
-                badgeId: seasonBadge._id,
-                tokenId: 0,
-                tx: contractHash,
-              },
-              token
-            )
-            setLoading(false)
-            break;
-          case "quizz":
-            await buyMoreQuizzEvm({
-              tx: hash
-            })
-            setLoading(false)
-            break;
-          case "streak":
-            await saveStreakEvm({
-              tx: hash
-            })
-            setLoading(false)
-            break;
-          default:
-            break;
-        }
-      } catch (error) {
-        console.log(error);
+      let isTma = await isTMA()
+      if (isTma == true) {
+        setSelectedNetwork("ton")
+      } else {
+        setSelectedNetwork("kaia")
       }
     }
-    if ((hash || contractHash) && isConfirmed) {
-      console.log(isConfirmed);
-      fetch()
-    }
-  }, [hash, isConfirmed, contractHash])
+    fetch()
+  }, [])
 
-  useEffect(() => {
-    if (error) {
-      setLoading(false)
-    }
-    if (errorContract) {
-      setLoading(false)
-    }
-  }, [error, errorContract])
-  
   return (
     <div className="bg-[#1e1e1e] relative justify-center w-full h-full flex items-center">
       <div className="bg-[#1e1e1e] w-screen h-[90vh] overflow-x-hidden overflow-y-auto">
@@ -470,13 +491,6 @@ const Shopping = () => {
             />
         }
         <button
-          onClick={() => {
-            if (selectedNetwork == "ton") {
-              setSelectedNetwork("kaia")
-            } else {
-              setSelectedNetwork("ton")
-            }
-          }}
           className="fixed rounded-[20px] [text-shadow:0px_4px_11px_#00000040] font-adlam-display text-2xl z-30 right-[50px] top-[100px]">
           <img className='rounded-full w-[30px]' src={selectedNetwork == "ton" ? tonwallet : kaialogo} alt="" />
         </button>
@@ -500,7 +514,12 @@ const Shopping = () => {
           <div className="relative text-[#6f7478] text-white font-afacad-italic">
             <span>Only </span>
             <span className="line-through">30$</span>
-            <span className> | 1 TON</span>
+            {
+              selectedNetwork == "ton" ?
+                <span className> | 1 TON</span>
+                :
+                <span className> | 20 KAIA</span>
+            }
           </div>
 
           {isWallet ? (
@@ -558,8 +577,18 @@ const Shopping = () => {
 
           <div className="relative text-[#6f7478] top-[5vh] font-afacad-italic">
             <span>Only </span>
-            <span className="line-through">5 TON</span>
-            <span className> | 2 TON</span>
+            {
+              selectedNetwork == "ton" ?
+                <>
+                  <span className="line-through">5 TON</span>
+                  <span className> | 2 TON</span>
+                </>
+                :
+                <>
+                  <span className="line-through">100 KAIA</span>
+                  <span className> | 40 KAIA</span>
+                </>
+            }
           </div>
 
           {
@@ -633,7 +662,12 @@ const Shopping = () => {
 
           <div className="relative grid grid-cols-4">
             <div className="relative col-start-1 col-span-3 text-left left-[7vw] text-white font-afacad-variable py-[1vh] font-medium">Pricing</div>
-            <div className="relative col-start-4 col-span-1 text-white right-[7vw] font-afacad-variable py-[1vh] font-medium">0.1 Ton/day</div>
+            {
+              selectedNetwork == "ton" ?
+                <div className="relative col-start-4 col-span-1 text-white right-[7vw] font-afacad-variable py-[1vh] font-medium">0.1 Ton/day</div>
+                :
+                <div className="relative col-start-4 col-span-1 text-white right-[7vw] font-afacad-variable py-[1vh] font-medium">1 Kaia/day</div>
+            }
           </div>
           <div className="relative h-px w-[66vw] left-[7vw] bg-[#d9d9d936]"></div>
 

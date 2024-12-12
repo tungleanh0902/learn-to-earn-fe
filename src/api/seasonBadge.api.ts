@@ -4,7 +4,7 @@ import { callApi } from "./helper"
 export const createSeasonBadgeStore = create((set: any, get: any, next: any) => (
     {
         seasonBadge: {},
-        checkBoughtSeasonBadge: Boolean,
+        checkBoughtSeasonBadge: false,
         itemAddress: String,
         tokenId: String,
 
