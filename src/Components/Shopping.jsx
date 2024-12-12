@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Check from '../assets/Check.png'
-import { createTransaction } from '../api/helper';
+import { createTransaction, wait } from '../api/helper';
 import {
   useTonConnectUI,
   useTonWallet
@@ -10,33 +10,105 @@ import { createSeasonBadgeStore } from "../api/seasonBadge.api";
 import { createUserStore } from "../api/user.api";
 import { createVoucherStore } from "../api/voucher.api";
 import Popup from './Popups/Popup';
+import kaialogo from '../assets/kaia.jpeg';
+import tonwallet from '../assets/Tonwallet.png';
+import { abi } from '../contracts/badge.json'
+import { isTMA } from '@telegram-apps/sdk';
+import { useMetaMask } from '../hooks/useMetamask'
+import web3 from 'web3'
+import { ethers } from 'ethers';
 
 const Shopping = () => {
   const wallet = useTonWallet();
   const [tonConnectUI] = useTonConnectUI();
 
   const buyNft = createSeasonBadgeStore(state => state.buyNft)
+  const buyNftEvm = createSeasonBadgeStore(state => state.buyNftEvm)
   const currentSeasonBadge = createSeasonBadgeStore(state => state.currentSeasonBadge)
+  const seasonBadge = createSeasonBadgeStore(state => state.seasonBadge)
   const checkBoughtSeasonBadge = createSeasonBadgeStore(state => state.checkBoughtSeasonBadge)
   const [loading, setLoading] = useState(false);
   const token = createUserStore(state => state.token)
   const buyMoreQuizz = createUserStore(state => state.buyMoreQuizz)
+  const buyMoreQuizzEvm = createUserStore(state => state.buyMoreQuizzEvm)
   const userInfo = createUserStore(state => state.userInfo)
   const getMintBodyData = createUserStore(state => state.getMintBodyData)
   const saveStreak = createUserStore(state => state.saveStreak)
+  const saveStreakEvm = createUserStore(state => state.saveStreakEvm)
+  const getUserInfo = createUserStore(state => state.getUserInfo)
   const checkedYesterday = createUserStore(state => state.checkedYesterday)
   const isApiLoading = createUserStore(state => state.isApiLoading)
   const checkedToday = createUserStore(state => state.checkedToday)
-  const checkTop10 = createUserStore(state => state.checkTop10)
   const buyVoucher = createVoucherStore(state => state.buyVoucher)
+  const buyVoucherEvm = createVoucherStore(state => state.buyVoucherEvm)
   const getVouchers = createVoucherStore(state => state.getVouchers)
   const availableVoucher = createVoucherStore(state => state.availableVoucher)
 
   const [isHidden, setIsHidden] = useState(true)
   const [key, setKey] = useState("")
-
+  const [selectedNetwork, setSelectedNetwork] = useState("kaia")
+  const [isWallet, setIsWallet] = useState(false)
+  const [option, setOption] = useState(null)
+  const { wallet: evmWallet, hasProvider, isConnecting, connectMetaMask } = useMetaMask()
   const handleClose = () => {
     setIsHidden(true)
+  }
+
+  const handleBuyMoreQuizzGroup = async () => {
+    if (selectedNetwork == "ton") {
+      console.log("ton");
+      await handleBuyMoreQuizz()
+    } else if (selectedNetwork == "kaia") {
+      console.log("kaia");
+      await handleBuyMoreQuizzEvm()
+    }
+  }
+
+  const handleBuyMoreQuizzEvm = async () => {
+    try {
+      if (userInfo.evmAddress == null) {
+        throw addNotification({
+          message: 'Connect your Kaia wallet in Misson tab first',
+          theme: 'red',
+        })
+      }
+      if (userInfo.evmAddress != evmWallet.accounts[0]) {
+        await tonConnectUI.disconnect()
+        throw addNotification({
+          message: 'Wrong wallet',
+          theme: 'red',
+        })
+      }
+      setLoading(true);
+      let ownerAddress = import.meta.env.VITE_ADMIN_EVM_WALLET
+      let amount = import.meta.env.VITE_MORE_QUIZZ_FEE_EVM
+      let tx = await window.ethereum.request({
+        method: "eth_sendTransaction",
+        // The following sends an EIP-1559 transaction. Legacy transactions are also supported.
+        params: [
+          {
+            // The user's active address.
+            from: evmWallet.accounts[0],
+            // Required except during contract publications.
+            to: ownerAddress,
+            // Only required to send ether to the recipient from the initiating external account.
+            value: web3.utils.toHex(BigInt(parseFloat(amount)) * BigInt(10 ** 18)),
+            "gas": "0x9999",
+            "maxFeePerGas": "0x5d21dba00",
+            "maxPriorityFeePerGas": "0x5d21dba00"
+          },
+        ],
+      })
+      await wait(1000)
+      await buyMoreQuizzEvm({
+        tx: tx
+      })
+      setLoading(false)
+      await wait(1000)
+    } catch (error) {
+      console.error(error);
+      return setLoading(false);
+    }
   }
 
   const handleBuyMoreQuizz = async () => {
@@ -71,6 +143,66 @@ const Shopping = () => {
     }
   }
 
+  const handleBuyNftGroup = async () => {
+    if (selectedNetwork == "ton") {
+      console.log("ton");
+      await handleBuyNft()
+    } else if (selectedNetwork == "kaia") {
+      console.log("kaia");
+      await handleBuyNftEvm()
+    }
+  }
+
+  const handleBuyNftEvm = async () => {
+    try {
+      if (userInfo.evmAddress == null) {
+        throw addNotification({
+          message: 'Connect your Kaia wallet in Misson tab first',
+          theme: 'red',
+        })
+      }
+      if (userInfo.evmAddress != evmWallet.accounts[0]) {
+        await tonConnectUI.disconnect()
+        throw addNotification({
+          message: 'Wrong wallet',
+          theme: 'red',
+        })
+      }
+      let contractAddress = import.meta.env.VITE_BADGE_CONTRACT
+      let amount = import.meta.env.VITE_MINT_NFT_FEE_EVM
+      let evmAddress = import.meta.env.VITE_ADMIN_EVM_WALLET
+      if (userInfo?.refUser) {
+        let user = await getUserInfo(userInfo?.refUser)
+        if (user.evmAddress) {
+          evmAddress = user.evmAddress
+        }
+      }
+      const { ethereum } = window;
+      const provider = new ethers.providers.Web3Provider(ethereum);
+      const signer = provider.getSigner();
+      // create minimal contract instance for getting nonce
+      const badge = new ethers.Contract(
+        contractAddress,
+        abi,
+        signer
+      );
+      let tx = await badge.mintNFT(evmAddress, { value: web3.utils.toHex(BigInt(amount) * BigInt(10 ** 18)), })
+      await tx.wait()
+      await buyNftEvm(
+        {
+          badgeId: seasonBadge._id,
+          tokenId: 0,
+          tx: tx.hash,
+        },
+        token
+      )
+      setLoading(false)
+    } catch (error) {
+      console.error(error);
+      return setLoading(false);
+    }
+  }
+
   const handleBuyNft = async () => {
     console.log("handleBuyNft");
     try {
@@ -88,20 +220,19 @@ const Shopping = () => {
         })
       }
       setLoading(true);
-      const seasonBadge = await currentSeasonBadge()
+      const innerSeasonBadge = await currentSeasonBadge()
       let bodyData = await getMintBodyData({
         refUserId: userInfo?.refUser,
-        tokenId: seasonBadge.nextItemIndex
+        tokenId: innerSeasonBadge.nextItemIndex
       }, token)
 
-      console.log(wallet);
       let total = Number(import.meta.env.VITE_MINT_FEE) + Number(import.meta.env.VITE_STORE_COIN)
-      let tx = createTransaction(seasonBadge.address, total.toString(), bodyData)
+      let tx = createTransaction(innerSeasonBadge.address, total.toString(), bodyData)
       const result = await tonConnectUI.sendTransaction(tx);
       await buyNft(
         {
-          badgeId: seasonBadge._id,
-          tokenId: seasonBadge.nextItemIndex,
+          badgeId: innerSeasonBadge._id,
+          tokenId: innerSeasonBadge.nextItemIndex,
           boc: result.boc,
         },
         token
@@ -111,6 +242,68 @@ const Shopping = () => {
       return setLoading(false);
     } finally {
       setLoading(false);
+    }
+  }
+
+  const handleSaveStreakGroup = async () => {
+    if (checkedToday == true) {
+      throw addNotification({
+        message: 'Already checkin today',
+        theme: 'red',
+      })
+    }
+    if (selectedNetwork == "ton") {
+      console.log("ton");
+      await handleSaveStreak()
+    } else if (selectedNetwork == "kaia") {
+      console.log("kaia");
+      await handleSaveStreakEvm()
+    }
+  }
+
+  const handleSaveStreakEvm = async () => {
+    try {
+      if (userInfo.evmAddress == null) {
+        throw addNotification({
+          message: 'Connect your Kaia wallet in Misson tab first',
+          theme: 'red',
+        })
+      }
+      if (userInfo.evmAddress != evmWallet.accounts[0]) {
+        await tonConnectUI.disconnect()
+        throw addNotification({
+          message: 'Wrong wallet',
+          theme: 'red',
+        })
+      }
+      setLoading(true);
+      let ownerAddress = import.meta.env.VITE_ADMIN_EVM_WALLET
+      let amount = import.meta.env.VITE_SAVE_STREAK_FEE_EVM
+      let tx = await window.ethereum.request({
+        method: "eth_sendTransaction",
+        // The following sends an EIP-1559 transaction. Legacy transactions are also supported.
+        params: [
+          {
+            // The user's active address.
+            from: evmWallet.accounts[0],
+            // Required except during contract publications.
+            to: ownerAddress,
+            // Only required to send ether to the recipient from the initiating external account.
+            value: web3.utils.toHex(BigInt(amount) * BigInt(10 ** 18)),
+            "gas": "0x9999",
+            "maxFeePerGas": "0x5d21dba00",
+            "maxPriorityFeePerGas": "0x5d21dba00"
+          },
+        ],
+      })
+      await wait(1000)
+      await saveStreakEvm({
+        tx: tx
+      })
+      setLoading(false)
+    } catch (error) {
+      console.error(e);
+      return setLoading(false);
     }
   }
 
@@ -126,12 +319,6 @@ const Shopping = () => {
         await tonConnectUI.disconnect()
         throw addNotification({
           message: 'Wrong wallet',
-          theme: 'red',
-        })
-      }
-      if (checkedToday == true) {
-        throw addNotification({
-          message: 'Already checkin today',
           theme: 'red',
         })
       }
@@ -151,8 +338,75 @@ const Shopping = () => {
     }
   }
 
-  const handleBuyLicense = async () => {
-    console.log("handleBuyLicense");
+  const handleBuyLicenseGroup = async () => {
+    console.log("handleBuyLicenseGroup");
+    if (availableVoucher == 0) {
+      throw addNotification({
+        message: 'Out of available license',
+        theme: 'red',
+      })
+    }
+    if (selectedNetwork == "ton") {
+      console.log("ton");
+      await handleBuyLicenseTon()
+    } else if (selectedNetwork == "kaia") {
+      console.log("kaia");
+      await handleBuyLicenseEvm()
+    }
+  }
+
+  const handleBuyLicenseEvm = async () => {
+    console.log("handleBuyLicenseEvm");
+    try {
+      if (userInfo.evmAddress == null) {
+        throw addNotification({
+          message: 'Connect your Kaia wallet in Misson tab first',
+          theme: 'red',
+        })
+      }
+      if (userInfo.evmAddress != evmWallet.accounts[0].toLocaleLowerCase()) {
+        await tonConnectUI.disconnect()
+        throw addNotification({
+          message: 'Wrong wallet',
+          theme: 'red',
+        })
+      }
+      setLoading(true);
+      let ownerAddress = import.meta.env.VITE_ADMIN_EVM_WALLET
+      let amount = import.meta.env.VITE_BUY_LICENSE_EVM
+      let tx = await window.ethereum.request({
+        method: "eth_sendTransaction",
+        // The following sends an EIP-1559 transaction. Legacy transactions are also supported.
+        params: [
+          {
+            // The user's active address.
+            from: evmWallet.accounts[0],
+            // Required except during contract publications.
+            to: ownerAddress,
+            // Only required to send ether to the recipient from the initiating external account.
+            value: web3.utils.toHex(BigInt(amount) * BigInt(10 ** 18)),
+            "gas": "0x9999",
+            "maxFeePerGas": "0x5d21dba00",
+            "maxPriorityFeePerGas": "0x5d21dba00"
+          },
+        ],
+      })
+      await wait(1000)
+      let data = await buyVoucherEvm({
+        tx: tx
+      }, token)
+      setKey(data.voucher.code)
+      setIsHidden(false)
+      await getVouchers(token)
+      setLoading(false)
+    } catch (e) {
+      console.error(e);
+      return setLoading(false);
+    }
+  }
+
+  const handleBuyLicenseTon = async () => {
+    console.log("handleBuyLicenseTon");
     try {
       if (userInfo.address == null) {
         throw addNotification({
@@ -164,12 +418,6 @@ const Shopping = () => {
         await tonConnectUI.disconnect()
         throw addNotification({
           message: 'Wrong wallet',
-          theme: 'red',
-        })
-      }
-      if (availableVoucher == 0) {
-        throw addNotification({
-          message: 'Out of available license',
           theme: 'red',
         })
       }
@@ -193,9 +441,46 @@ const Shopping = () => {
     }
   }
 
+  useEffect(() => {
+    if (selectedNetwork == "ton" && !wallet) {
+      console.log("ton");
+      setIsWallet(false)
+    }
+    if (selectedNetwork == "kaia" && !evmWallet.accounts[0]) {
+      console.log("kaia");
+      setIsWallet(false)
+    }
+    if (selectedNetwork == "ton" && wallet) {
+      setIsWallet(true)
+    }
+    if (selectedNetwork == "kaia" && evmWallet.accounts[0] && evmWallet.accounts[0].length > 0) {
+      setIsWallet(true)
+    }
+  }, [wallet, evmWallet, selectedNetwork])
+
+  const handleConnectWallet = () => {
+    if (selectedNetwork == "ton") {
+      tonConnectUI.openModal()
+    } else if (selectedNetwork == "kaia") {
+      connectMetaMask()
+    }
+  }
+
+  useEffect(() => {
+    async function fetch() {
+      let isTma = await isTMA()
+      if (isTma == true) {
+        setSelectedNetwork("ton")
+      } else {
+        setSelectedNetwork("kaia")
+      }
+    }
+    fetch()
+  }, [])
+
   return (
-    <div className="bg-[#1e1e1e] justify-center w-full h-full flex items-center">
-      <div className="bg-[#1e1e1e] w-screen h-[90vh] relative overflow-x-hidden overflow-y-auto">
+    <div className="bg-[#1e1e1e] relative justify-center w-full h-full flex items-center">
+      <div className="bg-[#1e1e1e] w-screen h-[90vh] overflow-x-hidden overflow-y-auto">
         {
           isHidden ?
             <></>
@@ -205,6 +490,10 @@ const Shopping = () => {
               handleClose={handleClose}
             />
         }
+        <button
+          className="fixed rounded-[20px] [text-shadow:0px_4px_11px_#00000040] font-adlam-display text-2xl z-30 right-[50px] top-[100px]">
+          <img className='rounded-full w-[30px]' src={selectedNetwork == "ton" ? tonwallet : kaialogo} alt="" />
+        </button>
         <div className="relative mt-[15px] bg-[#1e6252] w-[80vw] h-[46vh] left-[10vw] rounded-[15px]">
           <div className="relative pt-[4vh] font-adlam-display text-4xl text-white [text-shadow:0px_4px_4px_#00000040]">Special shop</div>
 
@@ -212,26 +501,34 @@ const Shopping = () => {
           <div className="relative h-px w-[66vw] left-[7vw] bg-[#d9d9d936]"></div>
 
           <div className="grid grid-cols-4 gap-4 my-[10px] text-white">
-              <div className='ml-[30px] w-[130px] text-left'>Activation period</div>
-              <div className='ml-[120px] w-[120px] text-left'>1 year</div>
+            <div className='ml-[30px] w-[130px] text-left'>Activation period</div>
+            <div className='ml-[120px] w-[120px] text-left'>1 year</div>
           </div>
           <div className="relative h-px w-[66vw] left-[7vw] bg-[#d9d9d936]"></div>
           <div className="grid grid-cols-4 gap-4 my-[10px] text-white">
-              <div className='ml-[30px] w-[130px] text-left'>Activation date</div>
-              <div className='ml-[120px] w-[120px] text-left'>2024-12-31</div>
+            <div className='ml-[30px] w-[130px] text-left'>Activation date</div>
+            <div className='ml-[120px] w-[120px] text-left'>2024-12-31</div>
           </div>
           <div className="relative h-px w-[66vw] left-[7vw] bg-[#d9d9d936]"></div>
 
           <div className="relative text-[#6f7478] text-white font-afacad-italic">
             <span>Only </span>
             <span className="line-through">30$</span>
-            <span className> | 1 TON</span>
+            {
+              selectedNetwork == "ton" ?
+                <span className> | 1 TON</span>
+                :
+                <span className> | 20 KAIA</span>
+            }
           </div>
 
-          {wallet ? (
+          {isWallet ? (
             <button
               disabled={loading ? true : false}
-              onClick={handleBuyLicense}
+              onClick={() => {
+                setOption("license")
+                handleBuyLicenseGroup()
+              }}
               className="bottom-[3vh] bg-white rounded-[20px] w-[60vw] left-[10vw] [text-shadow:0px_4px_11px_#00000040] font-adlam-display text-2xl">
               <div className="py-[1vh]">
                 {loading ? "Loading..." : "BUY NOW"}
@@ -239,7 +536,7 @@ const Shopping = () => {
             </button>
           ) : (
             <button
-              onClick={() => tonConnectUI.openModal()}
+              onClick={() => handleConnectWallet()}
               className="bottom-[3vh] bg-white rounded-[20px] w-[60vw] left-[10vw] [text-shadow:0px_4px_11px_#00000040] font-adlam-display text-2xl">
               <div className="py-[1vh]">
                 Connect wallet
@@ -280,21 +577,34 @@ const Shopping = () => {
 
           <div className="relative text-[#6f7478] top-[5vh] font-afacad-italic">
             <span>Only </span>
-            <span className="line-through">5 TON</span>
-            <span className> | 2 TON</span>
+            {
+              selectedNetwork == "ton" ?
+                <>
+                  <span className="line-through">5 TON</span>
+                  <span className> | 2 TON</span>
+                </>
+                :
+                <>
+                  <span className="line-through">100 KAIA</span>
+                  <span className> | 40 KAIA</span>
+                </>
+            }
           </div>
 
           {
-            wallet ?
+            isWallet ?
               <button
                 disabled={checkBoughtSeasonBadge || loading}
-                onClick={handleBuyNft}
+                onClick={() => {
+                  setOption("badge")
+                  handleBuyNftGroup()
+                }}
                 className="bg-white rounded-[20px] text-xl font-bold font-adlam-display absolute bottom-[4vh] w-[70vw] left-[5vw] py-[1vh]">
                 {checkBoughtSeasonBadge ? "Already have this season badge" : loading ? "Loading..." : "BUY PREMIUM NOW"}
               </button>
               :
               <button
-                onClick={() => tonConnectUI.openModal()}
+                onClick={() => handleConnectWallet()}
                 className="bg-white rounded-[20px] text-xl font-bold font-adlam-display absolute bottom-[4vh] w-[70vw] left-[5vw] py-[1vh]">
                 Connect wallet
               </button>
@@ -321,11 +631,14 @@ const Shopping = () => {
             <div className="col-start-1 col-span-4 h-px bg-[#d9d9d936] relative left-[7vw] max-w-[66vw]"></div>
           </div>
 
-          {wallet ? (
+          {isWallet ? (
             <div className="absolute bg-white rounded-[15px] bottom-[1vh] right-[4vw]">
               <button
                 disabled={loading}
-                onClick={handleBuyMoreQuizz}
+                onClick={() => {
+                  setOption("quizz")
+                  handleBuyMoreQuizzGroup()
+                }}
                 className="relative px-[2vw] py-[1vh] font-adlam-display [text-shadow:0px_4px_11px_#00000040]">
                 {loading ? "Loading..." : "BUY Special Quizz Now!"}
               </button>
@@ -333,7 +646,7 @@ const Shopping = () => {
           ) : (
             <div className="absolute bg-white rounded-[15px] bottom-[3vh] right-[4vw]">
               <button
-                onClick={() => tonConnectUI.openModal()}
+                onClick={() => handleConnectWallet()}
                 className="relative px-[2vw] py-[1vh] font-adlam-display [text-shadow:0px_4px_11px_#00000040]">
                 Connect wallet
               </button>
@@ -349,14 +662,22 @@ const Shopping = () => {
 
           <div className="relative grid grid-cols-4">
             <div className="relative col-start-1 col-span-3 text-left left-[7vw] text-white font-afacad-variable py-[1vh] font-medium">Pricing</div>
-            <div className="relative col-start-4 col-span-1 text-white right-[7vw] font-afacad-variable py-[1vh] font-medium">0.1 Ton/day</div>
+            {
+              selectedNetwork == "ton" ?
+                <div className="relative col-start-4 col-span-1 text-white right-[7vw] font-afacad-variable py-[1vh] font-medium">0.1 Ton/day</div>
+                :
+                <div className="relative col-start-4 col-span-1 text-white right-[7vw] font-afacad-variable py-[1vh] font-medium">1 Kaia/day</div>
+            }
           </div>
           <div className="relative h-px w-[66vw] left-[7vw] bg-[#d9d9d936]"></div>
 
-          {wallet ? (
+          {isWallet ? (
             <button
               disabled={checkedYesterday || userInfo?.hasStreakSaver ? true : loading ? true : false}
-              onClick={handleSaveStreak}
+              onClick={() => {
+                setOption("streak")
+                handleSaveStreakGroup()
+              }}
               className="absolute bottom-[5vh] bg-white rounded-[20px] w-[60vw] left-[10vw] [text-shadow:0px_4px_11px_#00000040] font-adlam-display text-2xl">
               <div className="py-[1vh]">
                 {isApiLoading ? "Loading..." : checkedYesterday || userInfo?.hasStreakSaver == true ? "On streak" : loading ? "Loading..." : "Buy streak"}
@@ -364,7 +685,7 @@ const Shopping = () => {
             </button>
           ) : (
             <button
-              onClick={() => tonConnectUI.openModal()}
+              onClick={() => handleConnectWallet()}
               className="absolute bottom-[5vh] bg-white rounded-[20px] w-[60vw] left-[10vw] [text-shadow:0px_4px_11px_#00000040] font-adlam-display text-2xl">
               <div className="py-[1vh]">
                 Connect wallet
