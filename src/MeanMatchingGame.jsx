@@ -131,6 +131,7 @@ const MeanMatchingGame = () => {
                 return () => clearTimeout(timer);
             } else if (gameTime == 0) {
                 setGameRunning(false);
+                setGameTime(30);
                 console.log(selectedAnswer);
                 let data = await answerMeanMatchingGame({answers: selectedAnswer}, token);
                 updateUserInfo(data.user);

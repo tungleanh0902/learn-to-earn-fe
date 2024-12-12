@@ -87,6 +87,7 @@ const Game = () => {
                 return () => clearTimeout(timer);
             } else if (gameTime === 0) {
                 setGameRunning(false);
+                setGameTime(30);
                 let data = await answerWordGame(choosenWordIds, game.topic._id.toString(), token)
                 updateUserInfo(data.user)
                 setIsDefault(false)
