@@ -516,7 +516,7 @@ const Shopping = () => {
             <span className="line-through">30$</span>
             {
               selectedNetwork == "ton" ?
-                <span className> | 1 TON</span>
+                <span className> | 0.5 TON</span>
                 :
                 <span className> | 20 KAIA</span>
             }
