@@ -43,6 +43,7 @@ const Shopping = () => {
   const buyVoucherEvm = createVoucherStore(state => state.buyVoucherEvm)
   const getVouchers = createVoucherStore(state => state.getVouchers)
   const availableVoucher = createVoucherStore(state => state.availableVoucher)
+  const doGetTxs = createVoucherStore(state => state.doGetTxs)
 
   const [isHidden, setIsHidden] = useState(true)
   const [key, setKey] = useState("")
@@ -422,11 +423,16 @@ const Shopping = () => {
         })
       }
       setLoading(true);
-      let tx = createTransaction(import.meta.env.VITE_ADMIN_WALLET.toString(), import.meta.env.VITE_BUY_LICENSE.toString(), null)
-      const result = await tonConnectUI.sendTransaction(tx);
+      let boughtVouchers = await doGetTxs()
+      let tx
+      let result
+      if (boughtVouchers >= 24) {
+        tx = createTransaction(import.meta.env.VITE_ADMIN_WALLET.toString(), import.meta.env.VITE_BUY_LICENSE.toString(), null)
+        result = await tonConnectUI.sendTransaction(tx);
+      }
       let data = await buyVoucher(
         {
-          boc: result.boc,
+          boc: result?.boc,
         },
         token
       )

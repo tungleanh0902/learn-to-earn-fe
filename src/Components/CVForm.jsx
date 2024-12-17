@@ -20,29 +20,38 @@ const CVForm = ({ currentItem, handleClose }) => {
     const [link, setLink] = useState("")
 
     const handleSubmit = async () => {
-        if (link.includes("https://www.facebook.com/") == false && link.includes("https://www.linkedin.com/in") == false) {
-            throw addNotification({
-                message: 'Invalid link',
-                theme: 'red',
-              }) 
+        try {
+            if (link.includes("https://www.facebook.com/") == false && link.includes("https://www.linkedin.com/in") == false) {
+                throw addNotification({
+                    message: 'Invalid link',
+                    theme: 'red',
+                  }) 
+            }
+            let emailPattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+            if (!emailPattern.test(email)) {
+                throw addNotification({
+                    message: 'Invalid email',
+                    theme: 'red',
+                  }) 
+            }
+            let data = await createCvProfile(name, email, link, currentItem, token)
+            console.log(data);
+            setNewPoint(data.points)
+            updateUserInfo(data.user) 
+            setIsActive(true)
+            setTimeout(() => {
+                setIsActive(false)
+                setNewPoint(0)
+            }, 2000)
+            await getActiveTask(token)
+            addNotification({
+                title: 'Success',
+                message: "Submit info successfully",
+                theme: 'darkblue',
+            })
+        } catch (error) {
+            console.log(error);
         }
-        let emailPattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-        if (!emailPattern.test(email)) {
-            throw addNotification({
-                message: 'Invalid email',
-                theme: 'red',
-              }) 
-        }
-        let data = await createCvProfile(name, email, link, currentItem, token)
-        console.log(data);
-        setNewPoint(data.points)
-        updateUserInfo(data.user) 
-        setIsActive(true)
-        setTimeout(() => {
-            setIsActive(false)
-            setNewPoint(0)
-        }, 2000)
-        await getActiveTask(token)
     }
 
     return (

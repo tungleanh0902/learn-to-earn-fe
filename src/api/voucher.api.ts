@@ -5,6 +5,7 @@ export const createVoucherStore = create((set: any, get: any, next: any) => (
     {
         vouchers: [],
         availableVoucher: 0,
+        listing: [],
         
         buyVoucher: async (data, token) => {
             let bodyData
@@ -36,4 +37,32 @@ export const createVoucherStore = create((set: any, get: any, next: any) => (
                 set({ availableVoucher: res.data.vouchers.length })
             }, token)
         },
+
+        doGetTxs: async () => {
+            let data
+            await callApi('voucher/get_voucher_tx', "POST", null, (res) => {
+                data = res.data               
+            }, null)
+            return data
+        },
+
+        doGetListing: async (token) => {
+            await callApi('voucher/get_listing', "POST", null, (res) => {
+                set({listing: res.data})       
+            }, token)
+        },
+
+        doCancelListing: async (data, token) => {
+            await callApi('voucher/cancel_listing', "POST", data, (res) => {
+                set({listing: res.data.sellingLicense})
+                set({vouchers: res.data.voucherHistory}) 
+            }, token)
+        },
+
+        doListLicense: async (data, token) => {
+            await callApi('voucher/list_for_sale', "POST", data, (res) => {
+                set({listing: res.data.sellingLicense})
+                set({vouchers: res.data.voucherHistory})            
+            }, token)
+        }
     }))

@@ -23,6 +23,8 @@ import Navigation from './Components/Navigation';
 
 import { MetaMaskContextProvider } from './hooks/useMetamask'
 
+import eruda from 'eruda'
+eruda.init()
 function App() {
   const setApiLoading = createUserStore(state => state.setApiLoading)
   const doLogin = createUserStore(state => state.login)
@@ -37,6 +39,7 @@ function App() {
   const getLeaderBoard = createUserStore(state => state.getLeaderBoard)
   const getVouchers = createVoucherStore(state => state.getVouchers)
   const getAvailableVouchers = createVoucherStore(state => state.getAvailableVouchers)
+  const doGetListing = createVoucherStore(state => state.doGetListing)
 
   const [active, setActive] = useState(0);
   const [isCampaign, setIsCampaign] = useState(false)
@@ -71,6 +74,7 @@ function App() {
       await getLeaderBoard()
       await getVouchers(token)
       await getAvailableVouchers()
+      await doGetListing(token)
       await setApiLoading(false)
     }
     if (WebApp.initDataUnsafe?.user) {
